@@ -1,0 +1,393 @@
+{%- liquid
+  assign img         = section.settings.image
+  assign object_img  = section.settings.object_image
+  assign object_label = section.settings.object_label | default: 'L’objet · Cigale en céramique — modèle 1895'
+  assign title       = section.settings.title       | default: 'Ce que veut dire « artisan » chez Maison Bonjour.'
+  assign label       = section.settings.label       | default: 'Aubagne — Provence'
+  assign artisan     = section.settings.artisan     | default: 'Faïences Louis Sicard'
+  assign since       = section.settings.since       | default: '1895'
+  assign link1_url   = section.settings.link1_url
+  assign link1_label = section.settings.link1_label | default: 'Visite de l’atelier en vidéo'
+  assign link2_url   = section.settings.link2_url
+  assign link2_label = section.settings.link2_label | default: 'Découvrir d’autres artisans'
+-%}
+
+<section class="artisan section--cream" aria-label="L'Artisan">
+  <div class="container">
+
+    <header class="artisan__intro">
+      <h2 class="artisan__intro-title" data-split-words>{{ title }}</h2>
+    </header>
+
+    <div class="artisan__grid">
+
+      <figure class="artisan__media reveal">
+        <img class="artisan__img img-reveal"
+             src="{{ 'cigale.png' | asset_url }}"
+             alt="Cigale en céramique — Faïences Louis Sicard, Aubagne"
+             width="1400"
+             height="1400"
+             loading="lazy">
+      </figure>
+
+      <div class="artisan__text reveal reveal--delay-1">
+
+        <div class="artisan__meta">
+          <span class="artisan__meta-loc">{{ label }}</span>
+          <span class="artisan__meta-sep" aria-hidden="true">·</span>
+          <span class="artisan__meta-since">Maison fondée en <em>{{ since }}</em></span>
+        </div>
+
+        <h3 class="artisan__name">{{ artisan }}</h3>
+
+        <span class="artisan__rule" aria-hidden="true"></span>
+
+        <div class="artisan__body">
+          {%- if section.settings.body != blank -%}
+            {{ section.settings.body }}
+          {%- else -%}
+            <p>Quatre générations qu’on sculpte la même cigale, dans le même atelier d’Aubagne. Le moule a passé de main en main, du fondateur à ses arrière-petits-enfants. Aujourd’hui, c’est encore une famille qui modèle chaque pièce, à la main, au même rythme.</p>
+            <p>Voilà ce que nous appelons un artisan. Pas une marque qui pose une étiquette « fait main ». Une maison où le geste s’est transmis comme un secret de famille.</p>
+          {%- endif -%}
+        </div>
+
+        <div class="artisan__links">
+          {%- if link1_url != blank -%}
+            <a class="artisan__link" href="{{ link1_url }}">
+              <span>{{ link1_label }}</span>
+              <span class="artisan__link-arrow" aria-hidden="true">→</span>
+            </a>
+          {%- endif -%}
+          {%- if link2_url != blank -%}
+            <a class="artisan__link" href="{{ link2_url }}">
+              <span>{{ link2_label }}</span>
+              <span class="artisan__link-arrow" aria-hidden="true">→</span>
+            </a>
+          {%- endif -%}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .artisan { padding-block: clamp(80px, 10vw, 140px); }
+  .artisan.section--cream { background: #FFFFFF; }
+
+  .artisan__intro {
+    max-width: 720px;
+    margin: 0 0 clamp(56px, 6vw, 96px);
+  }
+
+  .artisan__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .artisan__kicker-rule {
+    display: inline-block;
+    width: 36px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  .artisan__intro-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 3.5vw + 1rem, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--marine);
+  }
+
+  .artisan__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .artisan__media {
+    position: relative;
+    margin: 0;
+  }
+
+  .artisan__img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .artisan__caption {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .artisan__caption-num {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* --- Médaillon objet : polaroid layered sur le portrait artisan --- */
+
+  .artisan__object {
+    position: absolute;
+    bottom: 64px;
+    right: -28px;
+    z-index: 3;
+    margin: 0;
+    width: clamp(140px, 22%, 200px);
+    transform: rotate(4deg);
+    pointer-events: none;
+  }
+
+  .artisan__object-frame {
+    position: relative;
+    padding: 12px 12px 8px;
+    background: #FAF3E4;
+    border: 1px solid rgba(28, 43, 74, 0.15);
+    box-shadow:
+      0 22px 38px -12px rgba(0, 0, 0, 0.32),
+      0 4px 12px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .artisan__object-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.94);
+  }
+
+  .artisan__object-tape {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 64px;
+    height: 18px;
+    background:
+      linear-gradient(135deg, rgba(220, 195, 130, 0.65), rgba(200, 170, 110, 0.55) 60%, rgba(220, 195, 130, 0.6));
+    border-left: 1px dashed rgba(120, 90, 40, 0.18);
+    border-right: 1px dashed rgba(120, 90, 40, 0.18);
+    transform: translateX(-50%) rotate(-3deg);
+    opacity: 0.85;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .artisan__object-caption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.3;
+  }
+  .artisan__object-num {
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+  .artisan__object-rule {
+    display: block;
+    width: 18px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+  .artisan__object-text {
+    flex: 1;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 767px) {
+    .artisan__object {
+      bottom: 18px;
+      right: 12px;
+      width: 110px;
+      transform: rotate(3deg);
+    }
+    .artisan__object-frame { padding: 8px 8px 6px; }
+    .artisan__object-caption { font-size: 8px; gap: 6px; }
+    .artisan__object-rule { width: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .artisan__object { transform: none; }
+  }
+
+  .artisan__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .artisan__meta-sep { color: var(--gold); }
+
+  .artisan__meta-since em {
+    font-style: normal;
+    color: var(--marine);
+  }
+
+  .artisan__name {
+    margin: 18px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 2.6vw + 1rem, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: var(--marine);
+  }
+
+  .artisan__rule {
+    display: block;
+    width: 56px;
+    height: 1px;
+    margin: 32px 0;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  .artisan__body {
+    max-width: 520px;
+  }
+
+  .artisan__body p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: none;
+  }
+
+  .artisan__body p + p { margin-top: 1.3em; }
+
+  .artisan__body p:nth-child(2) {
+    margin-top: 1.5em;
+    padding-left: 20px;
+    border-left: 1px solid var(--gold);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    color: var(--marine);
+  }
+
+  .artisan__links {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .artisan__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 4px;
+    width: fit-content;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--marine);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(28, 43, 74, 0.2);
+    transition: color 0.3s ease, border-color 0.3s ease, gap 0.3s ease;
+  }
+
+  .artisan__link:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+    gap: 16px;
+  }
+
+  .artisan__link-arrow {
+    color: var(--gold);
+    transition: transform 0.3s ease;
+  }
+
+  .artisan__link:hover .artisan__link-arrow {
+    transform: translateX(4px);
+  }
+
+  @media (min-width: 1024px) {
+    .artisan__grid {
+      grid-template-columns: 1fr 1fr;
+      column-gap: clamp(56px, 6vw, 112px);
+    }
+    .artisan__text {
+      position: sticky;
+      top: 96px;
+      padding-top: 16px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .artisan { padding-block: 72px; }
+    .artisan__body p { font-size: 16px; }
+    .artisan__body p:nth-child(2) { font-size: 1.1rem; }
+    .artisan__rule { margin: 24px 0; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "05 — L'Artisan",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Titre", "default": "Ce que veut dire « artisan » chez Maison Bonjour." },
+    { "type": "image_picker", "id": "image", "label": "Image atelier / portrait" },
+    { "type": "text", "id": "label",   "label": "Localisation", "default": "Aubagne — Provence" },
+    { "type": "text", "id": "artisan", "label": "Nom de l'artisan", "default": "Faïences Louis Sicard" },
+    { "type": "text", "id": "since",   "label": "Année de fondation", "default": "1895" },
+    { "type": "richtext", "id": "body", "label": "Récit" },
+    { "type": "header", "content": "Médaillon objet (polaroid)" },
+    { "type": "image_picker", "id": "object_image", "label": "Image objet (si vide, cigale par défaut)" },
+    { "type": "text", "id": "object_label", "label": "Légende médaillon", "default": "L’objet · Cigale en céramique — modèle 1895" },
+    { "type": "header", "content": "Liens" },
+    { "type": "url",  "id": "link1_url",   "label": "Lien 1 — URL" },
+    { "type": "text", "id": "link1_label", "label": "Lien 1 — Texte", "default": "Visite de l’atelier en vidéo" },
+    { "type": "url",  "id": "link2_url",   "label": "Lien 2 — URL" },
+    { "type": "text", "id": "link2_label", "label": "Lien 2 — Texte", "default": "Découvrir d’autres artisans" }
+  ],
+  "presets": [{ "name": "05 — L'Artisan" }]
+}
+{% endschema %}

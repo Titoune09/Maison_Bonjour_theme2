@@ -1,0 +1,126 @@
+{%- liquid
+  assign label   = section.settings.label | default: 'La box'
+  assign title   = section.settings.title | default: 'Lire la France, puis la recevoir.'
+  assign text    = section.settings.text | default: 'Chaque mois, Maison Bonjour transforme une région en sélection d’objets, de goûts et de gestes. Le Magazine raconte l’histoire. La box la fait entrer chez vous.'
+  assign btn     = section.settings.button_label | default: 'Découvrir l’abonnement'
+  assign btn_url = section.settings.button_url
+  if btn_url == blank
+    assign btn_url = '/products/abonnement-maison-bonjour'
+  endif
+  assign subtext = section.settings.subtext | default: 'À partir de 299 RON / mois · Livraison incluse en Roumanie'
+  assign closer  = section.settings.closer | default: 'La Revue · Maison Bonjour'
+-%}
+
+<section class="mb-rev-cta band--ink" aria-label="Découvrir l’abonnement">
+  <div class="wrap">
+    <hr class="mb-magazine__rule mb-magazine__rule--cream">
+    <div class="mb-rev-cta__inner reveal">
+      <span class="mb-magazine__folio">06</span>
+      <span class="label label--marker">{{ label }}</span>
+      <h2 class="mb-rev-cta__title">{{ title }}</h2>
+      <p class="mb-rev-cta__text">{{ text }}</p>
+      {%- if btn != blank -%}
+        <a href="{{ btn_url }}" class="mb-rev-cta__button">{{ btn }}</a>
+      {%- endif -%}
+      {%- if subtext != blank -%}
+        <p class="mb-rev-cta__subtext">{{ subtext }}</p>
+      {%- endif -%}
+    </div>
+    {%- if closer != blank -%}
+      <div class="mb-rev-cta__closer">
+        <hr class="mb-magazine__rule mb-magazine__rule--cream">
+        <span>{{ closer }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-rev-cta { padding-block: clamp(56px, 7vw, 96px) clamp(40px, 5vw, 72px); }
+
+  .mb-rev-cta__inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding-block: clamp(56px, 9vw, 120px);
+    text-align: center;
+  }
+  .mb-rev-cta__inner .mb-magazine__folio { color: var(--gold); }
+  .mb-rev-cta__inner .label--marker {
+    display: inline-flex;
+    margin-top: 16px;
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+  .mb-rev-cta__inner .label--marker::before { background: var(--gold-soft); }
+  .mb-rev-cta__title {
+    margin: 20px 0 0;
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5vw + 0.5rem, 5.5rem);
+    line-height: 1.0;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--text-cream);
+  }
+  .mb-rev-cta__text {
+    margin: 26px auto 0;
+    max-width: 52ch;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.78;
+    color: var(--text-cream);
+    opacity: 0.8;
+  }
+  .mb-rev-cta__button {
+    display: inline-block;
+    margin-top: 40px;
+    font-family: var(--font-sans);
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--marine-deep);
+    background: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    padding: 18px 40px;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .mb-rev-cta__button:hover,
+  .mb-rev-cta__button:focus-visible { background: transparent; color: var(--gold-soft); }
+  .mb-rev-cta__subtext {
+    margin: 22px 0 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--gold-soft);
+  }
+
+  .mb-rev-cta__closer { display: grid; gap: 14px; }
+  .mb-rev-cta__closer span {
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-size: 12px;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+    text-align: center;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Magazine — 06 CTA",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "La box" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Lire la France, puis la recevoir." },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Chaque mois, Maison Bonjour transforme une région en sélection d’objets, de goûts et de gestes. Le Magazine raconte l’histoire. La box la fait entrer chez vous." },
+    { "type": "text", "id": "button_label", "label": "Libellé du bouton", "default": "Découvrir l’abonnement" },
+    { "type": "url", "id": "button_url", "label": "URL du bouton" },
+    { "type": "text", "id": "subtext", "label": "Sous-texte", "default": "À partir de 299 RON / mois · Livraison incluse en Roumanie" },
+    { "type": "text", "id": "closer", "label": "Cartouche de fin", "default": "La Revue · Maison Bonjour" }
+  ],
+  "presets": [{ "name": "Magazine — 06 CTA" }]
+}
+{% endschema %}

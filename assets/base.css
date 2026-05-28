@@ -1,0 +1,1773 @@
+/* ==========================================================================
+   Maison Bonjour — base.css
+   Fondations : variables, reset, typographie, layout, utilitaires.
+   Les sections de la landing étendent ces fondations dans leurs fichiers
+   Liquid respectifs.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. FONT FACES — fonts self-hostées (les autres sont chargées via Google Fonts
+   dans theme.liquid).
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'TAN Pearl';
+  src: url('TAN-Pearl-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   1. VARIABLES
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Palette */
+  --cream:        #FEF9F3;
+  --cream-warm:   #F5EBD8;
+  --marine:       #1C2B4A;
+  --marine-deep:  #0F1A2E;
+  --gold:         #B8965A;
+  --gold-soft:    #C9AC76;
+  --terracotta:    #9F5D3E;
+  --sage:          #7F8B6D;
+  --ink-soft:      rgba(43, 32, 24, 0.72);
+  --text:         #2B2018;
+  --text-muted:   #6B5444;
+  --text-cream:   #FAF6EC;
+  --border:       rgba(184, 150, 90, 0.25);
+  --border-cream: rgba(184, 150, 90, 0.18);
+  --paper-shadow:  0 24px 70px rgba(28, 43, 74, 0.12);
+  --paper-shadow-soft: 0 16px 42px rgba(43, 32, 24, 0.08);
+
+  /* Typo */
+  --font-serif: 'Instrument Serif', serif;
+  --font-sans:  'Inter', sans-serif;
+
+  /* Échelle typographique — clamp(mobile, fluide, desktop) */
+  --fs-h1: clamp(3.5rem, 5.4vw + 1rem, 6rem);    /* 56 → 96 */
+  --fs-h2: clamp(2.25rem, 3vw + 1rem, 4rem);     /* 36 → 64 */
+  --fs-h3: clamp(1.5rem, 1vw + 1rem, 2rem);      /* 24 → 32 */
+  --fs-body:        1.0625rem;                   /* 17 */
+  --fs-body-mobile: 1rem;                        /* 16 */
+  --fs-label:       0.625rem;                    /* 10 */
+
+  /* Espace */
+  --container:           1240px;
+  --container-padding:   24px;
+  --gutter:              24px;
+  --section-py:          100px;
+  --section-py-mobile:   60px;
+  --section-py-immersive: 120px;
+  --section-py-immersive-mobile: 80px;
+  --prose-max:           600px;
+
+  /* Animation — cinematic system */
+  --easing-leave:  cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-out:      cubic-bezier(0.2, 0.6, 0.2, 1);
+  --ease-expo:     cubic-bezier(0.16, 1, 0.3, 1);            /* expo-out, cinematic exit */
+  --ease-cinema:   cubic-bezier(0.19, 1, 0.22, 1);           /* slow start, glide finish */
+  --ease-anticip:  cubic-bezier(0.34, 1.34, 0.36, 1);        /* gentle overshoot */
+  --ease-spring:   cubic-bezier(0.18, 1.25, 0.4, 1);         /* spring-like */
+  --ease-drama:    cubic-bezier(0.7, 0, 0.16, 1);            /* heavy in, fast out */
+  --dur-fast:      0.55s;
+  --dur-base:      1.1s;
+  --dur-slow:      1.6s;
+  --dur-cinematic: 2.2s;
+
+  /* Z-index */
+  --z-header:      500;
+  --z-mobile-nav:  800;
+  --z-intro:       9000;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --container-padding: 20px;
+    --gutter: 16px;
+    --section-py: var(--section-py-mobile);
+    --section-py-immersive: var(--section-py-immersive-mobile);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+* { margin: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* scroll-behavior géré par Lenis (JS) — `smooth` natif crée un double
+     lissage qui rend le scroll lent et imprévisible. */
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(184, 150, 90, 0.08), transparent 28vw),
+    linear-gradient(180deg, var(--cream) 0%, #fbf1e4 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+@media (max-width: 767px) {
+  body { font-size: var(--fs-body-mobile); }
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+img { object-fit: cover; }
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+p {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+ul, ol { list-style: none; padding: 0; }
+
+::selection {
+  background: var(--gold);
+  color: var(--cream);
+}
+
+/* --------------------------------------------------------------------------
+   3. TYPOGRAPHIE GLOBALE
+   -------------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+  color: var(--marine);
+  /* Titres : jamais de césure automatique (évite les mots coupés sur mobile),
+     et répartition équilibrée des lignes (pas de mot orphelin en fin de titre). */
+  hyphens: manual;
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--fs-h1); }
+h2 { font-size: var(--fs-h2); }
+h3 { font-size: var(--fs-h3); line-height: 1.15; }
+
+p { line-height: 1.75; }
+p + p { margin-top: 1.25em; }
+
+/* Pas de bold dans le corps */
+strong, b { font-weight: 400; }
+em, i { font-style: italic; }
+
+/* --------------------------------------------------------------------------
+   4. LAYOUT
+   -------------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-py);
+  overflow: hidden;
+}
+
+.section > .container { position: relative; z-index: 2; }
+
+/* Sections nommées : héritent du base position + overflow */
+.hero,
+.story,
+.box,
+.journey,
+.artisan,
+.voices,
+.promise,
+.how,
+.invitation {
+  position: relative;
+}
+
+.story,
+.box,
+.journey,
+.artisan,
+.voices,
+.promise,
+.how,
+.invitation {
+  overflow: hidden;
+}
+
+.story > .container,
+.box > .container,
+.journey > .container,
+.artisan > .container,
+.voices > .container,
+.promise > .container,
+.how > .container,
+.invitation > .container {
+  position: relative;
+  z-index: 2;
+}
+
+.section--immersive { padding-block: var(--section-py-immersive); }
+
+.section--cream { background: var(--cream); }
+.section--warm  {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 35%),
+    var(--cream-warm);
+}
+.section--dark {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(184, 150, 90, 0.14), transparent 24vw),
+    linear-gradient(180deg, var(--marine-deep), #101b31 55%, var(--marine-deep));
+  color: var(--text-cream);
+}
+
+.section--dark h1,
+.section--dark h2,
+.section--dark h3 { color: var(--text-cream); }
+
+/* Grille 12 col desktop / 4 col mobile */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gutter);
+}
+
+@media (min-width: 1024px) {
+  .grid { grid-template-columns: repeat(12, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   5. SECTION MARKER — 01 — LE DÉPART, 02 — L'HISTOIRE, …
+   -------------------------------------------------------------------------- */
+
+.section-marker {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.7;
+}
+
+/* Variante en absolu pour superposer sur sections immersives */
+.section-marker--abs {
+  position: absolute;
+  top: 32px;
+  left: var(--container-padding);
+  z-index: 2;
+}
+
+@media (min-width: 1024px) {
+  .section-marker--abs {
+    top: 40px;
+    left: max(var(--container-padding),
+              calc((100vw - var(--container)) / 2 + var(--container-padding)));
+  }
+}
+
+.section--dark .section-marker { color: var(--gold-soft); }
+
+/* --------------------------------------------------------------------------
+   6. LABELS
+   -------------------------------------------------------------------------- */
+
+.label {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.label--muted { color: var(--text-muted); }
+.label--cream { color: var(--gold-soft); }
+
+/* --------------------------------------------------------------------------
+   7. SÉPARATEURS
+   -------------------------------------------------------------------------- */
+
+.sep {
+  display: block;
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  border: 0;
+  margin: 32px 0;
+}
+
+.sep--center { margin-inline: auto; }
+
+hr { border: 0; border-top: 1px solid var(--border); margin: 0; }
+
+/* --------------------------------------------------------------------------
+   8. BOUTONS
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  padding: 18px 56px;
+  border-radius: 0;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease,
+              border-color 0.3s ease, opacity 0.3s ease,
+              transform 0.3s var(--ease-out);
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.24) 45%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.75s var(--ease-out);
+}
+
+.btn:hover::after { transform: translateX(120%); }
+
+.btn--primary {
+  background: var(--gold);
+  color: var(--marine);
+}
+.btn--primary:hover {
+  background: var(--gold-soft);
+  color: var(--marine);
+  transform: translateY(-1px);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--gold);
+  border-color: var(--gold);
+  padding: 12px 32px;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+}
+.btn--secondary:hover {
+  background: var(--gold);
+  color: var(--marine);
+}
+
+/* Lien type texte avec flèche */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.link-arrow:hover { opacity: 0.7; color: var(--gold); }
+
+/* --------------------------------------------------------------------------
+   9. REVEAL — IntersectionObserver
+   -------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 48px, 0) scale(0.97);
+  transition:
+    opacity 0.9s var(--ease-cinema),
+    transform 1.1s var(--ease-expo);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+.reveal--delay-1 { transition-delay: 0.12s; }
+.reveal--delay-2 { transition-delay: 0.24s; }
+.reveal--delay-3 { transition-delay: 0.36s; }
+.reveal--delay-4 { transition-delay: 0.48s; }
+.reveal--delay-5 { transition-delay: 0.60s; }
+.reveal--delay-6 { transition-delay: 0.72s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. HELPERS
+   -------------------------------------------------------------------------- */
+
+.text-cream  { color: var(--text-cream); }
+.text-gold   { color: var(--gold); }
+.text-marine { color: var(--marine); }
+.text-muted  { color: var(--text-muted); }
+
+.serif  { font-family: var(--font-serif); }
+.sans   { font-family: var(--font-sans); }
+.italic { font-style: italic; }
+.upper  { text-transform: uppercase; letter-spacing: 0.25em; }
+
+.text-center { text-align: center; }
+.prose       { max-width: var(--prose-max); }
+
+.no-scroll { overflow: hidden; }
+
+.visually-hidden,
+.visually-hidden:not(:focus):not(:active) {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0; left: 0;
+  background: var(--marine);
+  color: var(--text-cream);
+  padding: 12px 20px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  z-index: calc(var(--z-intro) + 1);
+}
+
+.skip-link:focus {
+  position: fixed;
+  width: auto; height: auto;
+  clip: auto;
+  overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   11. INTRO OVERLAY — landing uniquement
+   -------------------------------------------------------------------------- */
+
+.mb-intro {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-intro);
+  background: var(--marine-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  will-change: transform;
+  transition: transform 1.1s var(--easing-leave);
+}
+
+.mb-intro__inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.mb-intro.is-ready .mb-intro__inner { opacity: 1; }
+.mb-intro.is-leaving { transform: translateY(-100%); }
+.mb-intro.is-skipped { display: none; }
+
+/* Cookie déjà posé → on coupe l'intro avant tout paint */
+.intro-seen .mb-intro { display: none !important; }
+
+.mb-intro__logo {
+  font-family: "Kalnia", "Instrument Serif", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 500;
+  font-variation-settings: "wdth" 100;
+  font-size: 26px;
+  color: var(--text-cream);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.mb-intro__rule {
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-intro          { transition: opacity 0.3s ease; }
+  .mb-intro__inner   { transition: opacity 0.3s ease; }
+  .mb-intro.is-leaving {
+    transform: none;
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. MAIN — compense le header fixe hors index
+   -------------------------------------------------------------------------- */
+
+.template-index .main { padding-top: 0; }
+body:not(.template-index) .main { padding-top: 64px; }
+
+@media (max-width: 767px) {
+  body:not(.template-index) .main { padding-top: 56px; }
+}
+
+/* --------------------------------------------------------------------------
+   13. FOCUS
+   -------------------------------------------------------------------------- */
+
+:focus { outline: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   14. EDITORIAL — pages magazine / article / légales
+   -------------------------------------------------------------------------- */
+
+.editorial {
+  max-width: 720px;
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.editorial h1 {
+  font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
+  margin-bottom: 24px;
+}
+
+.editorial h2 {
+  font-size: clamp(1.75rem, 2.4vw + 1rem, 2.5rem);
+  margin-top: 56px;
+  margin-bottom: 20px;
+}
+
+.editorial h3 {
+  font-size: clamp(1.25rem, 1.4vw + 1rem, 1.625rem);
+  margin-top: 40px;
+  margin-bottom: 12px;
+}
+
+.editorial p,
+.editorial li {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.editorial ul,
+.editorial ol {
+  margin: 1.5em 0;
+  padding-left: 1.25em;
+}
+
+.editorial ul li { list-style: disc; }
+.editorial ol li { list-style: decimal; }
+
+.editorial a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.editorial blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.25rem, 1.4vw + 1rem, 1.75rem);
+  color: var(--marine);
+  margin: 2.5em 0;
+}
+
+.editorial img { margin: 2em 0; }
+.editorial hr  { margin: 3em 0; border-top: 1px solid var(--border); }
+
+/* --------------------------------------------------------------------------
+   15. FILM GRAIN — texture analogique fixe sur tout le site
+   -------------------------------------------------------------------------- */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9001;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   16. LINK UNDERLINE — barre or qui grow from left au hover
+   -------------------------------------------------------------------------- */
+
+.link-underline {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease-out);
+}
+.link-underline:hover::after { transform: scaleX(1); }
+
+/* --------------------------------------------------------------------------
+   17. IMAGE REVEAL — masque clip-path cinematic au scroll
+   -------------------------------------------------------------------------- */
+
+.img-reveal {
+  clip-path: inset(0 100% 0 0);
+  transform: scale(1.08);
+  transition:
+    clip-path 1.3s var(--ease-drama),
+    transform 1.6s var(--ease-cinema);
+  will-change: clip-path, transform;
+}
+.img-reveal.is-visible {
+  clip-path: inset(0 0 0 0);
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-reveal,
+  .img-reveal.is-visible {
+    clip-path: none;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. MAGNETIC — boutons qui suivent légèrement le curseur
+   -------------------------------------------------------------------------- */
+
+.btn--magnetic {
+  transition: background 0.3s ease, color 0.3s ease,
+              transform 0.3s var(--ease-out);
+  will-change: transform;
+}
+
+@media (hover: none) {
+  .btn--magnetic { transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   19. COUNT-UP — réservation d'espace pour évite layout shift
+   -------------------------------------------------------------------------- */
+
+[data-count-up] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   20. SPLIT WORDS — révélation mot par mot type Framer Motion
+   -------------------------------------------------------------------------- */
+
+.split-word-wrap {
+  display: inline-block;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
+.split-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.7em, 0);
+  transition:
+    opacity 0.85s var(--ease-cinema),
+    transform 1.05s var(--ease-expo);
+  will-change: opacity, transform;
+}
+
+.split-word.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-word,
+  .split-word.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   21. SPRING REVEAL — variante de .reveal avec easing spring
+   -------------------------------------------------------------------------- */
+
+.reveal-spring {
+  opacity: 0;
+  transform: translate3d(0, 56px, 0) scale(0.95);
+  transition:
+    opacity 1s var(--ease-cinema),
+    transform 1.2s var(--ease-anticip);
+  will-change: opacity, transform;
+}
+.reveal-spring.is-visible {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-spring,
+  .reveal-spring.is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   22. HOVER LIFT — micro élévation au survol (cards éditoriales)
+   -------------------------------------------------------------------------- */
+
+.hover-lift {
+  transition: transform 0.55s cubic-bezier(0.18, 1.25, 0.4, 1);
+  will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   23A. EDITORIAL OBJECTS — carnet, timbre, étiquette, hotspots
+   -------------------------------------------------------------------------- */
+
+.paper-panel {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.72), rgba(254,249,243,0.92)),
+    var(--cream);
+  border: 1px solid rgba(184, 150, 90, 0.22);
+  box-shadow: var(--paper-shadow-soft);
+}
+
+.paper-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(184,150,90,0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184,150,90,0.08) 1px, transparent 1px);
+  background-size: 100% 32px, 32px 100%;
+  mix-blend-mode: multiply;
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  min-height: 86px;
+  padding: 14px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: var(--terracotta);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.22em;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-9deg);
+}
+
+.ticket-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid rgba(184, 150, 90, 0.34);
+  background: rgba(254, 249, 243, 0.76);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.route-dash {
+  display: block;
+  height: 1px;
+  flex: 1;
+  min-width: 52px;
+  background-image: linear-gradient(90deg, currentColor 45%, transparent 45%);
+  background-size: 10px 1px;
+  opacity: 0.7;
+}
+
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out);
+  will-change: transform;
+}
+
+.hotspot {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(250, 246, 236, 0.82);
+  border-radius: 50%;
+  background: rgba(184, 150, 90, 0.78);
+  color: var(--text-cream);
+  box-shadow: 0 0 0 0 rgba(184, 150, 90, 0.34);
+  animation: hotspot-pulse 2.8s ease-in-out infinite;
+}
+
+.hotspot::before,
+.hotspot::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+.hotspot::before { width: 12px; height: 1px; }
+.hotspot::after { width: 1px; height: 12px; }
+
+@keyframes hotspot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(184, 150, 90, 0.34); }
+  50%      { box-shadow: 0 0 0 13px rgba(184, 150, 90, 0); }
+}
+
+.draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s var(--easing-leave);
+}
+
+.is-visible .draw-path,
+.draw-path.is-visible {
+  stroke-dashoffset: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::after,
+  .tilt-card,
+  .hotspot,
+  .draw-path {
+    animation: none;
+    transition: none;
+    transform: none !important;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover { transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift,
+  .hover-lift:hover { transform: none; transition: none; }
+}
+
+/* --------------------------------------------------------------------------
+   23. PARALLAX — élément translaté plus lentement que le scroll
+   -------------------------------------------------------------------------- */
+
+[data-parallax] {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax] { transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   24. MARKER SLIDE — marqueurs 01/02/… glissent depuis la gauche
+   -------------------------------------------------------------------------- */
+
+.section-marker {
+  opacity: 0;
+  transform: translate3d(-48px, 0, 0);
+  letter-spacing: 0.45em;
+  transition:
+    opacity 1s var(--ease-cinema),
+    transform 1.3s var(--ease-expo),
+    letter-spacing 1.3s var(--ease-expo);
+}
+.section-marker.is-visible,
+.section--dark .section-marker.is-visible {
+  opacity: 0.7;
+  transform: translate3d(0, 0, 0);
+  letter-spacing: 0.25em;
+}
+
+.hero__marker.is-visible { opacity: 0.85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .section-marker {
+    opacity: 0.7;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   25. SCROLL PROGRESS — barre or fine en haut du viewport
+   -------------------------------------------------------------------------- */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 600;
+  pointer-events: none;
+  background: transparent;
+}
+.scroll-progress__bar {
+  height: 100%;
+  background: var(--gold);
+  width: 0%;
+  transform-origin: left;
+  transition: width 0.05s linear;
+  will-change: width;
+}
+
+/* --------------------------------------------------------------------------
+   26. CUSTOM CURSOR — point or qui suit, s'élargit sur liens (desktop)
+   -------------------------------------------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .cursor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    z-index: 9500;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s cubic-bezier(0.18, 1.25, 0.4, 1),
+                height 0.3s cubic-bezier(0.18, 1.25, 0.4, 1),
+                background 0.25s ease,
+                mix-blend-mode 0.25s ease;
+    will-change: transform;
+  }
+  .cursor.is-hover {
+    width: 56px;
+    height: 56px;
+    background: rgba(184, 150, 90, 0.18);
+    mix-blend-mode: normal;
+  }
+  .cursor.is-dark {
+    background: var(--gold);
+    mix-blend-mode: difference;
+  }
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .cursor { display: none; }
+  body { cursor: auto !important; }
+}
+
+/* --------------------------------------------------------------------------
+   27. SECTION NUMERAL — gigantesque chiffre décoratif en arrière-plan
+   -------------------------------------------------------------------------- */
+
+.section-numeral {
+  position: absolute;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(12rem, 30vw, 28rem);
+  line-height: 0.8;
+  color: var(--gold);
+  opacity: 0.06;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.section--dark .section-numeral {
+  color: var(--gold);
+  opacity: 0.08;
+}
+
+.section-numeral--br { bottom: -3vw; right: -2vw; }
+.section-numeral--bl { bottom: -3vw; left: -2vw; }
+.section-numeral--tr { top: -4vw; right: -2vw; }
+.section-numeral--tl { top: -4vw; left: -2vw; }
+
+@media (max-width: 767px) {
+  .section-numeral {
+    font-size: clamp(8rem, 50vw, 18rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   28. MARQUEE — ticker éditorial infini
+   -------------------------------------------------------------------------- */
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 18px 0;
+  border-block: 1px solid rgba(184, 150, 90, 0.2);
+  position: relative;
+}
+.marquee__track {
+  display: inline-flex;
+  align-items: center;
+  gap: 56px;
+  padding-right: 56px;
+  animation: marquee-scroll 38s linear infinite;
+  will-change: transform;
+}
+.marquee__item {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2vw + 0.5rem, 2rem);
+  color: inherit;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.marquee__sep {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   29. VERTICAL TYPE — texte rotation 90° pour signature verticale
+   -------------------------------------------------------------------------- */
+
+.vertical-type {
+  position: absolute;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   30. LIVE TIME — affichage temps réel Cluj-Napoca
+   -------------------------------------------------------------------------- */
+
+.live-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-variant-numeric: tabular-nums;
+}
+.live-time__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.3; transform: scale(0.7); }
+}
+
+/* --------------------------------------------------------------------------
+   31. ORNAMENTS — détails décoratifs subtils
+   -------------------------------------------------------------------------- */
+
+.ornament-line {
+  display: block;
+  width: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+.crosshair {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.crosshair::before,
+.crosshair::after {
+  content: "";
+  position: absolute;
+  background: var(--gold);
+}
+.crosshair::before {
+  top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-50%);
+}
+.crosshair::after {
+  left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%);
+}
+
+/* --------------------------------------------------------------------------
+   32. PAPER PANEL — carte papier-texture avec ombre douce
+   -------------------------------------------------------------------------- */
+
+.paper-panel {
+  position: relative;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.42) 0%, transparent 55%),
+    var(--cream);
+  border: 1px solid var(--border-cream);
+  box-shadow: var(--paper-shadow);
+  color: var(--text);
+  isolation: isolate;
+}
+
+.paper-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>");
+  background-size: 160px 160px;
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+.section--dark .paper-panel,
+.section--dark.paper-panel {
+  background:
+    linear-gradient(135deg, rgba(184, 150, 90, 0.1) 0%, transparent 60%),
+    rgba(28, 43, 74, 0.55);
+  border-color: rgba(184, 150, 90, 0.22);
+  color: var(--text-cream);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+/* --------------------------------------------------------------------------
+   33. TILT CARD — inclinaison 3D au curseur (desktop)
+   -------------------------------------------------------------------------- */
+
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.18, 1.25, 0.4, 1),
+              box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .tilt-card,
+  .tilt-card:hover { transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   34. STAMP — petit tampon postal décoratif
+   -------------------------------------------------------------------------- */
+
+.stamp {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.15;
+  color: var(--terracotta);
+  border: 1px dashed currentColor;
+  padding: 8px 14px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  transform: rotate(-7deg);
+  transform-origin: center;
+  background: rgba(254, 249, 243, 0.6);
+  white-space: nowrap;
+}
+
+.stamp--round {
+  border-radius: 999px;
+  border-style: solid;
+  border-width: 1.5px;
+}
+
+/* --------------------------------------------------------------------------
+   35. SCROLL-DRIVEN ANIMATIONS — signature par section
+   Utilise animation-timeline: view() (Chrome/Edge/Opera).
+   Fallback graceful : éléments restent à leur état initial sur autres navs.
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+
+  /* Désactive le reveal IO sur les éléments scroll-driven pour éviter conflit */
+  .voice.reveal,
+  .stat.reveal,
+  .how__step.reveal {
+    opacity: initial;
+    transform: none;
+    transition: none;
+  }
+
+  /* Hero — numéral 01 drift vertical amplifié */
+  .hero__numeral {
+    animation: numeral-drift linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes numeral-drift {
+    from { transform: translate3d(-4vw, 18vh, 0) rotate(-2deg); opacity: 0.03; }
+    to   { transform: translate3d(4vw, -22vh, 0) rotate(2deg); opacity: 0.14; }
+  }
+
+  /* Hero image — Ken Burns lent + dérive horizontale */
+  .hero__img {
+    animation: hero-ken-burns linear both;
+    animation-timeline: view(--hero-timeline);
+    animation-range: entry 0% exit 100%;
+    transform-origin: 55% 45%;
+    will-change: transform, filter;
+  }
+  .hero { view-timeline-name: --hero-timeline; }
+  @keyframes hero-ken-burns {
+    from { transform: scale(1.0) translate3d(0, 0, 0); filter: brightness(1) saturate(1); }
+    to   { transform: scale(1.18) translate3d(-3%, -4%, 0); filter: brightness(0.78) saturate(1.05); }
+  }
+
+  /* Story image — Ken Burns cinema */
+  .story__img {
+    animation: img-slow-scale linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 100%;
+    transform-origin: center 40%;
+  }
+  @keyframes img-slow-scale {
+    from { transform: scale(1.15) translate3d(0, 2%, 0); }
+    to   { transform: scale(1.0) translate3d(0, -1%, 0); }
+  }
+
+  /* Box — products list cinematic slide-in stagger */
+  .box__item {
+    animation: box-item-slide linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 55%;
+  }
+  .box__item:nth-child(2) { animation-range: entry 8% cover 60%; }
+  .box__item:nth-child(3) { animation-range: entry 11% cover 65%; }
+  .box__item:nth-child(4) { animation-range: entry 14% cover 70%; }
+  .box__item:nth-child(5) { animation-range: entry 17% cover 75%; }
+  @keyframes box-item-slide {
+    from { transform: translate3d(-80px, 24px, 0) rotate(-2deg); opacity: 0; }
+    to   { transform: translate3d(0, 0, 0) rotate(0); opacity: 1; }
+  }
+
+  /* Journey — title parallax descend, amplifié */
+  .journey__title {
+    animation: journey-title-parallax linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes journey-title-parallax {
+    from { transform: translate3d(0, -120px, 0) scale(1.04); letter-spacing: 0.08em; opacity: 0.55; }
+    50%  { transform: translate3d(0, 0, 0) scale(1.0); letter-spacing: -0.005em; opacity: 1; }
+    to   { transform: translate3d(0, 120px, 0) scale(0.96); letter-spacing: -0.04em; opacity: 0.4; }
+  }
+
+  /* Artisan image — clip up reveal cinematic */
+  .artisan__img {
+    animation: artisan-img-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 90%;
+    transform-origin: center bottom;
+  }
+  @keyframes artisan-img-up {
+    from { transform: translate3d(0, 80px, 0) scale(1.1); clip-path: inset(15% 0 0 0); }
+    to   { transform: translate3d(0, 0, 0) scale(1); clip-path: inset(0 0 0 0); }
+  }
+
+  /* Voices — cards rotate subtly */
+  .voice:nth-child(1) {
+    animation: voice-tilt-a linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 60%;
+  }
+  .voice:nth-child(2) {
+    animation: voice-tilt-b linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 60%;
+  }
+  .voice:nth-child(3) {
+    animation: voice-tilt-c linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 60%;
+  }
+  @keyframes voice-tilt-a {
+    from { transform: translate3d(-20px, 64px, 0) rotate(-3deg) scale(0.95); opacity: 0; }
+    to   { transform: translate3d(0, 0, 0) rotate(-1.5deg) scale(1); opacity: 1; }
+  }
+  @keyframes voice-tilt-b {
+    from { transform: translate3d(0, 90px, 0) scale(0.95); opacity: 0; }
+    to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  }
+  @keyframes voice-tilt-c {
+    from { transform: translate3d(20px, 64px, 0) rotate(3deg) scale(0.95); opacity: 0; }
+    to   { transform: translate3d(0, 0, 0) rotate(1.5deg) scale(1); opacity: 1; }
+  }
+
+  /* Promise — stats stagger drop with bounce-like */
+  .stat:nth-child(1) {
+    animation: stat-drop linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 40%;
+  }
+  .stat:nth-child(2) {
+    animation: stat-drop linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 45%;
+  }
+  .stat:nth-child(3) {
+    animation: stat-drop linear both;
+    animation-timeline: view();
+    animation-range: entry 15% cover 50%;
+  }
+  .stat:nth-child(4) {
+    animation: stat-drop linear both;
+    animation-timeline: view();
+    animation-range: entry 20% cover 55%;
+  }
+  @keyframes stat-drop {
+    from { transform: translate3d(0, -60px, 0) scale(0.9); opacity: 0; }
+    60%  { transform: translate3d(0, 4px, 0) scale(1.02); opacity: 1; }
+    to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  }
+
+  /* How — dotted line draw left → right */
+  .how__grid::before {
+    animation: line-draw linear both;
+    animation-timeline: view(--how-timeline);
+    animation-range: entry 0% cover 70%;
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+  .how { view-timeline-name: --how-timeline; }
+  @keyframes line-draw {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* Invitation — parcel float in tilted */
+  .invitation__parcel {
+    animation: parcel-arrive linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+  }
+  @keyframes parcel-arrive {
+    from { transform: translate3d(-40px, -90px, 0) rotate(-20deg) scale(0.8); opacity: 0; }
+    70%  { transform: translate3d(3px, 6px, 0) rotate(-1deg) scale(1.03); opacity: 1; }
+    to   { transform: translate3d(0, 0, 0) rotate(-3deg) scale(1); opacity: 1; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__numeral,
+  .hero__img,
+  .story__img,
+  .box__item,
+  .journey__title,
+  .artisan__img,
+  .voice,
+  .stat,
+  .how__grid::before,
+  .invitation__parcel {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    clip-path: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   36. PRINT
+   -------------------------------------------------------------------------- */
+
+@media print {
+  .mb-intro,
+  .skip-link,
+  header,
+  footer { display: none !important; }
+  body { background: #fff; color: #000; }
+}
+
+/* --------------------------------------------------------------------------
+   37. FRAMER MOTION — scroll reveal system
+   data-fm="rise|fade|blur|drop|left|right|scale|zoom|lines"
+   data-fm-delay   (ms)
+   data-fm-duration(ms)
+   data-fm-stagger (ms, on parent → applies to children)
+   -------------------------------------------------------------------------- */
+
+:root {
+  --fm-ease: cubic-bezier(0.16, 1, 0.3, 1);             /* expo-out cinematic */
+  --fm-ease-soft: cubic-bezier(0.19, 1, 0.22, 1);
+  --fm-ease-drama: cubic-bezier(0.7, 0, 0.16, 1);
+  --fm-dur: 1200ms;
+  --fm-dur-long: 1400ms;
+  --fm-blur: 10px;
+}
+
+[data-fm] {
+  opacity: 0;
+  will-change: opacity, transform, filter;
+  transition:
+    opacity var(--fm-dur) var(--fm-ease-soft),
+    transform var(--fm-dur-long) var(--fm-ease),
+    filter var(--fm-dur) var(--fm-ease-soft);
+  transition-delay: var(--fm-delay, 0ms);
+}
+
+[data-fm="rise"]   { transform: translate3d(0, 72px, 0) scale(0.96); }
+[data-fm="drop"]   { transform: translate3d(0, -72px, 0) scale(0.96); }
+[data-fm="left"]   { transform: translate3d(-100px, 0, 0); }
+[data-fm="right"]  { transform: translate3d(100px, 0, 0); }
+[data-fm="scale"]  { transform: scale(0.86); }
+[data-fm="zoom"]   { transform: scale(1.14); }
+[data-fm="fade"]   { transform: none; filter: none; }
+[data-fm="blur"]   { transform: none; filter: blur(14px); }
+
+[data-fm].is-fm-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+
+/* Lines reveal — masque + slide up par ligne */
+[data-fm="lines"] {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+[data-fm="lines"] .fm-line-wrap {
+  display: block;
+  overflow: hidden;
+  line-height: inherit;
+}
+[data-fm="lines"] .fm-line {
+  display: inline-block;
+  transform: translate3d(0, 110%, 0);
+  opacity: 0;
+  transition:
+    transform 1.2s var(--fm-ease),
+    opacity 1s var(--fm-ease-soft);
+  transition-delay: var(--fm-line-delay, 0ms);
+  will-change: transform, opacity;
+}
+[data-fm="lines"].is-fm-in .fm-line {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+}
+
+/* Stagger children */
+[data-fm-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 40px, 0) scale(0.97);
+  transition:
+    opacity 0.9s var(--fm-ease-soft),
+    transform 1.1s var(--fm-ease);
+  transition-delay: var(--fm-child-delay, 0ms);
+  will-change: opacity, transform;
+}
+[data-fm-stagger].is-fm-in > * {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-fm],
+  [data-fm-stagger] > *,
+  [data-fm="lines"] .fm-line {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   38. HERO ZOOM FALLBACK — Ken Burns CSS sans scroll-timeline
+   Pour navigateurs sans animation-timeline support (Safari, Firefox).
+   -------------------------------------------------------------------------- */
+
+@supports not (animation-timeline: view()) {
+  .hero__img {
+    animation: hero-ken-burns-fb 18s var(--ease-cinema) both;
+    transform-origin: 55% 45%;
+    will-change: transform, filter;
+  }
+  @keyframes hero-ken-burns-fb {
+    0%   { transform: scale(1.0) translate3d(0, 0, 0); filter: brightness(1); }
+    100% { transform: scale(1.14) translate3d(-2%, -3%, 0); filter: brightness(0.88); }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__img { animation: none !important; transform: none !important; filter: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   40. INTRO CURTAIN SPLIT — sortie de l'intro en deux pans cinematic
+   -------------------------------------------------------------------------- */
+
+.mb-intro {
+  background: transparent;
+}
+.mb-intro::before,
+.mb-intro::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: var(--marine-deep);
+  transition: transform 1.3s var(--ease-drama);
+  will-change: transform;
+}
+.mb-intro::before { left: 0;  transform: translate3d(0, 0, 0); }
+.mb-intro::after  { right: 0; transform: translate3d(0, 0, 0); }
+.mb-intro.is-leaving::before { transform: translate3d(-100%, 0, 0); }
+.mb-intro.is-leaving::after  { transform: translate3d(100%, 0, 0); }
+.mb-intro.is-leaving { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mb-intro::before,
+  .mb-intro::after { transition: opacity 0.3s ease; }
+  .mb-intro.is-leaving::before,
+  .mb-intro.is-leaving::after { opacity: 0; transform: none; }
+}
+
+/* --------------------------------------------------------------------------
+   41. MOTION HERO LAYERS — amplification du parallax curseur (theme.js)
+   Layers utilisent --layer-x / --layer-y. On les applique + un easing spring.
+   -------------------------------------------------------------------------- */
+
+[data-motion-layer] {
+  transform: translate3d(var(--layer-x, 0), var(--layer-y, 0), 0);
+  will-change: transform;
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  [data-motion-layer] { transform: none !important; }
+}
+
+/* --------------------------------------------------------------------------
+   42. MARQUEE SPEED — plus rapide pour signal cinematic
+   -------------------------------------------------------------------------- */
+
+.marquee__track { animation-duration: 28s; }
+
+/* --------------------------------------------------------------------------
+   43. BTN HOVER — amplification du shimmer + lift
+   -------------------------------------------------------------------------- */
+
+.btn--primary:hover {
+  transform: translate3d(0, -3px, 0) scale(1.02);
+  box-shadow: 0 18px 40px rgba(184, 150, 90, 0.32);
+}
+.btn::after {
+  transition: transform 1.1s var(--ease-cinema);
+}
+
+/* --------------------------------------------------------------------------
+   44. TITLE CINEMA — animation cinematic garantie sur tous les h1/h2 sections
+   Auto-appliqué par theme.js. Initial state fort, transition longue.
+   -------------------------------------------------------------------------- */
+
+.title-cine {
+  display: block;
+  opacity: 0;
+  transform: translate3d(0, 64px, 0) scale(0.96);
+  transition:
+    opacity 1.1s var(--ease-cinema),
+    transform 1.4s var(--ease-expo);
+  will-change: opacity, transform;
+}
+.title-cine.is-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .title-cine,
+  .title-cine.is-in {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   45. SCROLL TYPEWRITER — le texte s'écrit seul, lié à la progression du scroll
+   Opt-in via data-typewriter. theme.js (#25) découpe en mots/caractères,
+   révèle char par char selon la position viewport (scrubbing réversible) et
+   déplace un curseur clignotant à la position d'écriture.
+   -------------------------------------------------------------------------- */
+
+.tw {
+  position: relative;
+}
+
+/* Garde les mots insécables pour que le wrap reste propre pendant la frappe */
+.tw-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tw-char {
+  opacity: 0;
+  transition: opacity 0.16s ease-out;
+}
+.tw-char.is-typed {
+  opacity: 1;
+}
+
+/* Curseur d'écriture — barre absolue repositionnée par theme.js */
+.tw-caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max(2px, 0.05em);
+  height: 1em;
+  background: currentColor;
+  border-radius: 1px;
+  opacity: 0.9;
+  pointer-events: none;
+  transform: translate(0, 0);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: tw-blink 1.05s steps(1, end) infinite;
+}
+/* Une fois la phrase terminée, le curseur s'efface en douceur */
+.tw.tw-complete .tw-caret {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.35s;
+}
+
+@keyframes tw-blink {
+  0%, 48%   { opacity: 0.9; }
+  49%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tw-char {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  .tw-caret { display: none !important; }
+}

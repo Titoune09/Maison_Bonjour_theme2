@@ -1,0 +1,166 @@
+{%- liquid
+  assign label = section.settings.label | default: 'Le propos'
+  assign title = section.settings.title | default: 'Pourquoi écrire autour d’une box ?'
+  assign text  = section.settings.text | default: 'Parce qu’un objet ne vaut jamais seul. Il vient d’un lieu, d’une main, d’une saison. Le Magazine raconte ce qu’on ne peut pas mettre dans le carton.'
+-%}
+
+<section class="mb-rev-why band--ink" aria-label="Pourquoi le Magazine">
+  <div class="wrap">
+    <div class="mb-rev-why__head reveal">
+      <span class="mb-magazine__folio">03</span>
+      <span class="label label--marker">{{ label }}</span>
+    </div>
+    <hr class="mb-magazine__rule mb-magazine__rule--cream">
+
+    <div class="mb-rev-why__intro reveal">
+      <h2 class="mb-rev-why__title">{{ title }}</h2>
+      <p class="mb-rev-why__text">{{ text }}</p>
+    </div>
+
+    <div class="mb-rev-why__cols">
+      {%- if section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          <div class="mb-rev-why__col reveal reveal--delay-{{ forloop.index }}" {{ block.shopify_attributes }}>
+            <span class="mb-rev-why__num">{{ forloop.index | prepend: '0' }}</span>
+            <h3 class="mb-rev-why__col-title">{{ block.settings.title }}</h3>
+            <p class="mb-rev-why__col-text">{{ block.settings.text }}</p>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          {%- liquid
+            case forloop.index
+              when 1
+                assign c_title = 'Les régions'
+                assign c_text  = 'Comprendre les paysages, les gestes et les saisons derrière chaque édition.'
+              when 2
+                assign c_title = 'Les artisans'
+                assign c_text  = 'Mettre un nom, une maison et une histoire derrière les produits.'
+              when 3
+                assign c_title = 'Les rituels'
+                assign c_text  = 'Imaginer des moments simples pour faire durer la découverte.'
+            endcase
+          -%}
+          <div class="mb-rev-why__col reveal reveal--delay-{{ forloop.index }}">
+            <span class="mb-rev-why__num">{{ forloop.index | prepend: '0' }}</span>
+            <h3 class="mb-rev-why__col-title">{{ c_title }}</h3>
+            <p class="mb-rev-why__col-text">{{ c_text }}</p>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-rev-why { padding-block: clamp(72px, 9vw, 132px); }
+
+  .mb-rev-why__head { display: flex; align-items: baseline; gap: 22px; }
+  .mb-rev-why__head .label--marker {
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+
+  .mb-rev-why__intro {
+    margin-top: clamp(40px, 6vw, 80px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 1100px;
+  }
+  .mb-rev-why__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4vw + 0.5rem, 4.5rem);
+    line-height: 1.05;
+    color: var(--text-cream);
+    max-width: 16ch;
+  }
+  .mb-rev-why__text {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text-cream);
+    opacity: 0.78;
+    max-width: 46ch;
+  }
+
+  .mb-rev-why__cols {
+    margin-top: clamp(48px, 6vw, 88px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .mb-rev-why__col { padding: 30px 0; border-top: 1px solid rgba(201, 172, 118, 0.28); }
+  .mb-rev-why__num {
+    display: block;
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-size: clamp(2.6rem, 3vw, 3.6rem);
+    line-height: 1;
+    color: var(--gold);
+  }
+  .mb-rev-why__col-title {
+    margin: 18px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    color: var(--text-cream);
+  }
+  .mb-rev-why__col-text {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-cream);
+    opacity: 0.74;
+  }
+
+  @media (min-width: 768px) {
+    .mb-rev-why__intro { grid-template-columns: 1.2fr 1fr; align-items: end; gap: 56px; }
+    .mb-rev-why__cols { grid-template-columns: repeat(3, 1fr); }
+    .mb-rev-why__col { padding: 34px clamp(20px, 3vw, 44px) 10px; }
+    .mb-rev-why__col + .mb-rev-why__col { border-left: 1px solid rgba(201, 172, 118, 0.28); }
+    .mb-rev-why__col:first-child { padding-left: 0; }
+    .mb-rev-why__col:last-child { padding-right: 0; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Magazine — 03 Pourquoi",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label de section", "default": "Le propos" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Pourquoi écrire autour d’une box ?" },
+    { "type": "textarea", "id": "text", "label": "Texte", "default": "Parce qu’un objet ne vaut jamais seul. Il vient d’un lieu, d’une main, d’une saison. Le Magazine raconte ce qu’on ne peut pas mettre dans le carton." }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Colonne",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre colonne" },
+        { "type": "textarea", "id": "text", "label": "Texte colonne" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Magazine — 03 Pourquoi",
+      "blocks": [
+        { "type": "column", "settings": { "title": "Les régions", "text": "Comprendre les paysages, les gestes et les saisons derrière chaque édition." } },
+        { "type": "column", "settings": { "title": "Les artisans", "text": "Mettre un nom, une maison et une histoire derrière les produits." } },
+        { "type": "column", "settings": { "title": "Les rituels", "text": "Imaginer des moments simples pour faire durer la découverte." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

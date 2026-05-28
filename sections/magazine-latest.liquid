@@ -1,0 +1,261 @@
+{%- liquid
+  assign label = section.settings.label | default: 'Derniers carnets'
+  assign title = section.settings.title | default: 'Les dernières notes de Maison Bonjour.'
+  assign mag_blog = blogs[section.settings.blog]
+  if mag_blog == blank or mag_blog.articles_count == 0
+    assign mag_blog = blogs['magazine']
+  endif
+  if mag_blog == blank or mag_blog.articles_count == 0
+    assign mag_blog = blogs['news']
+  endif
+  if mag_blog == blank or mag_blog.articles_count == 0
+    for b in blogs
+      if b.articles_count > 0
+        assign mag_blog = b
+        break
+      endif
+    endfor
+  endif
+  assign limit = section.settings.posts_limit | default: 3
+-%}
+
+<section class="mb-rev-latest band--paper" id="mb-magazine-latest" aria-label="Derniers articles">
+  <div class="wrap">
+    <header class="mb-rev-latest__head reveal">
+      <span class="mb-magazine__folio">05</span>
+      <span class="label label--marker">{{ label }}</span>
+      <h2 class="mb-rev-latest__title">{{ title }}</h2>
+    </header>
+    <hr class="mb-magazine__rule mb-magazine__rule--gold">
+
+    <ul class="mb-rev-latest__grid" role="list">
+      {%- if mag_blog != blank and mag_blog.articles_count > 0 -%}
+        {%- for article in mag_blog.articles limit: limit -%}
+          {%- liquid
+            assign article_alt = article.image.alt | default: article.title
+            assign cat_key = article.tags.first | downcase
+            assign fallback_img = 'paysage-region-bretagne-01.jpeg'
+            if cat_key contains 'region'
+              assign fallback_img = 'magazine-cat-regions.jpg'
+            elsif cat_key contains 'artisan'
+              assign fallback_img = 'magazine-cat-artisans.jpg'
+            elsif cat_key contains 'table'
+              assign fallback_img = 'magazine-cat-table.jpg'
+            elsif cat_key contains 'beaut'
+              assign fallback_img = 'magazine-cat-beaute.jpg'
+            endif
+          -%}
+          <li class="mb-rev-latest__post reveal reveal--delay-{{ forloop.index }}">
+            <a href="{{ article.url }}" class="mb-rev-latest__link">
+              <span class="mb-rev-latest__num">{{ forloop.index | prepend: '0' }}</span>
+              <figure class="mb-rev-latest__media">
+                {%- if article.image -%}
+                  {{ article.image | image_url: width: 800 | image_tag:
+                      loading: 'lazy', sizes: '(min-width: 1024px) 33vw, 100vw',
+                      widths: '400, 600, 800', class: 'mb-rev-latest__img',
+                      alt: article_alt }}
+                {%- else -%}
+                  <img src="{{ fallback_img | asset_url }}" alt="{{ article.title }}" class="mb-rev-latest__img" width="600" height="750" loading="lazy">
+                {%- endif -%}
+              </figure>
+              {%- if article.tags.size > 0 -%}
+                <span class="mb-rev-latest__cat">{{ article.tags.first }}</span>
+              {%- endif -%}
+              <h3 class="mb-rev-latest__post-title">{{ article.title }}</h3>
+              {%- if article.excerpt_or_content != blank -%}
+                <p class="mb-rev-latest__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 20 }}</p>
+              {%- endif -%}
+              <span class="mb-magazine__readlink">Lire <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- elsif section.blocks.size > 0 -%}
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign ph_alt = block.settings.image.alt | default: block.settings.title
+            assign ph_link = block.settings.link_url
+            if ph_link == blank
+              assign ph_link = '#'
+            endif
+          -%}
+          <li class="mb-rev-latest__post reveal reveal--delay-{{ forloop.index }}" {{ block.shopify_attributes }}>
+            <a href="{{ ph_link }}" class="mb-rev-latest__link">
+              <span class="mb-rev-latest__num">{{ forloop.index | prepend: '0' }}</span>
+              <figure class="mb-rev-latest__media">
+                {%- if block.settings.image != blank -%}
+                  {{ block.settings.image | image_url: width: 800 | image_tag:
+                      loading: 'lazy', sizes: '(min-width: 1024px) 33vw, 100vw',
+                      widths: '400, 600, 800', class: 'mb-rev-latest__img',
+                      alt: ph_alt }}
+                {%- else -%}
+                  <img src="{{ 'paysage-region-bretagne-01.jpeg' | asset_url }}" alt="{{ block.settings.title }}" class="mb-rev-latest__img" width="600" height="750" loading="lazy">
+                {%- endif -%}
+              </figure>
+              {%- if block.settings.category != blank -%}
+                <span class="mb-rev-latest__cat">{{ block.settings.category }}</span>
+              {%- endif -%}
+              <h3 class="mb-rev-latest__post-title">{{ block.settings.title }}</h3>
+              {%- if block.settings.excerpt != blank -%}
+                <p class="mb-rev-latest__excerpt">{{ block.settings.excerpt }}</p>
+              {%- endif -%}
+              <span class="mb-magazine__readlink">Lire <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- else -%}
+        {%- assign d_imgs = 'paysage-region-bretagne-01.jpeg,paysage-region-provence-02.jpeg,paysage-region-provence-04.jpeg' | split: ',' -%}
+        {%- for i in (1..3) -%}
+          {%- liquid
+            case forloop.index
+              when 1
+                assign p_cat   = 'Bretagne'
+                assign p_title = 'Bretagne : ce que l’on rapporte d’une côte'
+                assign p_text  = 'Une promenade lente entre granit, embruns et lumière du large.'
+              when 2
+                assign p_cat   = 'Artisans'
+                assign p_title = 'La cigale de Louis Sicard, ou l’art de garder l’été'
+                assign p_text  = 'Histoire d’un objet devenu emblème, fabriqué à la main depuis 1895.'
+              when 3
+                assign p_cat   = 'Carnets'
+                assign p_title = 'Pourquoi les marchés français racontent mieux que les vitrines'
+                assign p_text  = 'Ce que l’on apprend d’une région en s’arrêtant à son marché.'
+            endcase
+          -%}
+          <li class="mb-rev-latest__post reveal reveal--delay-{{ forloop.index }}">
+            <a href="#" class="mb-rev-latest__link" aria-disabled="true">
+              <span class="mb-rev-latest__num">{{ forloop.index | prepend: '0' }}</span>
+              <figure class="mb-rev-latest__media">
+                <img src="{{ d_imgs[forloop.index0] | asset_url }}" alt="{{ p_title }}" class="mb-rev-latest__img" width="600" height="750" loading="lazy">
+              </figure>
+              <span class="mb-rev-latest__cat">{{ p_cat }}</span>
+              <h3 class="mb-rev-latest__post-title">{{ p_title }}</h3>
+              <p class="mb-rev-latest__excerpt">{{ p_text }}</p>
+              <span class="mb-magazine__readlink">Lire <span aria-hidden="true">&rarr;</span></span>
+            </a>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-rev-latest { padding-block: clamp(64px, 8vw, 120px); }
+
+  .mb-rev-latest__head { max-width: 760px; }
+  .mb-rev-latest__head .label--marker {
+    margin-top: 14px;
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--marine);
+  }
+  .mb-rev-latest__title {
+    margin: 16px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.2rem, 3.4vw + 1rem, 4rem);
+    line-height: 1.05;
+    color: var(--marine);
+  }
+
+  .mb-rev-latest__grid {
+    list-style: none;
+    margin: clamp(36px, 5vw, 56px) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  .mb-rev-latest__post { border-top: 1px solid var(--border); padding-top: 24px; }
+  .mb-rev-latest__link { display: block; color: inherit; text-decoration: none; }
+  .mb-rev-latest__num {
+    display: block;
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+  .mb-rev-latest__media { margin: 0; overflow: hidden; }
+  .mb-rev-latest__img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .mb-rev-latest__link:hover .mb-rev-latest__img { transform: scale(1.04); }
+
+  .mb-rev-latest__cat {
+    display: inline-block;
+    margin-top: 20px;
+    font-family: var(--font-sans);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .mb-rev-latest__post-title {
+    margin: 10px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 1.6vw + 0.8rem, 2rem);
+    line-height: 1.18;
+    color: var(--marine);
+  }
+  .mb-rev-latest__excerpt {
+    margin: 14px 0 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.68;
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .mb-rev-latest__post .mb-magazine__readlink { margin-top: 18px; }
+  .mb-rev-latest__link:hover .mb-magazine__readlink { color: var(--gold-soft); }
+
+  @media (min-width: 768px) { .mb-rev-latest__grid { grid-template-columns: repeat(2, 1fr); gap: 48px 40px; } }
+  @media (min-width: 1024px) { .mb-rev-latest__grid { grid-template-columns: repeat(3, 1fr); gap: 56px 48px; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Magazine — 05 Derniers",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label de section", "default": "Derniers carnets" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Les dernières notes de Maison Bonjour." },
+    { "type": "blog", "id": "blog", "label": "Blog source (laisser vide pour les placeholders)" },
+    { "type": "range", "id": "posts_limit", "label": "Nombre d’articles", "min": 3, "max": 9, "step": 3, "default": 3 }
+  ],
+  "blocks": [
+    {
+      "type": "placeholder",
+      "name": "Article placeholder",
+      "limit": 6,
+      "settings": [
+        { "type": "text", "id": "category", "label": "Catégorie", "default": "Bretagne" },
+        { "type": "text", "id": "title", "label": "Titre" },
+        { "type": "textarea", "id": "excerpt", "label": "Extrait (2 lignes max)" },
+        { "type": "image_picker", "id": "image", "label": "Image (portrait 4/5)" },
+        { "type": "url", "id": "link_url", "label": "URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Magazine — 05 Derniers",
+      "blocks": [
+        { "type": "placeholder", "settings": { "category": "Bretagne", "title": "Bretagne : ce que l’on rapporte d’une côte", "excerpt": "Une promenade lente entre granit, embruns et lumière du large." } },
+        { "type": "placeholder", "settings": { "category": "Artisans", "title": "La cigale de Louis Sicard, ou l’art de garder l’été", "excerpt": "Histoire d’un objet devenu emblème, fabriqué à la main depuis 1895." } },
+        { "type": "placeholder", "settings": { "category": "Carnets", "title": "Pourquoi les marchés français racontent mieux que les vitrines", "excerpt": "Ce que l’on apprend d’une région en s’arrêtant à son marché." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

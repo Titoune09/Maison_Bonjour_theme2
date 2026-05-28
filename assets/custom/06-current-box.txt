@@ -1,0 +1,40 @@
+CURRENT BOX — Box du mois
+==========================
+
+Livrables
+---------
+- current-box.jpg     1600 x 1600   (format carré)
+- current-box@2x      3200 x 3200
+- variations mensuelles à prévoir (1 photo / mois)
+
+Brief
+-----
+Image produit éditoriale de la box ouverte. Doit donner envie de soulever le couvercle.
+Composition étudiée mais naturelle. Fond neutre crème ou bois patiné. Lumière diffuse
+type lightbox naturelle. Tous les produits visibles, lisibles, étiquettes lisibles.
+
+Prompt IA
+---------
+Overhead editorial product photograph of an open vintage cardboard
+subscription box with kraft tissue paper revealing artisanal French
+groceries: a small jar of apricot jam, a wedge of comte cheese
+wrapped in wax paper, a bottle of olive oil, a packet of fleur de sel,
+a tin of sardines with illustrated label, a baguette diagonally placed,
+dried lavender sprig, handwritten card with wax seal, arranged on a
+weathered ivory linen cloth, soft north-facing window light, gentle
+shadows, Kodak Portra 400 film aesthetic, cream and navy and terracotta
+palette, top-down 90 degree angle, generous breathing room around
+composition, Cereal magazine style --ar 1:1 --style raw --v 6
+
+Negative prompt
+---------------
+plastic packaging, modern barcode, supermarket brand, neon, CGI render,
+oversaturated, harsh flash, cluttered, watermark, text overlay, hands
+in frame.
+
+Variations
+----------
+A) Vue dessus box ouverte fond lin
+B) Vue 3/4 box posée sur table bois, main saisissant pot
+C) Produits sortis et alignés, box vide à côté
+D) Macro étiquette + sceau cire + ficelle jute

@@ -1,0 +1,35 @@
+404 — Illustration Page Introuvable
+====================================
+
+Livrables
+---------
+- 404.jpg            1600 x 1200   (paysage)
+- ou 404.svg         vectoriel illustration
+
+Brief
+-----
+Évoque "le colis perdu en chemin". Ton doux, humoristique sans être enfantin.
+Cohérent avec univers postal vintage du site.
+
+Prompt IA
+---------
+Editorial still life photograph, a small vintage cardboard parcel
+wrapped in twine sitting alone on an empty wooden train station bench,
+peeling enamel sign in soft focus background reading nothing legible,
+late afternoon golden light, autumn leaves scattered on platform,
+melancholic but warm mood, Kodak Portra 400 film grain, ivory navy
+and terracotta palette, generous negative space top-left for "404"
+text overlay, Wes Anderson framing, slightly off-center composition
+--ar 4:3 --style raw --v 6
+
+Negative prompt
+---------------
+people, modern signage, text, error symbols, broken icons, glitch,
+cartoon, neon, oversaturated, CGI.
+
+Variations
+----------
+A) Colis seul sur banc de gare
+B) Carte postale tombée dans flaque
+C) Boîte aux lettres ouverte vide, plume à l'intérieur
+D) Train s'éloignant dans la brume, colis oublié au premier plan

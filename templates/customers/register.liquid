@@ -1,0 +1,44 @@
+<article class="account">
+  <div class="account__shell">
+    <header class="account__header">
+      <span class="label">Compte</span>
+      <h1 class="account__title">Créer un compte</h1>
+      <hr class="sep sep--center">
+    </header>
+
+    {% form 'create_customer', novalidate: 'novalidate' %}
+      {%- if form.errors -%}
+        <p class="account__error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+
+      <div class="account__row">
+        <div class="account__field">
+          <label for="FirstName">Prénom</label>
+          <input type="text" id="FirstName" name="customer[first_name]" autocomplete="given-name">
+        </div>
+        <div class="account__field">
+          <label for="LastName">Nom</label>
+          <input type="text" id="LastName" name="customer[last_name]" autocomplete="family-name">
+        </div>
+      </div>
+
+      <div class="account__field">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="customer[email]" autocomplete="email" required>
+      </div>
+
+      <div class="account__field">
+        <label for="Password">Mot de passe</label>
+        <input type="password" id="Password" name="customer[password]" autocomplete="new-password" required>
+      </div>
+
+      <button type="submit" class="btn btn--primary account__submit">Créer mon compte</button>
+
+      <p class="account__links">
+        <a href="{{ routes.account_login_url }}">Déjà inscrite ? Se connecter</a>
+      </p>
+    {% endform %}
+  </div>
+</article>
+
+{% render 'account-styles' %}

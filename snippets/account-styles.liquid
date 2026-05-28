@@ -1,0 +1,223 @@
+<style>
+  .account__shell {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 80px var(--container-padding) 120px;
+  }
+
+  .account__shell--wide {
+    max-width: 960px;
+  }
+
+  .account__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .account__title {
+    margin: 16px auto 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 2.6vw + 1rem, 3rem);
+    line-height: 1.1;
+    color: var(--marine);
+  }
+
+  .account__sub {
+    margin: 0 0 8px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--marine);
+  }
+
+  .account__hint {
+    margin: 0 0 24px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .account__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .account__field label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .account__field input,
+  .account__field select,
+  .account__field textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--text);
+    border-radius: 0;
+  }
+  .account__field input:focus,
+  .account__field select:focus,
+  .account__field textarea:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+  }
+
+  .account__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .account__submit { margin-top: 16px; }
+
+  .account__links {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+  .account__links a { color: var(--gold); }
+
+  .account__recover {
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+
+  .account__error {
+    border: 1px solid #8B2E2E;
+    color: #8B2E2E;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+
+  .account__success {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  .account-section {
+    margin-bottom: 56px;
+  }
+  .account-section__title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--marine);
+    margin: 0 0 24px;
+  }
+
+  .account-orders {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .account-orders th,
+  .account-orders td {
+    text-align: left;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text);
+  }
+  .account-orders th {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .account-orders a { color: var(--gold); }
+
+  .account-addresses {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .account-address {
+    border: 1px solid var(--border);
+    padding: 24px;
+    position: relative;
+  }
+  .account-address__name {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--marine);
+    margin: 0 0 12px;
+  }
+  .account-address__body {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .account-address__actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 16px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .account-address__actions a,
+  .account-address__actions button {
+    color: var(--gold);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .account-address__default {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  @media (min-width: 768px) {
+    .account-addresses { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+  @media (max-width: 767px) {
+    .account__shell { padding: 56px var(--container-padding) 64px; }
+    .account__row { grid-template-columns: 1fr; }
+    .account-orders th:nth-child(3),
+    .account-orders td:nth-child(3),
+    .account-orders th:nth-child(4),
+    .account-orders td:nth-child(4) { display: none; }
+  }
+</style>

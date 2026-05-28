@@ -1,0 +1,123 @@
+{%- liquid
+  assign cat_tags   = 'regions,artisans,table,beaute,objets,carnets' | split: ','
+  assign cat_labels = 'Régions,Artisans,Table,Beauté,Objets,Carnets' | split: ','
+  assign active_tag = current_tags.first
+-%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": {{ blog.title | json }},
+  "url": {{ blog.url | prepend: shop.url | json }},
+  "description": {{ shop.name | append: ' — le Magazine : régions françaises, artisans, arts de la table, beauté, objets et carnets de voyage.' | json }},
+  "publisher": { "@type": "Organization", "name": {{ shop.name | json }} }
+}
+</script>
+
+<article class="mag">
+  <header class="mag__hero">
+    <div class="container">
+      <span class="label">{{ blog.title }}</span>
+      <h1 class="mag__title">
+        {%- if active_tag != blank -%}
+          {%- assign label_for_tag = active_tag -%}
+          {%- for t in cat_tags -%}
+            {%- if t == active_tag -%}{%- assign label_for_tag = cat_labels[forloop.index0] -%}{%- endif -%}
+          {%- endfor -%}
+          {{ label_for_tag }}
+        {%- else -%}
+          {{ blog.title }}
+        {%- endif -%}
+      </h1>
+      <hr class="sep sep--center">
+
+      <nav class="mag__filters" aria-label="Catégories du Magazine">
+        <a href="{{ blog.url }}" class="mag__filter{% if active_tag == blank %} is-active{% endif %}"
+           {% if active_tag == blank %}aria-current="page"{% endif %}>Tous</a>
+        {%- for t in cat_tags -%}
+          <a href="{{ blog.url }}/tagged/{{ t }}"
+             class="mag__filter{% if active_tag == t %} is-active{% endif %}"
+             {% if active_tag == t %}aria-current="page"{% endif %}>{{ cat_labels[forloop.index0] }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+  </header>
+
+  <section class="mag__list-wrap">
+    <div class="container">
+      {%- paginate blog.articles by 12 -%}
+        {%- if blog.articles_count > 0 -%}
+          <ul class="mag__grid" role="list">
+            {%- for article in blog.articles -%}
+              <li class="mag-card">
+                <a href="{{ article.url }}" class="mag-card__link">
+                  {%- if article.image -%}
+                    <div class="mag-card__media">
+                      {{ article.image | image_url: width: 900 | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 1024px) 33vw, 100vw',
+                          widths: '400, 600, 900, 1200',
+                          class: 'mag-card__img',
+                          alt: article.image.alt
+                      }}
+                    </div>
+                  {%- endif -%}
+                  <div class="mag-card__body">
+                    <time class="mag-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                      {{ article.published_at | date: '%d %B %Y' }}
+                    </time>
+                    <h2 class="mag-card__title">{{ article.title }}</h2>
+                    {%- if article.excerpt_or_content != blank -%}
+                      <p class="mag-card__excerpt">{{ article.excerpt_or_content | strip_html | truncatewords: 24 }}</p>
+                    {%- endif -%}
+                    <span class="mag-card__more">Lire <span aria-hidden="true">&rarr;</span></span>
+                  </div>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="collection__pagination" aria-label="Pagination">
+              {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&larr; Précédent</a>{%- endif -%}
+              <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+              {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Suivant &rarr;</a>{%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- else -%}
+          <p class="mag__empty">Aucun article pour le moment.</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </section>
+</article>
+
+<style>
+  .mag__filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 8px;
+    margin: 28px auto 0;
+    max-width: 760px;
+  }
+  .mag__filter {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 9px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .mag__filter:hover { color: var(--marine); border-color: var(--gold); }
+  .mag__filter.is-active {
+    color: var(--text-cream);
+    background: var(--marine);
+    border-color: var(--marine);
+  }
+</style>

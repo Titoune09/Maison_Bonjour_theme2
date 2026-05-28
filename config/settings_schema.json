@@ -1,0 +1,53 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Maison Bonjour",
+    "theme_version": "1.0.0",
+    "theme_author": "Maison Bonjour",
+    "theme_documentation_url": "https://maisonbonjour.com",
+    "theme_support_email": "bonjour@maisonbonjour.com"
+  },
+  {
+    "name": "Général",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Format carré, PNG, 96×96 minimum."
+      },
+      {
+        "type": "image_picker",
+        "id": "social_share_image",
+        "label": "Image de partage social",
+        "info": "Affichée quand le site est partagé sur les réseaux sociaux. 1200×630."
+      }
+    ]
+  },
+  {
+    "name": "Identité",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Nom de la marque",
+        "default": "Maison Bonjour"
+      },
+      {
+        "type": "textarea",
+        "id": "brand_tagline",
+        "label": "Tagline",
+        "default": "L’art de vivre français, livré chaque mois à Cluj-Napoca."
+      }
+    ]
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Les couleurs de Maison Bonjour sont définies dans assets/base.css. Modifier ici n’a pas d’effet visuel ; cette section est documentaire."
+      }
+    ]
+  }
+]

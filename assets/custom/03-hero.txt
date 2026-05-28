@@ -1,0 +1,37 @@
+HERO — Le Départ
+================
+
+Livrables
+---------
+- hero.jpg           2400 x 1600  (desktop, format paysage)
+- hero-mobile.jpg    1200 x 1600  (recadrage portrait, optionnel)
+
+Brief
+-----
+Image d'ouverture du site. Doit incarner "il y a une certaine France qui ne s'exporte
+jamais". Plan large, atmosphère cinématographique, profondeur. Zone sombre en bas pour
+lisibilité du titre blanc et du CTA. Pas de visage reconnaissable.
+
+Prompt IA
+---------
+Wide cinematic photograph, early morning at a French village market in
+Provence or Burgundy, cobblestone street wet from dawn rain, warm
+golden light cutting through morning mist, a wooden crate of fresh
+baguettes and a wicker basket in soft focus foreground, vintage Citroen
+HY van blurred in background, no people visible, autumnal palette of
+cream, navy, terracotta and aged brass, shot on Kodak Portra 400, 35mm
+film grain, anamorphic 2:1 framing, deep shadows in lower third for
+text overlay, Wes Anderson restrained color grading meets Peter Lindbergh
+documentary, melancholic and inviting --ar 3:2 --style raw --v 6
+
+Negative prompt
+---------------
+people faces, modern signage, cars after 1990, text, watermark, HDR,
+oversharp, CGI, fantasy, tourists, plastic, neon, drone shot.
+
+Variations
+----------
+A) Marché village Provence à l'aube
+B) Quai de gare avec malle ancienne et baguette
+C) Atelier boulanger main poussant baguette dans four à bois
+D) Route de campagne France à l'aube, panneau "Cluj-Napoca 1800 km"

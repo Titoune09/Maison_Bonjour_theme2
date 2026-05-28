@@ -1,0 +1,506 @@
+{%- liquid
+  # Liens de navigation. Les réglages url-type étant vides par défaut dans le
+  # customizer, on garantit des liens fonctionnels via un fallback (le guard
+  # `== blank` couvre nil ET chaîne vide). Surchageable dans le thème.
+  assign subscribe_url    = section.settings.subscribe_url
+  if subscribe_url == blank
+    assign subscribe_url = '/#abonnement'
+  endif
+  assign box_url          = section.settings.box_url
+  if box_url == blank
+    assign box_url = '/#la-box'
+  endif
+  assign magazine_url     = section.settings.magazine_url
+  if magazine_url == blank
+    assign magazine_url = '/pages/magazine'
+  endif
+  assign faq_url          = section.settings.faq_url
+  if faq_url == blank
+    assign faq_url = '/pages/faq'
+  endif
+  assign contact_url      = section.settings.contact_url
+  assign logo_text        = section.settings.logo_text     | default: 'Maison Bonjour'
+  assign edition_label    = section.settings.edition_label | default: 'Édition 01 · Bretagne'
+  assign delivery_label   = section.settings.delivery_label| default: 'Livraison le 15 du mois'
+-%}
+
+<header class="mb-header" data-mb-header role="banner">
+
+  <div class="mb-header__main">
+    <div class="mb-header__inner">
+
+      <nav class="mb-header__nav mb-header__nav--left" aria-label="Navigation principale">
+        <a class="mb-header__link" href="{{ box_url }}">La Box</a>
+        <a class="mb-header__link" href="{{ magazine_url }}">Magazine</a>
+      </nav>
+
+      <a class="mb-header__logo" href="{{ routes.root_url }}" aria-label="{{ logo_text }}">
+        <span class="mb-header__logo-text">{{ logo_text }}</span>
+      </a>
+
+      <nav class="mb-header__nav mb-header__nav--right" aria-label="Navigation secondaire">
+        <a class="mb-header__link" href="{{ subscribe_url }}">S&rsquo;abonner</a>
+
+        {%- if shop.customer_accounts_enabled -%}
+          <a class="mb-header__icon" href="{{ routes.account_url }}" aria-label="Compte">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.6"/>
+              <path d="M4.5 20c0-4 3.4-7.2 7.5-7.2s7.5 3.2 7.5 7.2"/>
+            </svg>
+          </a>
+        {%- endif -%}
+
+        <a class="mb-header__icon mb-header__cart" href="{{ routes.cart_url }}" aria-label="Panier ({{ cart.item_count }})">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 6h16l-1.5 12.5a2 2 0 0 1-2 1.75H7.5a2 2 0 0 1-2-1.75L4 6z"/>
+            <path d="M9 6V4a3 3 0 0 1 6 0v2"/>
+          </svg>
+          <span class="mb-header__cart-count{% if cart.item_count == 0 %} is-empty{% endif %}" data-mb-cart-count>{{ cart.item_count }}</span>
+        </a>
+
+        <button
+          class="mb-header__burger"
+          type="button"
+          aria-label="Ouvrir le menu"
+          aria-expanded="false"
+          aria-controls="MbMobileNav"
+          data-mb-menu-toggle>
+          <span></span><span></span>
+        </button>
+      </nav>
+
+    </div>
+  </div>
+</header>
+
+<div class="mb-mobile-nav" id="MbMobileNav" data-mb-mobile-nav aria-hidden="true">
+  <button
+    class="mb-mobile-nav__close"
+    type="button"
+    aria-label="Fermer le menu"
+    data-mb-menu-close>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" aria-hidden="true">
+      <path d="M5 5l14 14M19 5L5 19"/>
+    </svg>
+  </button>
+
+  <div class="mb-mobile-nav__inner">
+    <nav class="mb-mobile-nav__nav" aria-label="Navigation mobile">
+      <a class="mb-mobile-nav__link" href="{{ box_url }}">La Box</a>
+      <a class="mb-mobile-nav__link" href="{{ magazine_url }}">Magazine</a>
+      <a class="mb-mobile-nav__link" href="{{ subscribe_url }}">S&rsquo;abonner</a>
+    </nav>
+    <div class="mb-mobile-nav__sub">
+      <a href="{{ faq_url }}">FAQ</a>
+      <a href="{{ contact_url }}">Contact</a>
+      <a href="{{ routes.account_url }}">Compte</a>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ===========================================================
+     HEADER — minimaliste, une seule barre, hiérarchie pure
+     =========================================================== */
+
+  .mb-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    color: var(--marine);
+    transform: translateY(-100%);
+    animation: header-drop 0.9s cubic-bezier(0.18, 1.1, 0.24, 1) 0.35s forwards;
+    transition: color 0.3s ease;
+  }
+
+  @keyframes header-drop { to { transform: translateY(0); } }
+
+  /* --- Single bar --- */
+
+  .mb-header__main {
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition:
+      background 0.4s ease,
+      backdrop-filter 0.4s ease,
+      border-color 0.4s ease;
+  }
+
+  .mb-header__inner {
+    max-width: var(--container);
+    margin-inline: auto;
+    padding: 18px clamp(20px, 4vw, 56px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    min-height: 64px;
+  }
+
+  /* --- Nav clusters --- */
+
+  .mb-header__nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(22px, 3vw, 40px);
+  }
+  .mb-header__nav--left  { justify-self: start; }
+  .mb-header__nav--right { justify-self: end; }
+
+  .mb-header__link {
+    position: relative;
+    padding: 6px 0;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: currentColor;
+    text-decoration: none;
+    transition: color 0.3s ease, opacity 0.3s ease;
+    opacity: 0.85;
+  }
+  .mb-header__link::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 2px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0.6;
+    transition: transform 0.5s cubic-bezier(0.18, 1, 0.22, 1);
+  }
+  .mb-header__link:hover { opacity: 1; color: var(--gold); }
+  .mb-header__link:hover::after { transform: scaleX(1); }
+
+  /* --- Center logo : Kalnia, rien autour --- */
+
+  .mb-header__logo {
+    justify-self: center;
+    display: inline-block;
+    text-decoration: none;
+    color: currentColor;
+    line-height: 1;
+    padding: 4px 8px;
+    transition: opacity 0.3s ease;
+  }
+  .mb-header__logo:hover { opacity: 0.75; }
+
+  .mb-header__logo-text {
+    font-family: "Kalnia", "Instrument Serif", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 500;
+    font-variation-settings: "wdth" 100;
+    font-size: clamp(19px, 2vw, 24px);
+    letter-spacing: 0.015em;
+    line-height: 1;
+  }
+
+  /* --- Icons : compte + panier --- */
+
+  .mb-header__icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    opacity: 0.85;
+    transition: color 0.3s ease, opacity 0.3s ease;
+    line-height: 0;
+  }
+  .mb-header__icon:hover { color: var(--gold); opacity: 1; }
+
+  .mb-header__cart-count {
+    position: absolute;
+    top: -6px; right: -8px;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 4px;
+    background: var(--gold);
+    color: var(--marine-deep);
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    line-height: 14px;
+    text-align: center;
+    border-radius: 999px;
+  }
+  .mb-header__cart-count.is-empty { display: none; }
+
+  /* --- Burger (mobile) --- */
+
+  .mb-header__burger {
+    display: none;
+    width: 22px;
+    height: 14px;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    cursor: pointer;
+    color: currentColor;
+  }
+  .mb-header__burger span {
+    display: block;
+    height: 1.5px;
+    width: 100%;
+    background: currentColor;
+    transform-origin: center;
+    transition:
+      transform 0.4s cubic-bezier(0.18, 1, 0.22, 1),
+      width 0.3s ease,
+      margin 0.3s ease;
+  }
+  .mb-header__burger span:last-child { width: 65%; margin-left: auto; }
+
+  /* Burger → croix : les deux barres se rejoignent au centre puis pivotent.
+     Déclenché par aria-expanded (posé par le JS du toggle, aucun changement JS). */
+  .mb-header__burger[aria-expanded="true"] span:first-child {
+    transform: translateY(6.25px) rotate(45deg);
+  }
+  .mb-header__burger[aria-expanded="true"] span:last-child {
+    width: 100%;
+    margin-left: 0;
+    transform: translateY(-6.25px) rotate(-45deg);
+  }
+
+  /* ===========================================================
+     States : transparent over hero, cream solid scrolled
+     =========================================================== */
+
+  /* Sur la home, en haut → texte cream par-dessus le hero sombre */
+  .template-index .mb-header { color: var(--cream); }
+  .template-index .mb-header__main {
+    background: linear-gradient(180deg, rgba(15, 26, 46, 0.35) 0%, rgba(15, 26, 46, 0) 100%);
+  }
+
+  /* Sur les autres pages → fond cream discret par défaut */
+  .mb-header__main {
+    background: rgba(254, 249, 243, 0.92);
+    border-bottom-color: rgba(28, 43, 74, 0.06);
+    -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+  }
+
+  /* Scrolled → cream solid, séparateur fin, ombre douce */
+  .mb-header.is-scrolled { color: var(--marine); }
+  .mb-header.is-scrolled .mb-header__main {
+    background: rgba(254, 249, 243, 0.94);
+    border-bottom-color: rgba(28, 43, 74, 0.08);
+    -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+    box-shadow: 0 1px 0 rgba(15, 26, 46, 0.02);
+  }
+  .template-index .mb-header.is-scrolled .mb-header__main {
+    background: rgba(254, 249, 243, 0.94);
+  }
+
+  /* ===========================================================
+     Responsive
+     =========================================================== */
+
+  @media (max-width: 1024px) {
+    .mb-header__inner { gap: 16px; min-height: 60px; padding: 16px clamp(20px, 4vw, 40px); }
+    .mb-header__nav { gap: 24px; }
+    .mb-header__link { font-size: 10px; letter-spacing: 0.22em; }
+  }
+
+  @media (max-width: 767px) {
+    /* Sur mobile on bascule en flex pour une nav prévisible : nav gauche cachée,
+       logo absolu centré sur le bar, nav droite (icônes + burger) à droite. */
+    .mb-header__inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      grid-template-columns: none;
+      gap: 14px;
+      padding: 14px 16px;
+      min-height: 54px;
+    }
+
+    .mb-header__nav--left { display: none; }
+
+    .mb-header__nav--right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-self: unset;
+    }
+    /* On garde les icônes et le burger ; on cache le lien "S'abonner" */
+    .mb-header__nav--right .mb-header__link { display: none; }
+
+    .mb-header__burger {
+      display: flex;
+      justify-self: unset;
+    }
+
+    /* Logo centré géométriquement, indépendant du flux flex */
+    .mb-header__logo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      justify-self: unset;
+      pointer-events: auto;
+    }
+
+    .mb-header__logo-text { font-size: 18px; }
+  }
+
+  /* ===========================================================
+     Mobile nav drawer — sobre, plein écran
+     =========================================================== */
+
+  .mb-mobile-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 800;
+    background: var(--marine-deep);
+    color: var(--cream);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+  }
+  .mb-mobile-nav.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0s linear 0s;
+  }
+
+  /* Croix dédiée masquée : c'est désormais le burger qui se morphe en croix. */
+  .mb-mobile-nav__close { display: none; }
+
+  /* Menu ouvert (body.no-scroll posé par le JS) : on remonte le header au-dessus
+     du drawer pour que le burger-croix reste visible et cliquable, et on efface
+     le fond de la barre pour ne garder que le logo + la croix sur le marine. */
+  body.no-scroll .mb-header {
+    z-index: 900;
+    color: var(--cream);
+  }
+  body.no-scroll .mb-header__main,
+  .template-index body.no-scroll .mb-header__main {
+    background: transparent;
+    border-color: transparent;
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+    box-shadow: none;
+  }
+  body.no-scroll .mb-header__icon {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .mb-mobile-nav__inner {
+    height: 100%;
+    width: 100%;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    text-align: center;
+  }
+
+  .mb-mobile-nav__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .mb-mobile-nav__link {
+    font-family: "Kalnia", "Instrument Serif", serif;
+    font-weight: 500;
+    font-style: normal;
+    font-size: clamp(1.9rem, 7.5vw, 2.8rem);
+    line-height: 1;
+    letter-spacing: 0.005em;
+    color: var(--cream);
+    text-decoration: none;
+    /* État fermé : décalé vers le bas + masqué, prêt pour le reveal échelonné */
+    opacity: 0;
+    transform: translateY(22px);
+    transition:
+      color 0.3s ease,
+      opacity 0.5s ease,
+      transform 0.6s cubic-bezier(0.18, 1, 0.22, 1);
+  }
+  .mb-mobile-nav__link:hover { color: var(--gold); }
+
+  .mb-mobile-nav__sub {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
+  .mb-mobile-nav__sub a {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: rgba(250, 246, 236, 0.6);
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      color 0.25s ease,
+      opacity 0.5s ease,
+      transform 0.6s cubic-bezier(0.18, 1, 0.22, 1);
+  }
+  .mb-mobile-nav__sub a:hover { color: var(--gold); }
+
+  /* Reveal échelonné quand le drawer s'ouvre — les liens montent en cascade */
+  .mb-mobile-nav.is-open .mb-mobile-nav__link,
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link { opacity: 0.92; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:hover { opacity: 1; }
+
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(1) { transition-delay: 0.12s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(2) { transition-delay: 0.19s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(3) { transition-delay: 0.26s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(1) { transition-delay: 0.34s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(2) { transition-delay: 0.39s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(3) { transition-delay: 0.44s; }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .mb-header { animation: none; transform: none; }
+    .mb-header__link::after,
+    .mb-mobile-nav__link,
+    .mb-mobile-nav__sub a { transition: color 0.3s ease; }
+    /* Pas de translation : visibles immédiatement, sans cascade */
+    .mb-mobile-nav__link,
+    .mb-mobile-nav__sub a { transform: none; }
+    .mb-mobile-nav.is-open .mb-mobile-nav__link,
+    .mb-mobile-nav.is-open .mb-mobile-nav__sub a { transition-delay: 0s; }
+    .mb-header__burger span { transition: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    { "type": "text", "id": "logo_text",       "label": "Texte logo",                "default": "Maison Bonjour" },
+    { "type": "text", "id": "edition_label",   "label": "Ticker — édition (legacy)",          "default": "Édition 01 · Bretagne" },
+    { "type": "text", "id": "delivery_label",  "label": "Ticker — livraison (legacy)",        "default": "Livraison le 15 du mois" },
+    { "type": "url",  "id": "box_url",         "label": "Lien — La Box" },
+    { "type": "url",  "id": "magazine_url",    "label": "Lien — Magazine" },
+    { "type": "url",  "id": "subscribe_url",   "label": "Lien — S'abonner" },
+    { "type": "url",  "id": "faq_url",         "label": "Lien — FAQ (menu mobile)" },
+    { "type": "url",  "id": "contact_url",     "label": "Lien — Contact (menu mobile)" }
+  ]
+}
+{% endschema %}

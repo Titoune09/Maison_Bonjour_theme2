@@ -1,0 +1,41 @@
+STORY — Portrait Pierre & Tiffany
+==================================
+
+Livrables
+---------
+- story-portrait.jpg   1600 x 2000   (format portrait)
+- story-portrait@2x    3200 x 4000   (Retina)
+
+Brief
+-----
+NOTE : idéalement photographie RÉELLE des fondateurs. À défaut, image d'attente IA
+respectant l'identité du couple (cf. brief client). Ne pas livrer une image IA en
+production sans validation Pierre & Tiffany.
+
+Si placeholder IA : couple 30-40 ans, attitude naturelle, dans un intérieur authentique
+français/roumain. Pas de pose studio.
+
+Prompt IA (placeholder uniquement)
+----------------------------------
+Documentary portrait photography of a French couple in their late
+thirties standing in a sunlit Cluj-Napoca apartment kitchen, woman
+with shoulder-length brown hair holding a vintage espresso cup, man
+with short dark hair and a linen apron leaning on a wooden table
+covered with French groceries (baguette, cheese, wine, dried herbs),
+warm window light from the left, exposed brick wall and worn parquet
+floor, candid moment of quiet conversation, looking at each other not
+at camera, Kodak Portra 400 medium format film aesthetic, shallow
+depth of field, ivory and warm earth palette, magazine editorial style,
+Annie Leibovitz meets Kinfolk --ar 4:5 --style raw --v 6
+
+Negative prompt
+---------------
+posed studio, fake smile, plastic skin, CGI faces, watermark, text,
+oversaturated, HDR, fashion model look, perfect symmetry, glamour.
+
+Variations
+----------
+A) Cuisine ensoleillée Cluj
+B) Marché de Cluj, ils inspectent un produit
+C) Salon avec étagère pleine de produits français
+D) Devant valise ouverte pleine de produits, halle gare

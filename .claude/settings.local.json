@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(where shopify *)",
+      "Bash(shopify version *)"
+    ]
+  }
+}

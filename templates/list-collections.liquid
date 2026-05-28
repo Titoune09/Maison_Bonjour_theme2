@@ -1,0 +1,65 @@
+<article class="collections-index">
+  <header class="collection__header">
+    <div class="collection__header-inner">
+      <span class="label">Collections</span>
+      <h1 class="collection__title">Toutes les collections.</h1>
+      <hr class="sep sep--center">
+    </div>
+  </header>
+
+  <section class="collection__list-wrap">
+    <div class="container">
+      <ul class="collections-index__grid" role="list">
+        {%- for col in collections -%}
+          {%- unless col.handle == 'frontpage' -%}
+            <li>
+              <a href="{{ col.url }}" class="prod-card__link">
+                {%- if col.image -%}
+                  <div class="prod-card__media">
+                    {{ col.image | image_url: width: 900 | image_tag:
+                        loading: 'lazy',
+                        sizes: '(min-width: 1024px) 33vw, 50vw',
+                        widths: '400, 600, 900, 1200',
+                        class: 'prod-card__img',
+                        alt: col.image.alt
+                    }}
+                  </div>
+                {%- elsif col.products.first.featured_image -%}
+                  <div class="prod-card__media">
+                    {{ col.products.first.featured_image | image_url: width: 900 | image_tag:
+                        loading: 'lazy',
+                        sizes: '(min-width: 1024px) 33vw, 50vw',
+                        widths: '400, 600, 900, 1200',
+                        class: 'prod-card__img',
+                        alt: col.title
+                    }}
+                  </div>
+                {%- endif -%}
+                <h2 class="prod-card__title">{{ col.title }}</h2>
+                <p class="prod-card__price">{{ col.all_products_count }} article{% if col.all_products_count > 1 %}s{% endif %}</p>
+              </a>
+            </li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    </div>
+  </section>
+</article>
+
+<style>
+  .collections-index__grid {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 16px;
+  }
+
+  @media (min-width: 768px) {
+    .collections-index__grid { grid-template-columns: repeat(3, 1fr); gap: 56px 24px; }
+  }
+  @media (min-width: 1024px) {
+    .collections-index__grid { grid-template-columns: repeat(3, 1fr); gap: 64px 32px; }
+  }
+</style>

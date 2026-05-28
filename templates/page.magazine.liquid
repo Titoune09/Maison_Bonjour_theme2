@@ -1,0 +1,15 @@
+{% comment %}
+  Page Magazine — wrapper.
+  Loads the shell stylesheet, then renders the six editorial sections inside
+  the centered cream card. Global header/footer come from layout/theme.liquid.
+{% endcomment %}
+{{ 'magazine.css' | asset_url | stylesheet_tag }}
+
+<div class="mb-magazine">
+  {% section 'magazine-hero' %}
+  {% section 'magazine-featured' %}
+  {% section 'magazine-purpose' %}
+  {% section 'magazine-categories' %}
+  {% section 'magazine-latest' %}
+  {% section 'magazine-cta' %}
+</div>

@@ -1,0 +1,35 @@
+FAVICON — Maison Bonjour
+========================
+
+Livrables
+---------
+- favicon.png        32 x 32
+- favicon-16.png     16 x 16
+- apple-touch.png    180 x 180
+- favicon.svg        (vectoriel, monogramme)
+
+Brief
+-----
+Monogramme "MB" ou silhouette d'une baguette de pain stylisée. Lecture parfaite à 16px.
+Aplat 2 couleurs max. Style : timbre postal vintage, sceau de cire.
+
+Prompt IA (Midjourney v6 / Flux)
+--------------------------------
+Vintage French postal stamp monogram logo, letters "MB" interlocked,
+elegant serif typography inspired by 1920s Parisian signage, two-tone
+ivory cream (#F4ECD8) and deep navy ink (#1B2A41), centered on square
+canvas, flat vector style, no gradient, no shadow, ultra clean edges,
+readable at 16x16 pixels, minimalist heraldic mark, sharp geometric
+contrast --style raw --ar 1:1 --v 6
+
+Negative prompt
+---------------
+3D, photorealistic, gradient, drop shadow, glow, multiple colors,
+busy detail, illegible at small size, sans-serif, modern tech logo.
+
+Variations
+----------
+A) Monogramme MB entrelacé
+B) Silhouette baguette + étoile
+C) Coq de France stylisé minimaliste
+D) Sceau cire rond avec "MB" gravé

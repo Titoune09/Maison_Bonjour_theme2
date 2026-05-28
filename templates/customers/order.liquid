@@ -1,0 +1,82 @@
+<article class="account">
+  <div class="account__shell account__shell--wide">
+    <header class="account__header">
+      <span class="label">Commande {{ order.name }}</span>
+      <h1 class="account__title">{{ order.name }}</h1>
+      <hr class="sep sep--center">
+      <p class="account__hint" style="text-align:center;">
+        Passée le {{ order.created_at | date: '%d %B %Y' }}
+      </p>
+      <p class="account__links" style="justify-content:center;">
+        <a href="{{ routes.account_url }}">&larr; Retour au compte</a>
+      </p>
+    </header>
+
+    <section class="account-section">
+      <table class="account-orders">
+        <thead>
+          <tr>
+            <th>Article</th>
+            <th>Quantité</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {%- for line in order.line_items -%}
+            <tr>
+              <td>
+                {{ line.title }}
+                {%- if line.selling_plan_allocation -%}<br><span style="color:var(--gold); font-size:12px;">{{ line.selling_plan_allocation.selling_plan.name }}</span>{%- endif -%}
+              </td>
+              <td>{{ line.quantity }}</td>
+              <td>{{ line.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="text-align:right;">Sous-total</td>
+            <td>{{ order.subtotal_price | money }}</td>
+          </tr>
+          {%- for sl in order.shipping_methods -%}
+            <tr>
+              <td colspan="2" style="text-align:right;">Livraison — {{ sl.title }}</td>
+              <td>{{ sl.price | money }}</td>
+            </tr>
+          {%- endfor -%}
+          {%- for tax_line in order.tax_lines -%}
+            <tr>
+              <td colspan="2" style="text-align:right;">{{ tax_line.title }} ({{ tax_line.rate | times: 100 }}%)</td>
+              <td>{{ tax_line.price | money }}</td>
+            </tr>
+          {%- endfor -%}
+          <tr>
+            <td colspan="2" style="text-align:right; font-weight:500;">Total</td>
+            <td style="font-family:var(--font-serif); font-style:italic; font-size:22px; color:var(--marine);">
+              {{ order.total_price | money }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <section class="account-section">
+      <div class="account-addresses">
+        {%- if order.shipping_address -%}
+          <div class="account-address">
+            <p class="account-address__name">Adresse de livraison</p>
+            <div class="account-address__body">{{ order.shipping_address | format_address }}</div>
+          </div>
+        {%- endif -%}
+        {%- if order.billing_address -%}
+          <div class="account-address">
+            <p class="account-address__name">Adresse de facturation</p>
+            <div class="account-address__body">{{ order.billing_address | format_address }}</div>
+          </div>
+        {%- endif -%}
+      </div>
+    </section>
+  </div>
+</article>
+
+{% render 'account-styles' %}

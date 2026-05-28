@@ -1,0 +1,149 @@
+<article class="account">
+  <div class="account__shell account__shell--wide">
+    <header class="account__header">
+      <span class="label">Mes adresses</span>
+      <h1 class="account__title">Adresses</h1>
+      <hr class="sep sep--center">
+      <p class="account__links" style="justify-content:center;">
+        <a href="{{ routes.account_url }}">&larr; Retour au compte</a>
+      </p>
+    </header>
+
+    <section class="account-section">
+      <h2 class="account-section__title">Ajouter une nouvelle adresse</h2>
+
+      {% form 'customer_address', customer.new_address %}
+        {%- if form.errors -%}
+          <p class="account__error">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+
+        <div class="account__row">
+          <div class="account__field">
+            <label for="AddressFirstNameNew">Prénom</label>
+            <input type="text" id="AddressFirstNameNew" name="address[first_name]" autocomplete="given-name">
+          </div>
+          <div class="account__field">
+            <label for="AddressLastNameNew">Nom</label>
+            <input type="text" id="AddressLastNameNew" name="address[last_name]" autocomplete="family-name">
+          </div>
+        </div>
+
+        <div class="account__field">
+          <label for="AddressCompanyNew">Entreprise (optionnel)</label>
+          <input type="text" id="AddressCompanyNew" name="address[company]" autocomplete="organization">
+        </div>
+
+        <div class="account__field">
+          <label for="AddressAddress1New">Adresse</label>
+          <input type="text" id="AddressAddress1New" name="address[address1]" autocomplete="address-line1">
+        </div>
+
+        <div class="account__field">
+          <label for="AddressAddress2New">Complément</label>
+          <input type="text" id="AddressAddress2New" name="address[address2]" autocomplete="address-line2">
+        </div>
+
+        <div class="account__row">
+          <div class="account__field">
+            <label for="AddressCityNew">Ville</label>
+            <input type="text" id="AddressCityNew" name="address[city]" autocomplete="address-level2">
+          </div>
+          <div class="account__field">
+            <label for="AddressZipNew">Code postal</label>
+            <input type="text" id="AddressZipNew" name="address[zip]" autocomplete="postal-code">
+          </div>
+        </div>
+
+        <div class="account__row">
+          <div class="account__field">
+            <label for="AddressCountryNew">Pays</label>
+            <select id="AddressCountryNew" name="address[country]" data-default="{{ form.country }}">{{ country_option_tags }}</select>
+          </div>
+          <div class="account__field">
+            <label for="AddressPhoneNew">Téléphone</label>
+            <input type="tel" id="AddressPhoneNew" name="address[phone]" autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="account__field">
+          <label style="display:flex; align-items:center; gap:8px; text-transform:none; letter-spacing:0; color:var(--text); font-size:14px;">
+            <input type="checkbox" name="address[default]" value="1" style="width:auto;">
+            Définir par défaut
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn--primary account__submit">Enregistrer</button>
+      {% endform %}
+    </section>
+
+    <section class="account-section">
+      <h2 class="account-section__title">Mes adresses</h2>
+
+      {%- if customer.addresses.size > 0 -%}
+        <div class="account-addresses">
+          {%- for address in customer.addresses -%}
+            <div class="account-address">
+              {%- if address == customer.default_address -%}
+                <span class="account-address__default">Par défaut</span>
+              {%- endif -%}
+
+              <p class="account-address__name">{{ address.first_name }} {{ address.last_name }}</p>
+              <div class="account-address__body">
+                {{ address | format_address }}
+              </div>
+
+              <p class="account-address__actions">
+                <a href="#" onclick="document.getElementById('EditAddress_{{ address.id }}').style.display='block'; return false;">Modifier</a>
+                {% form 'customer_address', address %}
+                  <input type="hidden" name="_method" value="delete">
+                  <button type="submit" onclick="return confirm('Supprimer cette adresse ?');">Supprimer</button>
+                {% endform %}
+              </p>
+
+              <div id="EditAddress_{{ address.id }}" style="display:none; margin-top:24px;">
+                {% form 'customer_address', address %}
+                  <div class="account__field">
+                    <label>Adresse</label>
+                    <input type="text" name="address[address1]" value="{{ address.address1 }}">
+                  </div>
+                  <div class="account__row">
+                    <div class="account__field">
+                      <label>Ville</label>
+                      <input type="text" name="address[city]" value="{{ address.city }}">
+                    </div>
+                    <div class="account__field">
+                      <label>Code postal</label>
+                      <input type="text" name="address[zip]" value="{{ address.zip }}">
+                    </div>
+                  </div>
+                  <div class="account__field">
+                    <label>Pays</label>
+                    <select name="address[country]" data-default="{{ address.country }}">{{ country_option_tags }}</select>
+                  </div>
+                  <button type="submit" class="btn btn--secondary">Enregistrer</button>
+                {% endform %}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p class="account__hint">Aucune adresse enregistrée.</p>
+      {%- endif -%}
+    </section>
+  </div>
+</article>
+
+<script>
+  (function () {
+    var selects = document.querySelectorAll('select[data-default]');
+    selects.forEach(function (sel) {
+      var def = sel.getAttribute('data-default');
+      if (!def) return;
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === def) { sel.selectedIndex = i; break; }
+      }
+    });
+  })();
+</script>
+
+{% render 'account-styles' %}

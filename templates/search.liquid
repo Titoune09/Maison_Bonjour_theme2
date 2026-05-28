@@ -1,0 +1,168 @@
+<article class="search">
+  <header class="search__header">
+    <div class="search__header-inner">
+      <span class="label">Recherche</span>
+      <h1 class="search__title">
+        {%- if search.performed -%}
+          Résultats pour <em>« {{ search.terms | escape }} »</em>
+        {%- else -%}
+          Rechercher
+        {%- endif -%}
+      </h1>
+      <hr class="sep sep--center">
+
+      <form action="{{ routes.search_url }}" method="get" class="search__form" role="search">
+        <label for="search-input" class="visually-hidden">Rechercher</label>
+        <input
+          id="search-input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="Que cherchez-vous&nbsp;?"
+          autocomplete="off">
+        <button type="submit" class="btn btn--secondary">Rechercher</button>
+      </form>
+    </div>
+  </header>
+
+  {%- if search.performed -%}
+    <section class="search__results-wrap">
+      <div class="container">
+        {%- paginate search.results by 24 -%}
+          {%- if search.results.size > 0 -%}
+            <p class="search__count">{{ search.results_count }} résultat{% if search.results_count > 1 %}s{% endif %}</p>
+
+            <ul class="search__grid" role="list">
+              {%- for item in search.results -%}
+                <li class="search-card">
+                  <a href="{{ item.url }}" class="prod-card__link">
+                    {%- if item.featured_image or item.image -%}
+                      <div class="prod-card__media">
+                        {%- assign img = item.featured_image | default: item.image -%}
+                        {{ img | image_url: width: 900 | image_tag:
+                            loading: 'lazy',
+                            sizes: '(min-width: 1024px) 33vw, 50vw',
+                            widths: '400, 600, 900',
+                            class: 'prod-card__img',
+                            alt: item.title
+                        }}
+                      </div>
+                    {%- endif -%}
+                    <p class="search-card__type">{{ item.object_type | capitalize }}</p>
+                    <h2 class="prod-card__title">{{ item.title }}</h2>
+                    {%- if item.price -%}
+                      <p class="prod-card__price">{{ item.price | money }}</p>
+                    {%- endif -%}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+
+            {%- if paginate.pages > 1 -%}
+              <nav class="collection__pagination" aria-label="Pagination">
+                {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">&larr; Précédent</a>{%- endif -%}
+                <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+                {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Suivant &rarr;</a>{%- endif -%}
+              </nav>
+            {%- endif -%}
+          {%- else -%}
+            <p class="search__empty">Aucun résultat pour <em>« {{ search.terms | escape }} »</em>.</p>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+    </section>
+  {%- endif -%}
+</article>
+
+<style>
+  .search__header {
+    padding-block: 80px 32px;
+    text-align: center;
+  }
+  .search__header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-inline: var(--container-padding);
+  }
+  .search__title {
+    margin: 16px auto 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 2.6vw + 1rem, 3rem);
+    line-height: 1.1;
+    color: var(--marine);
+  }
+  .search__title em { font-style: italic; color: var(--gold); }
+
+  .search__form {
+    margin: 32px auto 0;
+    display: flex;
+    gap: 16px;
+    max-width: 540px;
+  }
+  .search__form input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--text);
+    border-radius: 0;
+  }
+  .search__form input:focus { outline: none; border-bottom-color: var(--gold); }
+
+  .search__results-wrap { padding-block: 60px 120px; }
+
+  .search__count {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+  }
+
+  .search__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 16px;
+  }
+  .search-card__type {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .search__empty {
+    margin: 40px auto;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .search__grid { grid-template-columns: repeat(3, 1fr); gap: 56px 24px; }
+  }
+  @media (min-width: 1024px) {
+    .search__grid { grid-template-columns: repeat(4, 1fr); gap: 64px 32px; }
+  }
+  @media (max-width: 767px) {
+    .search__header { padding-block: 56px 24px; }
+    .search__results-wrap { padding-block: 32px 64px; }
+  }
+</style>

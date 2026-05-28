@@ -1,0 +1,159 @@
+<article class="collection">
+  <header class="collection__header">
+    <div class="collection__header-inner">
+      <span class="label">Collection</span>
+      <h1 class="collection__title">{{ collection.title }}</h1>
+      <hr class="sep sep--center">
+      {%- if collection.description != blank -%}
+        <div class="collection__desc">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+  </header>
+
+  <section class="collection__list-wrap">
+    <div class="container">
+      {%- paginate collection.products by 24 -%}
+        {%- if collection.products.size > 0 -%}
+          <ul class="collection__grid" role="list">
+            {%- for product in collection.products -%}
+              <li class="prod-card paper-panel tilt-card">
+                <a href="{{ product.url }}" class="prod-card__link">
+                  {%- if product.featured_image -%}
+                    <div class="prod-card__media">
+                      {{ product.featured_image | image_url: width: 900 | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
+                          widths: '400, 600, 900, 1200',
+                          class: 'prod-card__img',
+                          alt: product.featured_image.alt
+                      }}
+                    </div>
+                  {%- endif -%}
+                  <h2 class="prod-card__title">{{ product.title }}</h2>
+                  <p class="prod-card__price">{{ product.price | money }}</p>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            <nav class="collection__pagination" aria-label="Pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}">&larr; Précédent</a>
+              {%- endif -%}
+              <span>Page {{ paginate.current_page }} / {{ paginate.pages }}</span>
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}">Suivant &rarr;</a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- else -%}
+          <p class="collection__empty">Aucun article dans cette collection pour le moment.</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </section>
+</article>
+
+<style>
+  .collection__header {
+    padding-block: 80px 32px;
+    text-align: center;
+  }
+  .collection__header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-inline: var(--container-padding);
+  }
+  .collection__title {
+    margin: 16px auto 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 3vw + 1rem, 3.5rem);
+    line-height: 1.1;
+    color: var(--marine);
+  }
+  .collection__desc {
+    margin-top: 32px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .collection__list-wrap { padding-bottom: 120px; }
+
+  .collection__grid {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 16px;
+  }
+
+  .prod-card__link { display: block; color: inherit; }
+  .prod-card {
+    padding: 12px 12px 18px;
+  }
+  .prod-card__media { overflow: hidden; margin-bottom: 16px; }
+  .prod-card__img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease-out);
+  }
+  .prod-card__link:hover .prod-card__img { transform: scale(1.03); }
+  .prod-card__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    color: var(--marine);
+    line-height: 1.3;
+  }
+  .prod-card__price {
+    margin: 6px 0 0;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .collection__pagination {
+    margin-top: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .collection__pagination a { color: var(--gold); }
+
+  .collection__empty {
+    margin-top: 40px;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .collection__grid { grid-template-columns: repeat(3, 1fr); gap: 56px 24px; }
+  }
+  @media (min-width: 1024px) {
+    .collection__grid { grid-template-columns: repeat(4, 1fr); gap: 64px 32px; }
+  }
+  @media (max-width: 767px) {
+    .collection__header { padding-block: 56px 24px; }
+    .collection__list-wrap { padding-bottom: 64px; }
+  }
+</style>

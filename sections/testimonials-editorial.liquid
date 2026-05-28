@@ -1,0 +1,497 @@
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow | default: 'Les Voix'
+  assign title_before = section.settings.title_before | default: 'Ce qu’elles en disent '
+  assign title_emph   = section.settings.title_emphasis | default: 'déjà'
+  assign title_after  = section.settings.title_after | default: '.'
+  assign subtitle     = section.settings.subtitle | default: 'Premières impressions, mots partagés, regards posés sur Maison Bonjour avant le premier départ.'
+  assign show_arrows  = section.settings.show_arrows
+  assign use_defaults = false
+  if section.blocks.size == 0
+    assign use_defaults = true
+  endif
+-%}
+
+<section class="voix" aria-label="Témoignages" data-voix>
+  <div class="container voix__head reveal">
+    <span class="label label--cream">{{ eyebrow }}</span>
+    <h2 class="voix__title">{{ title_before }}<em>{{ title_emph }}</em>{{ title_after }}</h2>
+    <p class="voix__subtitle">{{ subtitle }}</p>
+  </div>
+
+  {%- liquid
+    if use_defaults
+      assign card_count = 4
+    else
+      assign card_count = section.blocks.size
+    endif
+  -%}
+
+  <div class="voix__carousel reveal reveal--delay-1" data-voix-carousel>
+    <ul class="voix__track" role="list" data-voix-track>
+      {%- if use_defaults -%}
+        {%- comment -%} Contenu par défaut : les blocks de preset ne sont pas instanciés
+            quand la section est appelée via {% section %} dans un template .liquid. {%- endcomment -%}
+        <li class="voix__card is-active" data-voix-card>
+          <span class="voix__stamp">
+            <span class="voix__stamp-num">Voix 01</span>
+            <span class="voix__stamp-rule" aria-hidden="true"></span>
+            <span class="voix__stamp-ctx">Première impression</span>
+          </span>
+          <blockquote class="voix__quote">Ce n’est pas une box comme les autres. On comprend tout de suite qu’il y a une vraie intention derrière.</blockquote>
+          <footer class="voix__attrib">
+            <span class="voix__name">Ana M.</span>
+            <span class="voix__city">Cluj-Napoca</span>
+          </footer>
+        </li>
+        <li class="voix__card" data-voix-card>
+          <span class="voix__stamp">
+            <span class="voix__stamp-num">Voix 02</span>
+            <span class="voix__stamp-rule" aria-hidden="true"></span>
+            <span class="voix__stamp-ctx">Pré-lancement</span>
+          </span>
+          <blockquote class="voix__quote">J’aime l’idée de ne pas tout savoir avant d’ouvrir. Si la sélection est belle, la surprise devient une partie du plaisir.</blockquote>
+          <footer class="voix__attrib">
+            <span class="voix__name">Ioana P.</span>
+            <span class="voix__city">Cluj-Napoca</span>
+          </footer>
+        </li>
+        <li class="voix__card" data-voix-card>
+          <span class="voix__stamp">
+            <span class="voix__stamp-num">Voix 03</span>
+            <span class="voix__stamp-rule" aria-hidden="true"></span>
+            <span class="voix__stamp-ctx">Concept testé</span>
+          </span>
+          <blockquote class="voix__quote">La Provence me parle, mais surtout la manière dont c’est raconté. On a l’impression de recevoir un morceau de France, pas seulement des produits.</blockquote>
+          <footer class="voix__attrib">
+            <span class="voix__name">Elena C.</span>
+            <span class="voix__city">Cluj-Napoca</span>
+          </footer>
+        </li>
+        <li class="voix__card" data-voix-card>
+          <span class="voix__stamp">
+            <span class="voix__stamp-num">Voix 04</span>
+            <span class="voix__stamp-rule" aria-hidden="true"></span>
+            <span class="voix__stamp-ctx">Intention cadeau</span>
+          </span>
+          <blockquote class="voix__quote">Le genre de cadeau que j’aimerais offrir à quelqu’un qui a déjà tout.</blockquote>
+          <footer class="voix__attrib">
+            <span class="voix__name">Andreea L.</span>
+            <span class="voix__city">Bucarest</span>
+          </footer>
+        </li>
+      {%- else -%}
+        {%- for block in section.blocks -%}
+          <li class="voix__card{% if forloop.first %} is-active{% endif %}" data-voix-card {{ block.shopify_attributes }}>
+            <span class="voix__stamp">
+              <span class="voix__stamp-num">Voix {{ forloop.index | prepend: '0' }}</span>
+              <span class="voix__stamp-rule" aria-hidden="true"></span>
+              {%- if block.settings.context_label != blank -%}
+                <span class="voix__stamp-ctx">{{ block.settings.context_label }}</span>
+              {%- endif -%}
+            </span>
+
+            <blockquote class="voix__quote">{{ block.settings.quote }}</blockquote>
+
+            <footer class="voix__attrib">
+              <span class="voix__name">{{ block.settings.name }}</span>
+              {%- if block.settings.city != blank -%}
+                <span class="voix__city">{{ block.settings.city }}</span>
+              {%- endif -%}
+            </footer>
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+
+    {%- if show_arrows and card_count > 1 -%}
+      <div class="voix__nav">
+        <button type="button" class="voix__arrow" data-voix-prev aria-label="Témoignage précédent">
+          <span aria-hidden="true">&larr;</span>
+        </button>
+        <button type="button" class="voix__arrow" data-voix-next aria-label="Témoignage suivant">
+          <span aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-voix]');
+    if (!root) { return; }
+    var carousel = root.querySelector('[data-voix-carousel]');
+    var track = root.querySelector('[data-voix-track]');
+    if (!carousel || !track) { return; }
+
+    var originals = Array.prototype.slice.call(track.querySelectorAll('[data-voix-card]'));
+    var n = originals.length;
+    if (n < 2) { return; }
+
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var AUTOPLAY_MS = 4500;
+
+    // ----- Boucle infinie : 3 copies du jeu de cartes (avant · milieu · après).
+    // On démarre au milieu ; en atteignant un bord on saute d'un jeu sans transition,
+    // le contenu étant identique le saut est invisible.
+    var designMode = !!(window.Shopify && window.Shopify.designMode);
+    var cards = [];
+
+    // Construit assez de copies pour qu'aucun vide n'apparaisse, même sur grand
+    // écran : reps ≥ (largeur fenêtre / largeur d'un jeu) + marge.
+    function buildLoop() {
+      var ref = cards.length ? cards : originals;
+      var pitch0 = (ref[1].offsetLeft - ref[0].offsetLeft) || ref[0].offsetWidth;
+      var oneSet0 = pitch0 * n;
+      var W = carousel.clientWidth || window.innerWidth;
+      var reps = Math.max(4, Math.ceil(W / oneSet0) + 3);
+
+      var frag = document.createDocumentFragment();
+      cards = [];
+      for (var r = 0; r < reps; r++) {
+        var keep = (r === 0); // attributs d'édition conservés sur une seule copie
+        originals.forEach(function (c) {
+          var clone = c.cloneNode(true);
+          clone.removeAttribute('id');
+          clone.classList.remove('is-active'); // l'état actif est piloté uniquement par updateActive
+          if (!keep) {
+            Array.prototype.slice.call(clone.attributes).forEach(function (attr) {
+              if (attr.name.indexOf('data-shopify') === 0) { clone.removeAttribute(attr.name); }
+            });
+            clone.setAttribute('aria-hidden', 'true');
+          }
+          cards.push(clone);
+          frag.appendChild(clone);
+        });
+      }
+      track.innerHTML = '';
+      track.appendChild(frag);
+      lastActive = -1;
+    }
+
+    // ----- Moteur de défilement continu à vitesse constante.
+    var SPEED = 42;          // px / seconde
+    var pitch = 0;           // pas entre deux cartes (largeur + gap)
+    var oneSet = 0;          // largeur d'un jeu de cartes
+    var firstCenter = 0;     // centre de la 1re carte dans le rail
+    var x = 0;               // décalage de défilement (wrap dans ]-oneSet, 0])
+    var nudge = 0;           // coup de pouce flèches/swipe, tweené vers 0
+    var lastActive = -1;
+    var running = false;
+    var lastTs = 0;
+
+    function measure() {
+      pitch = (cards[1].offsetLeft - cards[0].offsetLeft) || cards[0].offsetWidth;
+      oneSet = pitch * n;
+      firstCenter = cards[0].offsetLeft + cards[0].offsetWidth / 2;
+    }
+
+    function wrapX() {
+      if (oneSet <= 0) { return; }
+      while (x <= -oneSet) { x += oneSet; }
+      while (x > 0) { x -= oneSet; }
+    }
+
+    function transformX() { return -oneSet + x + nudge; }
+
+    // Met en avant la carte la plus proche du centre (calcul, sans reflow par carte).
+    function updateActive(tx) {
+      var centerInTrack = carousel.clientWidth / 2 - tx;
+      var idx = Math.round((centerInTrack - firstCenter) / pitch);
+      idx = ((idx % cards.length) + cards.length) % cards.length;
+      if (idx !== lastActive) {
+        if (lastActive >= 0) { cards[lastActive].classList.remove('is-active'); }
+        cards[idx].classList.add('is-active');
+        lastActive = idx;
+      }
+    }
+
+    function apply() {
+      var tx = transformX();
+      track.style.transform = 'translate3d(' + tx + 'px, 0, 0)';
+      updateActive(tx);
+    }
+
+    function frame(ts) {
+      if (!running) { return; }
+      var dt = lastTs ? (ts - lastTs) / 1000 : 0;
+      lastTs = ts;
+      if (dt > 0.1) { dt = 0.1; } // évite un saut après un onglet en arrière-plan
+      x -= SPEED * dt;
+      wrapX();
+      nudge *= 0.86;
+      if (Math.abs(nudge) < 0.5) { nudge = 0; }
+      apply();
+      requestAnimationFrame(frame);
+    }
+
+    function play() {
+      if (reduce || designMode || running) { return; }
+      running = true; lastTs = 0;
+      requestAnimationFrame(frame);
+    }
+    function pause() { running = false; }
+
+    // Pause uniquement quand le curseur est sur une carte (pas sur toute la section).
+    carousel.addEventListener('mouseover', function (e) {
+      if (e.target.closest && e.target.closest('[data-voix-card]')) { pause(); }
+    });
+    carousel.addEventListener('mouseout', function (e) {
+      var to = e.relatedTarget;
+      if (!to || !(to.closest && to.closest('[data-voix-card]'))) { play(); }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { pause(); } else { play(); }
+    });
+
+    // ----- Flèches : avance/recul d'une carte, fondu dans le flux continu.
+    // On décale x de façon permanente, et nudge compense l'à-coup puis s'estompe.
+    function bump(dir) { // dir = -1 : avancer (gauche) ; +1 : reculer (droite)
+      x += dir * pitch;
+      wrapX();
+      if (running) { nudge += -dir * pitch; }
+      else { nudge = 0; apply(); }
+    }
+    var prev = root.querySelector('[data-voix-prev]');
+    var next = root.querySelector('[data-voix-next]');
+    if (prev) { prev.addEventListener('click', function () { bump(1); }); }
+    if (next) { next.addEventListener('click', function () { bump(-1); }); }
+
+    // ----- Swipe tactile : glisser pendant le drag, puis on valide le décalage.
+    var startX = null;
+    track.addEventListener('touchstart', function (e) {
+      startX = e.touches[0].clientX; pause();
+    }, { passive: true });
+    track.addEventListener('touchmove', function (e) {
+      if (startX === null) { return; }
+      nudge = e.touches[0].clientX - startX;
+      apply();
+    }, { passive: true });
+    track.addEventListener('touchend', function () {
+      if (startX === null) { return; }
+      x += nudge; nudge = 0; wrapX(); apply();
+      startX = null; play();
+    }, { passive: true });
+
+    // ----- Resize : reconstruit la boucle (la largeur d'écran a pu changer).
+    var rt;
+    window.addEventListener('resize', function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () { buildLoop(); measure(); wrapX(); apply(); }, 150);
+    });
+
+    // ----- Init (mesures après layout, recalées au load des polices/images).
+    function init() { buildLoop(); measure(); x = 0; nudge = 0; apply(); play(); }
+    requestAnimationFrame(init);
+    window.addEventListener('load', function () { buildLoop(); measure(); wrapX(); apply(); });
+  })();
+</script>
+
+{% stylesheet %}
+  .voix {
+    /* Polices propres à la section — DA conservée (palette, layout, sobriété inchangés). */
+    --voix-font-title: 'Playfair Display', var(--font-serif);
+    --voix-font-quote: 'Crimson Pro', var(--font-serif);
+    background: var(--marine-deep);
+    color: var(--text-cream);
+    padding-block: clamp(80px, 10vw, 140px);
+    overflow: hidden;
+  }
+
+  /* ----- HEAD (centré) ----- */
+  .voix__head {
+    max-width: 640px;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .voix__title {
+    margin: 18px 0 0;
+    font-family: var(--voix-font-title);
+    font-style: normal;
+    font-weight: 500;
+    font-size: clamp(2rem, 3.5vw + 1rem, 3.75rem);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    color: var(--text-cream);
+  }
+  .voix__title em { font-style: italic; }
+  .voix__subtitle {
+    margin: 20px auto 0;
+    max-width: 48ch;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-cream);
+    opacity: 0.78;
+  }
+
+  /* ----- CAROUSEL (rail transform, boucle infinie) ----- */
+  .voix__carousel {
+    position: relative;
+    margin-top: clamp(48px, 6vw, 80px);
+    overflow: hidden;
+    /* Fondu latéral des cartes voisines, comme la référence. */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%);
+  }
+
+  .voix__track {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(14px, 1.6vw, 24px);
+    will-change: transform;
+    /* la position est pilotée en JS via translate3d ; transition idem */
+  }
+
+  .voix__card {
+    flex: 0 0 auto;
+    width: min(380px, 78vw);
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: clamp(18px, 1.4vw, 24px) clamp(22px, 2vw, 30px);
+    background: rgba(250, 246, 236, 0.035);
+    border: 1px solid var(--border);
+    opacity: 0.4;
+    transition: opacity 0.6s var(--ease-out), border-color 0.6s var(--ease-out), background 0.6s var(--ease-out);
+  }
+  .voix__card.is-active {
+    opacity: 1;
+    background: rgba(250, 246, 236, 0.055);
+    border-color: var(--gold-soft);
+  }
+
+  /* Tampon typographique + filet or */
+  .voix__stamp {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .voix__stamp-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .voix__stamp-ctx { color: var(--gold-soft); }
+
+  .voix__quote {
+    margin: 0;
+    font-family: var(--voix-font-quote);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.05rem, 0.5vw + 0.95rem, 1.3rem);
+    line-height: 1.45;
+    color: var(--text-cream);
+  }
+
+  .voix__attrib {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .voix__name {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-cream);
+  }
+  .voix__city {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+
+  /* ----- Flèches sobres (carrées) ----- */
+  .voix__nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+  .voix__arrow {
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-cream);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  .voix__arrow:hover,
+  .voix__arrow:focus-visible {
+    background: var(--gold);
+    color: var(--marine-deep);
+    border-color: var(--gold);
+  }
+
+  @media (max-width: 767px) {
+    .voix__carousel {
+      -webkit-mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+              mask-image: linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+    }
+    .voix__card { width: 82vw; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .voix__track { transition: none !important; }
+    .voix__card { transition: none; transform: none; }
+    .voix__card.is-active { transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Témoignages — Les Voix",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Les Voix" },
+    { "type": "text", "id": "title_before", "label": "Titre — avant le mot accentué", "default": "Ce qu’elles en disent " },
+    { "type": "text", "id": "title_emphasis", "label": "Titre — mot en italique", "default": "déjà" },
+    { "type": "text", "id": "title_after", "label": "Titre — après le mot accentué", "default": "." },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-texte", "default": "Premières impressions, mots partagés, regards posés sur Maison Bonjour avant le premier départ." },
+    { "type": "checkbox", "id": "show_arrows", "label": "Afficher les flèches de navigation", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "voix",
+      "name": "Témoignage",
+      "limit": 6,
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Citation" },
+        { "type": "text", "id": "name", "label": "Prénom / initiale" },
+        { "type": "text", "id": "city", "label": "Ville" },
+        { "type": "text", "id": "context_label", "label": "Contexte (ex. Première impression)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Témoignages — Les Voix",
+      "blocks": [
+        { "type": "voix", "settings": { "quote": "Ce n’est pas une box comme les autres. On comprend tout de suite qu’il y a une vraie intention derrière.", "name": "Ana M.", "city": "Cluj-Napoca", "context_label": "Première impression" } },
+        { "type": "voix", "settings": { "quote": "J’aime l’idée de ne pas tout savoir avant d’ouvrir. Si la sélection est belle, la surprise devient une partie du plaisir.", "name": "Ioana P.", "city": "Cluj-Napoca", "context_label": "Pré-lancement" } },
+        { "type": "voix", "settings": { "quote": "La Provence me parle, mais surtout la manière dont c’est raconté. On a l’impression de recevoir un morceau de France, pas seulement des produits.", "name": "Elena C.", "city": "Cluj-Napoca", "context_label": "Concept testé" } },
+        { "type": "voix", "settings": { "quote": "Le genre de cadeau que j’aimerais offrir à quelqu’un qui a déjà tout.", "name": "Andreea L.", "city": "Bucarest", "context_label": "Intention cadeau" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,584 @@
+{%- liquid
+  assign title        = section.settings.title        | default: 'Comment commence le'
+  assign title_accent = section.settings.title_accent  | default: 'voyage'
+  assign subtitle     = section.settings.subtitle      | default: 'Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer librement.'
+
+  assign c1_title = section.settings.card_1_title | default: 'Choisir'
+  assign c1_text  = section.settings.card_1_text  | default: 'Sélectionne ton rythme : une première édition, trois mois ou une année de voyage français.'
+  assign c1_label = section.settings.card_1_label | default: 'LE RYTHME'
+
+  assign c2_title = section.settings.card_2_title | default: 'Recevoir'
+  assign c2_text  = section.settings.card_2_text  | default: 'Chaque mois, Maison Bonjour prépare une édition autour d’une région française, avec des maisons, des gestes et des détails choisis.'
+  assign c2_label = section.settings.card_2_label | default: 'L’ÉDITION'
+
+  assign c3_title = section.settings.card_3_title | default: 'Ouvrir'
+  assign c3_text  = section.settings.card_3_text  | default: 'Tout n’est pas dévoilé avant l’envoi. La surprise fait partie de l’expérience, mais rien n’est laissé au hasard.'
+  assign c3_label = section.settings.card_3_label | default: 'LA SURPRISE'
+
+  assign c4_title = section.settings.card_4_title | default: 'Gérer'
+  assign c4_text  = section.settings.card_4_text  | default: 'Depuis ton espace abonnée, tu peux suivre ton abonnement, modifier tes informations, mettre en pause ou arrêter selon les conditions prévues.'
+  assign c4_label = section.settings.card_4_label | default: 'L’ESPACE ABONNÉE'
+
+  assign enable_stack    = section.settings.enable_scroll_stack
+  assign reduced_motion  = section.settings.reduced_motion_fallback
+  assign uid             = section.id
+-%}
+
+<section
+  class="mb-howstack"
+  data-mb-howstack
+  data-scrollstack="{% if enable_stack %}true{% else %}false{% endif %}"
+  data-reduced-fallback="{% if reduced_motion %}true{% else %}false{% endif %}"
+  data-base-scale="{{ section.settings.base_scale | default: 90 | times: 0.01 }}"
+  data-item-scale="{{ section.settings.item_scale | default: 2 | times: 0.01 }}"
+  data-stack-offset="{{ section.settings.stack_offset | default: 18 }}"
+  data-item-distance="{{ section.settings.item_distance | default: 110 }}"
+  data-blur-amount="{{ section.settings.blur_amount | default: 0 }}"
+  style="--mb-howstack-bg: {{ section.settings.background_color | default: '#F1E8D6' }};"
+  aria-label="Comment fonctionne l’abonnement Maison Bonjour"
+  id="mb-howstack-{{ uid }}"
+>
+  <div class="mb-howstack__container">
+
+    <header class="mb-howstack__head reveal">
+      {%- if title != blank or title_accent != blank -%}
+        <h2 class="mb-howstack__title">
+          {{ title }}{% if title_accent != blank %} <em class="mb-howstack__title-accent">{{ title_accent }}</em>{% endif %}
+        </h2>
+      {%- endif -%}
+      {%- if subtitle != blank -%}
+        <p class="mb-howstack__subtitle">{{ subtitle }}</p>
+      {%- endif -%}
+      <span class="mb-howstack__head-rule" aria-hidden="true"></span>
+    </header>
+
+    <ol class="mb-howstack__cards" role="list">
+      {%- assign cards = '1,2,3,4' | split: ',' -%}
+      {%- for n in cards -%}
+        {%- liquid
+          case n
+            when '1'
+              assign card_num = '01'
+              assign card_label = c1_label
+              assign card_title = c1_title
+              assign card_text = c1_text
+            when '2'
+              assign card_num = '02'
+              assign card_label = c2_label
+              assign card_title = c2_title
+              assign card_text = c2_text
+            when '3'
+              assign card_num = '03'
+              assign card_label = c3_label
+              assign card_title = c3_title
+              assign card_text = c3_text
+            when '4'
+              assign card_num = '04'
+              assign card_label = c4_label
+              assign card_title = c4_title
+              assign card_text = c4_text
+          endcase
+        -%}
+        <li class="mb-howstack__card reveal reveal--delay-{{ forloop.index }}">
+          <div class="mb-howstack__card-inner">
+            <span class="mb-howstack__num" aria-hidden="true">{{ card_num }}</span>
+            <div class="mb-howstack__card-body">
+              {%- if card_label != blank -%}
+                <span class="mb-howstack__card-label">{{ card_label }}</span>
+              {%- endif -%}
+              {%- if card_title != blank -%}
+                <h3 class="mb-howstack__card-title">{{ card_title }}</h3>
+              {%- endif -%}
+              <span class="mb-howstack__card-rule" aria-hidden="true"></span>
+              {%- if card_text != blank -%}
+                <p class="mb-howstack__card-text">{{ card_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+
+    <div class="mb-howstack__end" aria-hidden="true"></div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-howstack {
+    background: var(--mb-howstack-bg, #F1E8D6);
+    padding-block: var(--section-py-immersive-mobile, 80px);
+    overflow: hidden;
+  }
+
+  .mb-howstack__container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+
+  /* ---- Header ---- */
+  .mb-howstack__head {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  .mb-howstack__title {
+    margin: 0 0 24px;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 34px;
+    line-height: 1.05;
+    color: #1C2B4A;
+  }
+  .mb-howstack__title-accent {
+    font-style: italic;
+    color: #1C2B4A;
+  }
+
+  .mb-howstack__subtitle {
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6B5444;
+  }
+
+  .mb-howstack__head-rule {
+    display: block;
+    width: 64px;
+    height: 1px;
+    margin: 40px auto 0;
+    background: #B8965A;
+    opacity: 0.7;
+  }
+
+  /* ---- Cards (default = simple vertical stack / mobile / no-JS / reduced-motion) ---- */
+  .mb-howstack__cards {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .mb-howstack__card {
+    background: #F5F0E8;
+    border: 1px solid rgba(184, 150, 90, 0.22);
+  }
+  .mb-howstack__card:nth-child(even) {
+    background: #EDE5D4;
+  }
+
+  .mb-howstack__card-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 40px 28px;
+  }
+
+  .mb-howstack__num {
+    flex-shrink: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1;
+    color: #B8965A;
+  }
+
+  .mb-howstack__card-body {
+    flex: 1 1 auto;
+  }
+
+  .mb-howstack__card-label {
+    display: block;
+    margin-bottom: 16px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    color: #B8965A;
+  }
+
+  .mb-howstack__card-title {
+    margin: 0 0 18px;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    color: #1C2B4A;
+  }
+
+  .mb-howstack__card-rule {
+    display: block;
+    width: 48px;
+    height: 1px;
+    margin-bottom: 18px;
+    background: #B8965A;
+    opacity: 0.65;
+  }
+
+  .mb-howstack__card-text {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: #3A2E22;
+    max-width: 540px;
+  }
+
+  /* ---- Desktop base ---- */
+  @media (min-width: 769px) {
+    .mb-howstack {
+      padding-block: var(--section-py-immersive, 120px);
+    }
+    .mb-howstack__container {
+      padding-inline: 24px;
+    }
+    .mb-howstack__head {
+      margin-bottom: 72px;
+    }
+    .mb-howstack__title {
+      font-size: 52px;
+    }
+    .mb-howstack__subtitle {
+      font-size: 17px;
+    }
+    .mb-howstack__card-inner {
+      gap: 40px;
+      padding: 64px 72px;
+      min-height: 300px;
+      align-items: center;
+    }
+    .mb-howstack__num {
+      font-size: 64px;
+    }
+    .mb-howstack__card-title {
+      font-size: 38px;
+    }
+    .mb-howstack__card-text {
+      font-size: 16.5px;
+    }
+  }
+
+  /* Spacer that lets the last card's pin release cleanly (port of .scroll-stack-end). */
+  .mb-howstack__end {
+    width: 100%;
+    height: 1px;
+  }
+
+  /* ---- Stacking mode (desktop, JS-enabled, motion allowed) ----
+     The JS drives transform/filter per card; CSS only sets the GPU-friendly
+     base state. Card margins (item distance) are applied inline by the JS so
+     they only exist while stacking is active. */
+  .mb-howstack.is-stacking .mb-howstack__cards {
+    display: block;
+    gap: 0;
+  }
+  .mb-howstack.is-stacking .mb-howstack__card {
+    transform-origin: top center;
+    backface-visibility: hidden;
+    will-change: transform, filter;
+    box-shadow: 0 18px 50px -28px rgba(28, 43, 74, 0.35);
+    /* The JS drives transform every frame — the global .reveal transition would
+       make it lag, so disable it while stacking. */
+    transition: none;
+    opacity: 1;
+  }
+
+  /* ---- Reduced motion: never animate, always visible, simple stack ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .mb-howstack__cards {
+      display: flex !important;
+      gap: 24px !important;
+    }
+    .mb-howstack__card {
+      transform: none !important;
+      filter: none !important;
+      opacity: 1 !important;
+      margin: 0 !important;
+      box-shadow: none !important;
+    }
+  }
+{% endstylesheet %}
+
+<script>
+  (function () {
+    /*
+     * Vanilla port of React Bits "ScrollStack" (useWindowScroll variant).
+     * Faithful to the original transform math — translateY pinning at a fixed
+     * viewport position, per-card scale (baseScale + i * itemScale), staggered
+     * stack offset (itemStackDistance) and depth blur — but with NO React and
+     * NO Lenis. The page's native scroll drives a requestAnimationFrame loop;
+     * we never hijack or smooth the global scroll (Shopify-safe).
+     *
+     * Natural card offsets are measured once (with transforms cleared) and
+     * cached, which avoids the rect-feedback jitter the original has in window
+     * mode where getBoundingClientRect reflects the transform it just applied.
+     */
+    function num(v, fallback) {
+      var n = parseFloat(v);
+      return isNaN(n) ? fallback : n;
+    }
+
+    function init(root) {
+      if (root.dataset.mbInit === '1') return;
+      root.dataset.mbInit = '1';
+
+      var cards = Array.prototype.slice.call(root.querySelectorAll('.mb-howstack__card'));
+      var endEl = root.querySelector('.mb-howstack__end');
+      if (!cards.length || !endEl) return;
+
+      var enable = root.dataset.scrollstack === 'true';
+      var forceFallback = root.dataset.reducedFallback === 'true';
+
+      // Tunables (ScrollStack props), with premium-calm defaults.
+      var itemDistance      = num(root.dataset.itemDistance, 110);   // scroll gap between cards
+      var itemScale         = num(root.dataset.itemScale, 0.02);     // per-card scale increment
+      var itemStackDistance = num(root.dataset.stackOffset, 18);     // px each card sits lower
+      var baseScale         = num(root.dataset.baseScale, 0.90);     // smallest (back) card scale
+      var blurAmount        = num(root.dataset.blurAmount, 0);       // blur per depth level
+      var stackPositionPct  = 0.22;  // pin point: 22% from viewport top
+      var scaleEndPct       = 0.12;  // scale animation finishes at 12%
+      var rotationAmount    = 0;     // premium: no rotation
+
+      var mqDesktop = window.matchMedia('(min-width: 769px)');
+      var mqMotion  = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      var cardTops = [];   // cached natural document offsets (transform-independent)
+      var endTop = 0;
+      var lastTf = [];     // change-detection cache
+      var ticking = false;
+      var listening = false;
+      var inView = false;
+
+      // Paramètres effectifs — adaptés au mobile : empilement plus doux (cartes
+      // moins rétrécies, décalage réduit, épinglées plus haut) pour rester
+      // parfaitement lisibles sur écran étroit. Sur desktop : valeurs inchangées.
+      var eDist = itemDistance, eOffset = itemStackDistance,
+          eBase = baseScale, eScale = itemScale, ePinPct = stackPositionPct;
+      function applyParams() {
+        var mobile = !mqDesktop.matches;
+        eDist   = mobile ? Math.min(itemDistance, 72) : itemDistance;
+        eOffset = mobile ? Math.min(itemStackDistance, 12) : itemStackDistance;
+        eBase   = mobile ? Math.max(baseScale, 0.95) : baseScale;
+        eScale  = mobile ? Math.min(itemScale, 0.015) : itemScale;
+        ePinPct = mobile ? 0.14 : stackPositionPct;
+      }
+
+      // Empilement actif sur mobile ET desktop (le mobile rappelle le desktop,
+      // pensé pour écran étroit). Seul reduced-motion / la désactivation le coupe.
+      function canStack() {
+        return enable && !forceFallback && !mqMotion.matches;
+      }
+
+      function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+      // Measure natural positions with transforms/margins applied but transforms cleared.
+      function measure() {
+        applyParams();
+        for (var i = 0; i < cards.length; i++) {
+          cards[i].style.marginBottom = (i < cards.length - 1 ? eDist : 0) + 'px';
+          cards[i].style.transform = '';
+          cards[i].style.filter = '';
+        }
+        var sy = window.pageYOffset;
+        for (var j = 0; j < cards.length; j++) {
+          cardTops[j] = cards[j].getBoundingClientRect().top + sy;
+        }
+        endTop = endEl.getBoundingClientRect().top + sy;
+      }
+
+      function update() {
+        ticking = false;
+        if (!canStack() || !inView) return;
+
+        var scrollTop = window.pageYOffset;
+        var vh = window.innerHeight;
+        var stackPx    = ePinPct * vh;
+        var scaleEndPx = scaleEndPct * vh;
+        var pinEnd = endTop - vh / 2;
+
+        // Index of the top-most card whose trigger has been reached (for depth blur).
+        var topIndex = 0;
+        for (var t = 0; t < cards.length; t++) {
+          if (scrollTop >= cardTops[t] - stackPx - eOffset * t) topIndex = t;
+        }
+
+        for (var i = 0; i < cards.length; i++) {
+          var cardTop = cardTops[i];
+          var triggerStart = cardTop - stackPx - eOffset * i;
+          var triggerEnd = cardTop - scaleEndPx;
+          var pinStart = triggerStart;
+
+          var scaleProgress = clamp((scrollTop - triggerStart) / (triggerEnd - triggerStart), 0, 1);
+          var targetScale = eBase + i * eScale;
+          var scale = 1 - scaleProgress * (1 - targetScale);
+          var rotation = rotationAmount ? i * rotationAmount * scaleProgress : 0;
+
+          var blur = 0;
+          if (blurAmount && i < topIndex) {
+            blur = Math.max(0, (topIndex - i) * blurAmount);
+          }
+
+          var translateY = 0;
+          if (scrollTop >= pinStart && scrollTop <= pinEnd) {
+            translateY = scrollTop - cardTop + stackPx + eOffset * i;
+          } else if (scrollTop > pinEnd) {
+            translateY = pinEnd - cardTop + stackPx + eOffset * i;
+          }
+
+
+          translateY = Math.round(translateY * 100) / 100;
+          scale = Math.round(scale * 1000) / 1000;
+          rotation = Math.round(rotation * 100) / 100;
+          blur = Math.round(blur * 100) / 100;
+
+          var prev = lastTf[i];
+          if (!prev ||
+              Math.abs(prev.y - translateY) > 0.1 ||
+              Math.abs(prev.s - scale) > 0.001 ||
+              Math.abs(prev.r - rotation) > 0.1 ||
+              Math.abs(prev.b - blur) > 0.1) {
+            cards[i].style.transform =
+              'translate3d(0,' + translateY + 'px,0) scale(' + scale + ')' +
+              (rotation ? ' rotate(' + rotation + 'deg)' : '');
+            cards[i].style.filter = blur > 0 ? 'blur(' + blur + 'px)' : '';
+            lastTf[i] = { y: translateY, s: scale, r: rotation, b: blur };
+          }
+        }
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      }
+
+      function onResize() {
+        if (!canStack()) return;
+        measure();
+        onScroll();
+      }
+
+      function clearInline() {
+        for (var i = 0; i < cards.length; i++) {
+          cards[i].style.transform = '';
+          cards[i].style.filter = '';
+          cards[i].style.marginBottom = '';
+        }
+        lastTf = [];
+      }
+
+      function attach() {
+        if (listening) return;
+        listening = true;
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onResize, { passive: true });
+      }
+      function detach() {
+        if (!listening) return;
+        listening = false;
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onResize);
+      }
+
+      function evaluate() {
+        if (canStack()) {
+          root.classList.add('is-stacking');
+          // Stacked cards must be visible regardless of the global reveal observer.
+          for (var i = 0; i < cards.length; i++) cards[i].classList.add('is-visible');
+          measure();
+          if (inView) { attach(); update(); }
+        } else {
+          root.classList.remove('is-stacking');
+          detach();
+          clearInline();
+        }
+      }
+
+      // Only run the scroll loop while the section is near/in the viewport.
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          inView = entries[0].isIntersecting;
+          if (!canStack()) return;
+          if (inView) { measure(); attach(); update(); }
+          else { detach(); }
+        }, { rootMargin: '300px 0px' });
+        io.observe(root);
+      } else {
+        inView = true;
+      }
+
+      function onMqChange() { evaluate(); }
+      if (mqDesktop.addEventListener) {
+        mqDesktop.addEventListener('change', onMqChange);
+        mqMotion.addEventListener('change', onMqChange);
+      } else if (mqDesktop.addListener) {
+        mqDesktop.addListener(onMqChange);
+        mqMotion.addListener(onMqChange);
+      }
+
+      evaluate();
+    }
+
+    var roots = document.querySelectorAll('[data-mb-howstack]');
+    Array.prototype.forEach.call(roots, init);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Fonctionnement Stack",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "En-tête" },
+    { "type": "text",     "id": "title",        "label": "Titre",                    "default": "Comment commence le" },
+    { "type": "text",     "id": "title_accent", "label": "Mot en italique (accent)", "default": "voyage" },
+    { "type": "textarea", "id": "subtitle",     "label": "Sous-texte",               "default": "Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer librement." },
+
+    { "type": "header", "content": "Carte 01 — Choisir" },
+    { "type": "text",     "id": "card_1_label", "label": "Label",       "default": "LE RYTHME" },
+    { "type": "text",     "id": "card_1_title", "label": "Titre",       "default": "Choisir" },
+    { "type": "textarea", "id": "card_1_text",  "label": "Texte",       "default": "Sélectionne ton rythme : une première édition, trois mois ou une année de voyage français." },
+
+    { "type": "header", "content": "Carte 02 — Recevoir" },
+    { "type": "text",     "id": "card_2_label", "label": "Label",       "default": "L’ÉDITION" },
+    { "type": "text",     "id": "card_2_title", "label": "Titre",       "default": "Recevoir" },
+    { "type": "textarea", "id": "card_2_text",  "label": "Texte",       "default": "Chaque mois, Maison Bonjour prépare une édition autour d’une région française, avec des maisons, des gestes et des détails choisis." },
+
+    { "type": "header", "content": "Carte 03 — Ouvrir" },
+    { "type": "text",     "id": "card_3_label", "label": "Label",       "default": "LA SURPRISE" },
+    { "type": "text",     "id": "card_3_title", "label": "Titre",       "default": "Ouvrir" },
+    { "type": "textarea", "id": "card_3_text",  "label": "Texte",       "default": "Tout n’est pas dévoilé avant l’envoi. La surprise fait partie de l’expérience, mais rien n’est laissé au hasard." },
+
+    { "type": "header", "content": "Carte 04 — Gérer" },
+    { "type": "text",     "id": "card_4_label", "label": "Label",       "default": "L’ESPACE ABONNÉE" },
+    { "type": "text",     "id": "card_4_title", "label": "Titre",       "default": "Gérer" },
+    { "type": "textarea", "id": "card_4_text",  "label": "Texte",       "default": "Depuis ton espace abonnée, tu peux suivre ton abonnement, modifier tes informations, mettre en pause ou arrêter selon les conditions prévues." },
+
+    { "type": "header", "content": "Apparence & animation" },
+    { "type": "color",    "id": "background_color",        "label": "Couleur de fond de section", "default": "#F1E8D6" },
+    { "type": "checkbox", "id": "enable_scroll_stack",     "label": "Activer l’effet d’empilement au scroll (desktop & mobile)", "default": true },
+    { "type": "checkbox", "id": "reduced_motion_fallback", "label": "Forcer le fallback simple (jamais d’empilement animé)", "default": false, "info": "L’empilement est de toute façon désactivé pour les visiteurs ayant « réduire les animations » activé." },
+
+    { "type": "header", "content": "Réglages avancés de l’empilement" },
+    { "type": "range", "id": "base_scale",    "label": "Échelle de la carte du fond (%)", "min": 80, "max": 98, "step": 1, "unit": "%", "default": 90, "info": "Plus bas = cartes du fond plus petites." },
+    { "type": "range", "id": "item_scale",    "label": "Différence d’échelle par carte (%)", "min": 0, "max": 6, "step": 1, "unit": "%", "default": 2 },
+    { "type": "range", "id": "stack_offset",  "label": "Décalage vertical du stack (px)", "min": 8, "max": 40, "step": 2, "unit": "px", "default": 18 },
+    { "type": "range", "id": "item_distance", "label": "Distance de scroll entre cartes (px)", "min": 60, "max": 200, "step": 10, "unit": "px", "default": 110 },
+    { "type": "range", "id": "blur_amount",   "label": "Flou de profondeur", "min": 0, "max": 3, "step": 0.5, "default": 0, "info": "0 = aucun flou (recommandé, plus premium)." }
+  ],
+  "presets": [
+    { "name": "Fonctionnement Stack" }
+  ]
+}
+{% endschema %}

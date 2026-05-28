@@ -1,0 +1,101 @@
+<article class="legal">
+  <header class="legal__header">
+    <div class="legal__header-inner">
+      <span class="label">Questions fréquentes</span>
+      <h1 class="legal__title">{{ page.title | default: 'Questions fréquentes.' }}</h1>
+      <hr class="sep sep--center">
+    </div>
+  </header>
+
+  <section class="legal__content editorial faq">
+    {%- if page.content != blank -%}
+      {{ page.content }}
+    {%- else -%}
+      <details>
+        <summary>Quand part la première box&nbsp;?</summary>
+        <p>Le 15 du mois suivant votre inscription. Vous pouvez suivre votre commande dès l’expédition.</p>
+      </details>
+      <details>
+        <summary>Puis-je mettre mon abonnement en pause&nbsp;?</summary>
+        <p>Oui, en un clic depuis votre espace, sans frais et sans question. Reprenez quand vous voulez.</p>
+      </details>
+      <details>
+        <summary>Livrez-vous en dehors de Cluj-Napoca&nbsp;?</summary>
+        <p>Pour l’instant, nous livrons à Cluj-Napoca. Nous étudions d’autres villes au fil des saisons.</p>
+      </details>
+      <details>
+        <summary>Comment connaître le thème du mois prochain&nbsp;?</summary>
+        <p>Vous ne le saurez pas — c’est précisément la promesse. L’ordre des régions reste notre secret.</p>
+      </details>
+    {%- endif -%}
+  </section>
+</article>
+
+<style>
+  .legal__header {
+    padding-block: 80px 40px;
+    text-align: center;
+  }
+  .legal__header-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-inline: var(--container-padding);
+  }
+  .legal__title {
+    margin: 16px auto 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 3vw + 1rem, 3.5rem);
+    line-height: 1.1;
+    color: var(--marine);
+  }
+  .legal__content { padding-bottom: 120px; }
+
+  .faq details {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 0;
+    margin: 0 !important;
+  }
+  .faq details[open] summary { color: var(--gold); }
+  .faq summary {
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--marine);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: color 0.25s ease;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: "+";
+    font-family: var(--font-serif);
+    font-style: normal;
+    font-size: 24px;
+    color: var(--gold);
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+  .faq details[open] summary::after { content: "–"; }
+
+  .faq details p {
+    margin-top: 16px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: none;
+  }
+
+  @media (max-width: 767px) {
+    .legal__header { padding-block: 56px 24px; }
+    .legal__content { padding-bottom: 64px; }
+    .faq summary { font-size: 18px; }
+  }
+</style>

@@ -1,0 +1,67 @@
+MAISON BONJOUR — IMAGES DU MAGAZINE
+====================================
+
+⚠️ IMPORTANT — Shopify ne lit PAS les sous-dossiers de /assets.
+Ce dossier "magazine/" sert UNIQUEMENT à ranger tes fichiers sources.
+Pour qu'une image soit utilisée par le thème, elle doit :
+  • soit être placée À PLAT dans /assets (pas dans un sous-dossier),
+  • soit être assignée via l'éditeur de thème (Personnaliser → page Magazine
+    → la section concernée → sélecteur d'image).
+
+Aujourd'hui la page s'affiche déjà avec des images de secours existantes
+(paysage-region-provence-01..04.jpeg). La liste ci-dessous est la sélection
+IDÉALE à fournir pour un rendu type "Armonia" haut de gamme.
+
+Ambiance recherchée : photographie éditoriale, lumière naturelle douce,
+tons chauds (crème, ocre, vert olive, pierre), paysages et matières
+françaises. Pas de stock photo générique, pas de filtre saturé.
+
+------------------------------------------------------------------
+1. HERO — grande image paysage (pleine largeur)
+   Réglage   : section "Magazine — 01 Hero" → "Image immersive"
+   Nom suggéré : magazine-hero.jpg
+   Format    : paysage 16:9 — 2000 × 1125 px
+   Sujet     : paysage français large (champ, côte, village, vignoble)
+   Secours actuel : paysage-region-provence-01.jpeg
+
+2. À LA UNE — image gauche (portrait)
+   Réglage   : "Magazine — 02 À la une" → "Image gauche (portrait 4/5)"
+   Nom suggéré : magazine-featured-left.jpg
+   Format    : portrait 4:5 — 1000 × 1250 px
+   Sujet     : détail / matière (lavande, linge, céramique…)
+   Secours actuel : paysage-region-provence-02.jpeg
+
+3. À LA UNE — image droite (portrait haut)
+   Réglage   : "Magazine — 02 À la une" → "Image droite (portrait 3/4)"
+   Nom suggéré : magazine-featured-right.jpg
+   Format    : portrait 3:4 — 1000 × 1333 px
+   Sujet     : scène de vie / lieu (terrasse, marché, atelier)
+   Secours actuel : paysage-region-provence-03.jpeg
+
+4. CATÉGORIES — 6 visuels (portrait 3/4, 900 × 1200 px)
+   Réglage   : "Magazine — 04 Catégories" → chaque bloc "Catégorie" → Image
+   Noms suggérés / sujets :
+     magazine-cat-regions.jpg   → paysage régional
+     magazine-cat-artisans.jpg  → mains d'artisan / atelier
+     magazine-cat-table.jpg     → arts de la table, dressage
+     magazine-cat-beaute.jpg    → savon, parfum, matières
+     magazine-cat-objets.jpg    → objet choisi en gros plan
+     magazine-cat-carnets.jpg   → carnet, route de campagne
+   Secours actuel : paysage-region-provence-04.jpeg (toutes)
+
+5. DERNIERS CARNETS — 3 visuels d'articles (portrait 4/5, 600 × 750 px)
+   Réglage   : connecte un blog réel dans "Magazine — 05 Derniers"
+               (réglage "Blog source"), OU ajoute des blocs placeholder
+               avec image.
+   Noms suggérés : magazine-post-1.jpg / -2.jpg / -3.jpg
+   Secours actuel : paysage-region-provence-01 / -02 / -04.jpeg
+
+------------------------------------------------------------------
+PROCÉDURE RAPIDE (recommandée)
+1. Mets tes fichiers finaux dans /assets (à plat), ex. magazine-hero.jpg
+2. Ouvre Personnaliser le thème → page Magazine
+3. Dans chaque section, clique le sélecteur d'image et choisis ton fichier
+4. Enregistre. Les choix persistent même si la section est incluse en statique.
+
+Astuce SEO : renseigne le texte ALT de chaque image (région, sujet) dans
+le sélecteur d'image Shopify.

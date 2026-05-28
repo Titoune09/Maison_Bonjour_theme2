@@ -1,0 +1,104 @@
+{%- comment -%}
+  Default page template.
+
+  Special case: the "Magazine" page is an editorial landing built from six
+  dedicated sections. Because its custom template (page.magazine) is not yet
+  published to the live theme, the page is assigned the Default template in the
+  admin. We therefore render the magazine layout here whenever the page handle
+  is "magazine" (or the magazine template suffix is set), and fall back to the
+  standard legal/editorial layout for every other page.
+{%- endcomment -%}
+
+{%- if page.handle == 'magazine' or page.template_suffix == 'magazine' -%}
+
+  {{ 'magazine.css' | asset_url | stylesheet_tag }}
+
+  {%- comment -%} Structured data for richer Google results {%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": {{ page.title | json }},
+    "headline": {{ page.title | json }},
+    "description": "Le journal éditorial de Maison Bonjour : régions de France, maisons artisanales, rituels et art de vivre. Le Magazine prolonge chaque box mensuelle.",
+    "url": {{ request.origin | append: page.url | json }},
+    "inLanguage": "fr-FR",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }}
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Accueil", "item": {{ request.origin | json }} },
+        { "@type": "ListItem", "position": 2, "name": {{ page.title | json }}, "item": {{ request.origin | append: page.url | json }} }
+      ]
+    }
+  }
+  </script>
+
+  <div class="mb-magazine-field">
+    <div class="mb-magazine template-page-magazine">
+      {% section 'magazine-hero' %}
+      {% section 'magazine-featured' %}
+      {% section 'magazine-purpose' %}
+      {% section 'magazine-categories' %}
+      {% section 'magazine-latest' %}
+      {% section 'magazine-cta' %}
+    </div>
+  </div>
+
+  <style>
+    /* Field behind the centered editorial card (replicates page.magazine shell) */
+    .mb-magazine-field { background: var(--cream-warm); }
+  </style>
+
+{%- else -%}
+
+  <article class="legal">
+    <header class="legal__header">
+      <div class="legal__header-inner">
+        <h1 class="legal__title">{{ page.title }}</h1>
+        <hr class="sep sep--center">
+      </div>
+    </header>
+
+    <section class="legal__content editorial">
+      {{ page.content }}
+    </section>
+  </article>
+
+  <style>
+    .legal__header {
+      padding-block: 80px 40px;
+      text-align: center;
+    }
+    .legal__header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding-inline: var(--container-padding);
+    }
+    .legal__title {
+      margin: 0;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2.25rem, 3vw + 1rem, 3.5rem);
+      line-height: 1.1;
+      color: var(--marine);
+    }
+    .legal__content { padding-bottom: 120px; }
+
+    @media (max-width: 767px) {
+      .legal__header { padding-block: 56px 24px; }
+      .legal__content { padding-bottom: 64px; }
+    }
+  </style>
+
+{%- endif -%}

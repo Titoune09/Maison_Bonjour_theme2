@@ -1,0 +1,109 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Étiqueté \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "search": {
+      "placeholder": "Rechercher",
+      "submit": "Rechercher",
+      "no_results_html": "Aucun résultat pour <strong>« {{ terms }} »</strong>."
+    },
+    "404": {
+      "title": "Page introuvable",
+      "subtext": "La page que vous cherchez n’existe plus ou a été déplacée.",
+      "link": "Revenir à l’accueil"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Votre panier",
+      "empty": "Votre panier est vide.",
+      "continue": "Continuer vos achats",
+      "subtotal": "Sous-total",
+      "checkout": "Commander",
+      "quantity": "Quantité",
+      "remove": "Retirer",
+      "shipping_note": "Livraison et taxes calculées au paiement.",
+      "note": "Ajouter une note à votre commande"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "quantity": "Quantité",
+      "description": "Description"
+    }
+  },
+  "customer": {
+    "login_page": {
+      "title": "Connexion",
+      "email": "Email",
+      "password": "Mot de passe",
+      "forgot_password": "Mot de passe oublié",
+      "sign_in": "Se connecter",
+      "create_account": "Créer un compte",
+      "guest_title": "Continuer en tant qu’invité",
+      "guest_continue": "Continuer"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "first_name": "Prénom",
+      "last_name": "Nom",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Créer mon compte",
+      "cancel": "Retour à la connexion"
+    },
+    "account": {
+      "title": "Mon compte",
+      "details": "Mes coordonnées",
+      "view_addresses": "Mes adresses",
+      "logout": "Se déconnecter",
+      "order_history": "Historique des commandes",
+      "no_orders": "Aucune commande pour le moment.",
+      "order_number": "Commande",
+      "date": "Date",
+      "payment_status": "Paiement",
+      "fulfillment_status": "Livraison",
+      "total": "Total"
+    },
+    "addresses": {
+      "title": "Mes adresses",
+      "add_new": "Ajouter une nouvelle adresse",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "default": "Par défaut",
+      "back": "Retour au compte"
+    },
+    "order": {
+      "title": "Commande {{ name }}",
+      "date": "Passée le {{ date }}",
+      "billing_address": "Adresse de facturation",
+      "shipping_address": "Adresse de livraison",
+      "subtotal": "Sous-total",
+      "total": "Total",
+      "back": "Retour au compte"
+    },
+    "reset_password": {
+      "title": "Réinitialiser le mot de passe",
+      "subtext": "Entrez votre email pour recevoir un lien de réinitialisation.",
+      "submit": "Envoyer",
+      "back": "Retour à la connexion"
+    },
+    "activate_account": {
+      "title": "Activer le compte",
+      "subtext": "Créez un mot de passe pour activer votre compte.",
+      "password": "Mot de passe",
+      "password_confirm": "Confirmer le mot de passe",
+      "submit": "Activer",
+      "decline": "Décliner l’invitation"
+    }
+  }
+}

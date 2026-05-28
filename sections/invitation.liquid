@@ -1,0 +1,159 @@
+{%- liquid
+  assign title       = section.settings.title       | default: 'Rejoignez Maison Bonjour.'
+  assign sub_prefix  = section.settings.sub_prefix  | default: 'La prochaine box part dans'
+  assign sub_suffix  = section.settings.sub_suffix  | default: 'jours.'
+  assign cta_label   = section.settings.cta_label   | default: 'S’abonner'
+  assign cta_url     = section.settings.cta_url
+  assign footnote    = section.settings.footnote    | default: 'À partir de 64 € / mois · Pause à tout moment · Première box livrée le 15'
+  assign marquee_str = section.settings.marquee     | default: 'Cluj-Napoca · Édition Juillet 2026 · Bretagne · Semaine de la France · Institut français · Livraison le 15'
+  assign marquee_items = marquee_str | split: '·'
+-%}
+
+<section class="invitation section--dark" aria-label="L'Invitation">
+  <div class="marquee invitation__marquee" aria-hidden="true">
+    <div class="marquee__track" data-mb-marquee>
+      {%- for item in marquee_items -%}
+        {%- assign clean = item | strip -%}
+        {%- if clean != blank -%}
+          <span class="marquee__item">{{ clean }}</span>
+          <span class="marquee__sep" aria-hidden="true"></span>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="invitation__inner reveal">
+      <div class="invitation__parcel paper-panel tilt-card" aria-hidden="true">
+        <span class="stamp">Départ<br>le 15</span>
+        <span class="invitation__parcel-line"></span>
+        <span class="invitation__parcel-text">France → Cluj-Napoca</span>
+      </div>
+      <h2 class="invitation__title" data-split-words>{{ title }}</h2>
+
+      <p class="invitation__sub">
+        {{ sub_prefix }}
+        <span id="days-remaining" data-days-remaining>12</span>
+        {{ sub_suffix }}
+      </p>
+
+      {%- if cta_url != blank -%}
+        <a class="btn btn--primary btn--magnetic invitation__cta" href="{{ cta_url }}">{{ cta_label }}</a>
+      {%- endif -%}
+
+      <p class="invitation__footnote">{{ footnote }}</p>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .invitation {
+    padding-block: 0;
+    text-align: center;
+  }
+
+  .invitation__marquee {
+    color: var(--gold-soft);
+    border-color: rgba(184, 150, 90, 0.2);
+    background: rgba(0, 0, 0, 0.1);
+    margin-top: 80px;
+  }
+
+  .invitation .container { padding-block: 140px; }
+
+  .invitation__inner {
+    position: relative;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .invitation__parcel {
+    width: 190px;
+    min-height: 150px;
+    margin: 0 auto 42px;
+    padding: 22px;
+    color: var(--marine);
+    transform: rotate(-3deg);
+  }
+
+  .invitation__parcel-line {
+    display: block;
+    height: 1px;
+    margin: 20px 0 14px;
+    background: var(--border);
+  }
+
+  .invitation__parcel-text {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .invitation__title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw + 1rem, 5rem);
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    color: var(--text-cream);
+  }
+
+  .invitation__sub {
+    margin: 32px auto 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 0.4vw + 0.9rem, 1.25rem);
+    letter-spacing: 0.01em;
+    color: rgba(250, 246, 236, 0.78);
+    max-width: none;
+  }
+  .invitation__sub #days-remaining {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.4em;
+    color: var(--gold);
+    margin: 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .invitation__cta {
+    margin-top: 64px;
+  }
+
+  .invitation__footnote {
+    margin: 36px auto 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: rgba(250, 246, 236, 0.55);
+    max-width: 600px;
+  }
+
+  @media (max-width: 767px) {
+    .invitation__marquee { margin-top: 56px; }
+    .invitation .container { padding-block: 80px; }
+    .invitation__cta { margin-top: 40px; }
+    .invitation__parcel { margin-bottom: 32px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "09 — L'Invitation",
+  "settings": [
+    { "type": "text", "id": "title",      "label": "Titre", "default": "Rejoignez Maison Bonjour." },
+    { "type": "text", "id": "sub_prefix", "label": "Avant le compte à rebours", "default": "La prochaine box part dans" },
+    { "type": "text", "id": "sub_suffix", "label": "Après le compte à rebours", "default": "jours." },
+    { "type": "text", "id": "cta_label",  "label": "Libellé bouton", "default": "S’abonner" },
+    { "type": "url",  "id": "cta_url",    "label": "Lien bouton" },
+    { "type": "text", "id": "footnote",   "label": "Sous-bouton", "default": "À partir de 64 € / mois · Pause à tout moment · Première box livrée le 15" },
+    { "type": "text", "id": "marquee",    "label": "Ticker (séparé par ·)", "default": "Cluj-Napoca · Édition Juillet 2026 · Bretagne · Semaine de la France · Institut français · Livraison le 15" }
+  ],
+  "presets": [{ "name": "09 — L'Invitation" }]
+}
+{% endschema %}

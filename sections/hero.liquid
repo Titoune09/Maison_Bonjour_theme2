@@ -1,0 +1,468 @@
+{%- liquid
+  assign hero_image      = section.settings.hero_image
+  assign subscribe_url   = section.settings.subscribe_url
+  assign citation_line_1 = section.settings.citation_line_1 | default: 'Il y a une certaine France'
+  assign citation_line_2 = section.settings.citation_line_2 | default: 'qui ne s’exporte jamais.'
+  assign subtext         = section.settings.subtext         | default: 'Maison Bonjour la livre chaque mois à Cluj-Napoca.'
+  assign cta_label       = section.settings.cta_label       | default: 'S’abonner'
+  assign wordmark        = section.settings.wordmark        | default: 'MAISON BONJOUR'
+-%}
+
+<section class="hero{% if hero_image == blank %} hero--no-image{% endif %}" aria-label="Le Départ" role="region" data-motion-hero>
+
+  <div class="hero__bg" aria-hidden="true" data-motion-layer data-motion-depth="-18">
+    {%- if hero_image != blank -%}
+      {{ hero_image | image_url: width: 2400 | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          widths: '600, 900, 1200, 1600, 2000, 2400',
+          class: 'hero__img',
+          alt: hero_image.alt
+      }}
+    {%- else -%}
+      <picture>
+        <source media="(max-width: 749px)" srcset="{{ 'hero-mobile.jpg' | asset_url }}">
+        <img class="hero__img"
+             src="{{ 'hero.jpg' | asset_url }}"
+             alt="Maison Bonjour — Le Départ"
+             width="2400"
+             height="1600"
+             loading="eager"
+             fetchpriority="high">
+      </picture>
+    {%- endif -%}
+    <span class="hero__overlay"></span>
+    <span class="hero__vignette"></span>
+  </div>
+
+  <div class="hero__frame">
+
+    <div class="hero__caption" data-motion-layer data-motion-depth="10">
+      <p class="hero__citation">
+        <em>{{ citation_line_1 }}<br>{{ citation_line_2 }}</em>
+      </p>
+      <p class="hero__sub">{{ subtext }}</p>
+      {%- if subscribe_url != blank -%}
+        <a class="hero__cta" href="{{ subscribe_url }}">
+          <span>{{ cta_label }}</span>
+          <span class="hero__cta-arrow" aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <h1 class="hero__wordmark" data-motion-layer data-motion-depth="4">
+      <span class="hero__wordmark-text">{{ wordmark }}</span>
+    </h1>
+
+    <span class="hero__shelf" aria-hidden="true"></span>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .hero {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: var(--marine-deep);
+    color: var(--text-cream);
+    isolation: isolate;
+  }
+
+  .hero--no-image {
+    background:
+      radial-gradient(ellipse at 75% 30%, rgba(184, 150, 90, 0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 80%, rgba(28, 43, 74, 0.6) 0%, transparent 60%),
+      linear-gradient(180deg, var(--marine-deep) 0%, var(--marine) 50%, var(--marine-deep) 100%);
+  }
+
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero__bg picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15, 26, 46, 0.35) 0%, rgba(15, 26, 46, 0.1) 35%, rgba(15, 26, 46, 0.45) 80%, rgba(15, 26, 46, 0.85) 100%);
+  }
+
+  .hero__vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(15, 26, 46, 0.4) 100%);
+    pointer-events: none;
+  }
+
+  .hero__frame {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(64px, 8vh, 120px) clamp(24px, 4vw, 56px) clamp(140px, 14vw, 220px);
+    display: grid;
+    grid-template-rows: 1fr;
+    align-items: center;
+    justify-items: center;
+  }
+
+  .hero__caption {
+    align-self: center;
+    text-align: center;
+    max-width: 640px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: hero-rise 1.1s var(--ease-out) 0.5s forwards;
+    text-shadow: 0 2px 24px rgba(15, 26, 46, 0.55);
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding: 8px 16px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: rgba(15, 26, 46, 0.55);
+    border: 1px solid rgba(250, 246, 236, 0.25);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__eyebrow-rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--cream);
+    opacity: 0.85;
+  }
+
+  .hero__citation {
+    margin: 0 auto;
+    max-width: 22ch;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(2.2rem, 3.4vw + 1.1rem, 4.4rem);
+    line-height: 1.14;
+    color: var(--text-cream);
+    letter-spacing: -0.01em;
+  }
+
+  .hero__citation em {
+    font-style: italic;
+  }
+
+  .hero__sub {
+    margin: 18px auto 0;
+    max-width: 360px;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 11.5px;
+    line-height: 1.7;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(250, 246, 236, 0.6);
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding-bottom: 4px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184, 150, 90, 0.4);
+    transition: color 0.3s ease, border-color 0.3s ease, gap 0.3s ease;
+  }
+
+  .hero__cta:hover {
+    color: var(--gold-soft);
+    border-color: var(--gold-soft);
+    gap: 14px;
+  }
+
+  .hero__cta-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .hero__cta:hover .hero__cta-arrow {
+    transform: translateX(2px);
+  }
+
+  /* Wordmark fixé au bas du viewport — statique au scroll.
+     Reste "piégé" dans la couche de peinture du .hero (isolation: isolate),
+     donc les sections suivantes peintes après dans le DOM passent par-dessus
+     avec leur background opaque (coupe nette, pas de dégradé). */
+  .hero__wordmark {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: clamp(28px, 5vh, 64px);
+    z-index: 4;
+    width: 100%;
+    margin: 0;
+    padding: 0 clamp(16px, 3vw, 40px);
+    text-align: center;
+    font-family: "TAN Pearl", "Kalnia", "Instrument Serif", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 700;
+    font-variation-settings: "wdth" 100;
+    font-size: clamp(2.4rem, 9.5vw, 9rem);
+    line-height: 0.82;
+    letter-spacing: -0.01em;
+    color: var(--cream);
+    -webkit-text-stroke: 0.02em var(--cream);
+    paint-order: stroke fill;
+    text-shadow: 0 10px 70px rgba(15, 26, 46, 0.4);
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
+    opacity: 0;
+    animation: hero-rise 1.4s var(--ease-out) 0.15s forwards;
+    transform-origin: 0% 100%;
+    scale: 1;
+    transition:
+      scale 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+      bottom 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+      text-shadow 0.7s ease;
+  }
+
+  /* Quand le footer entre dans le viewport (toggle via JS) — le wordmark
+     se rétrécit pour s'intégrer comme une signature en bas du footer marine. */
+  .hero__wordmark--in-footer {
+    scale: 0.22;
+    bottom: 28px;
+    text-align: left;
+    text-shadow: 0 2px 18px rgba(15, 26, 46, 0.6);
+  }
+
+  /* Hidden while scrolling through the mid-page sections (not over the hero,
+     not yet in the footer) so the fixed wordmark never overlaps content. */
+  .hero__wordmark--hidden {
+    opacity: 0 !important;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  .hero__wordmark-text {
+    display: inline-block;
+    transform: scaleY(1.6);
+    transform-origin: 0% 100%;
+    margin-bottom: -0.24em;
+  }
+
+  .hero__shelf { display: none; }
+
+  .hero__wordmark-star {
+    display: inline-block;
+    margin-left: 0.02em;
+    color: var(--gold);
+    font-size: 0.34em;
+    vertical-align: top;
+    transform: translateY(0.38em);
+    animation: hero-star-spin 16s linear infinite;
+    transform-origin: 50% 60%;
+  }
+
+  @keyframes hero-star-spin {
+    to { transform: translateY(0.38em) rotate(360deg); }
+  }
+
+  @keyframes hero-rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Tablette */
+  @media (max-width: 1023px) {
+    .hero__wordmark { font-size: clamp(2.9rem, 11vw, 10rem); }
+    .hero__caption { max-width: 480px; }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+    .hero__frame {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 72px 24px clamp(140px, 20vh, 200px);
+      align-items: center;
+      justify-items: center;
+    }
+    .hero__img {
+      object-position: center bottom;
+    }
+    .hero__overlay {
+      background:
+        linear-gradient(180deg, rgba(15, 26, 46, 0.35) 0%, rgba(15, 26, 46, 0.08) 30%, rgba(15, 26, 46, 0.38) 72%, rgba(15, 26, 46, 0.74) 100%);
+    }
+    .hero__caption {
+      align-self: center;
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      padding: 0;
+      text-align: center;
+    }
+    .hero__citation { font-size: clamp(1.7rem, 7vw, 2.4rem); max-width: 18ch; }
+    .hero__sub {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 280px;
+      font-size: 10.5px;
+    }
+    .hero__wordmark {
+      font-size: clamp(2rem, 12vw, 5rem);
+      letter-spacing: -0.015em;
+      white-space: normal;
+      line-height: 1.02;
+      padding: 0 20px;
+      text-align: left;
+      bottom: clamp(34px, 7vh, 58px);
+    }
+    .hero__wordmark-text {
+      transform: scaleY(1.18);
+      margin-bottom: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__wordmark-star { animation: none; }
+    .hero__caption,
+    .hero__wordmark {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    .hero__wordmark { transition: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var wordmark = document.querySelector('.hero__wordmark');
+    var hero     = document.querySelector('[data-motion-hero]');
+    var footer   = document.querySelector('.mb-footer');
+    if (!wordmark || !('IntersectionObserver' in window)) return;
+
+    var heroVisible   = true;
+    var footerVisible = false;
+
+    function update() {
+      // Shrink into a signature once the footer is on screen.
+      wordmark.classList.toggle('hero__wordmark--in-footer', footerVisible);
+      // Hide entirely while traversing the mid-page sections.
+      wordmark.classList.toggle('hero__wordmark--hidden', !heroVisible && !footerVisible);
+    }
+
+    if (hero) {
+      new IntersectionObserver(function (entries) {
+        heroVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0 }).observe(hero);
+    }
+
+    if (footer) {
+      new IntersectionObserver(function (entries) {
+        footerVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0 }).observe(footer);
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Hero — 01 Le Départ",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Image plein écran",
+      "info": "Paysage cinéma. ~2400px de large."
+    },
+    {
+      "type": "url",
+      "id": "subscribe_url",
+      "label": "Lien — S'abonner"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Libellé CTA",
+      "default": "S’abonner"
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Mot-monolithe (MAJUSCULES)",
+      "default": "MAISON BONJOUR"
+    },
+    {
+      "type": "header",
+      "content": "Citation centrée"
+    },
+    {
+      "type": "text",
+      "id": "citation_line_1",
+      "label": "Ligne 1",
+      "default": "Il y a une certaine France"
+    },
+    {
+      "type": "text",
+      "id": "citation_line_2",
+      "label": "Ligne 2",
+      "default": "qui ne s’exporte jamais."
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Sous-texte",
+      "default": "Maison Bonjour la livre chaque mois à Cluj-Napoca."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero — 01 Le Départ"
+    }
+  ]
+}
+{% endschema %}

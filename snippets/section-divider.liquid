@@ -1,0 +1,54 @@
+{%- comment -%}
+  Séparateur organique entre deux sections.
+  Params:
+    top    — couleur de fond de la section au-dessus (hex). Requis.
+    bottom — couleur de fond de la section en dessous (hex). Requis.
+    variant — 1|2|3 tracé de la courbe (défaut 1). Ignoré si soft.
+    flip   — true pour miroir horizontal (défaut false). Ignoré si soft.
+    soft   — true => dégradé doux au lieu de la courbe SVG (défaut false).
+{%- endcomment -%}
+
+{%- liquid
+  assign d_top = top | default: '#FEF9F3'
+  assign d_bottom = bottom | default: '#FEF9F3'
+  assign d_variant = variant | default: 1
+-%}
+
+{%- if soft -%}
+  <div class="section-divider section-divider--soft" aria-hidden="true"
+       style="background: linear-gradient(180deg, {{ d_top }} 0%, {{ d_bottom }} 100%);"></div>
+{%- else -%}
+  <div class="section-divider" aria-hidden="true" style="background: {{ d_top }};">
+    <svg class="section-divider__svg{% if flip %} section-divider__svg--flip{% endif %}"
+         viewBox="0 0 1200 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      {%- case d_variant -%}
+        {%- when 2 -%}
+          <path d="M0,40 C220,110 480,0 720,46 C940,86 1080,30 1200,58 L1200,110 L0,110 Z" fill="{{ d_bottom }}"/>
+        {%- when 3 -%}
+          <path d="M0,70 C180,20 360,90 600,60 C840,30 1020,95 1200,48 L1200,110 L0,110 Z" fill="{{ d_bottom }}"/>
+        {%- else -%}
+          <path d="M0,55 C300,5 520,95 760,55 C980,18 1080,70 1200,42 L1200,110 L0,110 Z" fill="{{ d_bottom }}"/>
+      {%- endcase -%}
+    </svg>
+  </div>
+{%- endif -%}
+
+<style>
+  .section-divider {
+    display: block;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 0;
+  }
+  .section-divider__svg {
+    display: block;
+    width: 100%;
+    height: clamp(48px, 7vw, 110px);
+  }
+  .section-divider__svg--flip { transform: scaleX(-1); }
+  .section-divider--soft {
+    height: clamp(64px, 9vw, 120px);
+  }
+</style>

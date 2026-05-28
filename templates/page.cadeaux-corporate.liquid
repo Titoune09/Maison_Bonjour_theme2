@@ -1,0 +1,183 @@
+{%- assign sent = false -%}
+{%- if request.page_type == 'page' and request.path contains 'cadeaux' and request.search.terms contains 'sent' -%}
+  {%- assign sent = true -%}
+{%- endif -%}
+
+<article class="b2b">
+  <header class="b2b__hero">
+    <div class="container">
+      <span class="label">Cadeaux & entreprises</span>
+      <h1 class="b2b__title">
+        Offrir une parenthèse française.<br>
+        Une fois, ou pour toute l’équipe.
+      </h1>
+      <hr class="sep sep--center">
+      <div class="b2b__intro">
+        {%- if page.content != blank -%}
+          {{ page.content }}
+        {%- else -%}
+          <p>
+            Maison Bonjour est aussi un cadeau, individuel ou groupé. Clients, collaborateurs, partenaires : nous composons des box adaptées à votre demande, avec emballage et mot personnalisés.
+          </p>
+          <p>
+            Écrivez-nous ce que vous avez en tête. Nous revenons sous 48&nbsp;heures avec une proposition.
+          </p>
+        {%- endif -%}
+      </div>
+    </div>
+  </header>
+
+  <section class="b2b__form-wrap">
+    <div class="b2b__form-inner">
+      {% form 'contact', class: 'b2b__form', id: 'b2b-form' %}
+        {%- if form.posted_successfully? -%}
+          <p class="b2b__success">Merci. Nous revenons vers vous très bientôt.</p>
+        {%- else -%}
+          {%- if form.errors -%}
+            <p class="b2b__error">
+              {{ form.errors | default_errors }}
+            </p>
+          {%- endif -%}
+
+          <div class="b2b__row">
+            <label for="b2b-name">Nom</label>
+            <input type="text" id="b2b-name" name="contact[name]" autocomplete="name" required>
+          </div>
+
+          <div class="b2b__row">
+            <label for="b2b-email">Email</label>
+            <input type="email" id="b2b-email" name="contact[email]" autocomplete="email" required>
+          </div>
+
+          <div class="b2b__row">
+            <label for="b2b-company">Entreprise</label>
+            <input type="text" id="b2b-company" name="contact[company]" autocomplete="organization">
+          </div>
+
+          <div class="b2b__row">
+            <label for="b2b-boxes">Nombre de box souhaitées</label>
+            <input type="number" id="b2b-boxes" name="contact[boxes]" min="1" inputmode="numeric">
+          </div>
+
+          <div class="b2b__row b2b__row--full">
+            <label for="b2b-message">Message</label>
+            <textarea id="b2b-message" name="contact[body]" rows="6" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary b2b__submit">Envoyer</button>
+        {%- endif -%}
+      {% endform %}
+    </div>
+  </section>
+</article>
+
+<style>
+  .b2b__hero {
+    padding-block: 100px 60px;
+    text-align: center;
+  }
+  .b2b__title {
+    margin: 16px auto 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.25rem, 3.4vw + 1rem, 4rem);
+    line-height: 1.1;
+    color: var(--marine);
+    max-width: 760px;
+  }
+  .b2b__intro {
+    max-width: 560px;
+    margin: 32px auto 0;
+    text-align: left;
+  }
+  .b2b__intro p {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: none;
+  }
+  .b2b__intro p + p { margin-top: 1.25em; }
+
+  .b2b__form-wrap {
+    padding-block: 60px 120px;
+  }
+  .b2b__form-inner {
+    max-width: 560px;
+    margin: 0 auto;
+    padding-inline: var(--container-padding);
+  }
+  .b2b__form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 24px;
+  }
+  .b2b__row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .b2b__row--full { grid-column: 1 / -1; }
+
+  .b2b__form label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .b2b__form input,
+  .b2b__form textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 16px;
+    color: var(--text);
+    border-radius: 0;
+  }
+  .b2b__form input:focus,
+  .b2b__form textarea:focus {
+    outline: none;
+    border-bottom-color: var(--gold);
+  }
+  .b2b__form textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .b2b__submit {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin-top: 8px;
+  }
+
+  .b2b__success {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--gold);
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+  .b2b__error {
+    grid-column: 1 / -1;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: #8B2E2E;
+    border: 1px solid #8B2E2E;
+    padding: 12px 16px;
+  }
+
+  @media (max-width: 767px) {
+    .b2b__hero { padding-block: 56px 32px; }
+    .b2b__form-wrap { padding-block: 32px 80px; }
+    .b2b__form { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>

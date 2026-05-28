@@ -1,0 +1,364 @@
+{%- liquid
+  assign eyebrow      = section.settings.eyebrow        | default: 'PREMIÈRE ÉDITION · BRETAGNE · JUILLET 2026'
+  assign heading      = section.settings.heading        | default: 'Choisir son premier voyage'
+  assign subtitle     = section.settings.subtitle       | default: 'La première édition commence en Bretagne. Vous pouvez l’ouvrir une fois, ou laisser la France revenir chaque mois.'
+  assign reassurance  = section.settings.reassurance_text | default: 'Livraison incluse en Roumanie · Annulation libre-service · Première édition : Bretagne'
+  assign vertical     = section.settings.vertical_label | default: 'Premier Voyage'
+
+  assign fallback_imgs = 'paysage-region-bretagne-01.jpeg,paysage-region-normandie-01.jpeg,paysage-region-val-de-loire-01.jpeg' | split: ','
+-%}
+
+<section id="abonnement" class="pg section--cream" aria-label="Choisir son abonnement">
+  <div class="container">
+
+    <header class="pg__head reveal">
+      <p class="label pg__eyebrow">{{ eyebrow }}</p>
+      <h2 class="pg__title">
+        {%- assign heading_parts = heading | split: 'voyage' -%}
+        {%- if heading_parts.size > 1 -%}
+          {{ heading_parts[0] }}<em>voyage</em>{{ heading_parts[1] }}
+        {%- else -%}
+          {{ heading }}
+        {%- endif -%}
+      </h2>
+      <p class="pg__subtitle">{{ subtitle }}</p>
+    </header>
+
+    <div class="pg__layout reveal">
+
+      <div class="pg__rows">
+        {%- for i in (1..3) -%}
+          {%- liquid
+            assign idx       = i | minus: 1
+            assign num       = i | prepend: '0'
+            assign img_key   = 'plan_' | append: i | append: '_image'
+            assign title_key = 'plan_' | append: i | append: '_title'
+            assign price_key = 'plan_' | append: i | append: '_price'
+            assign sub_key   = 'plan_' | append: i | append: '_subprice'
+            assign text_key  = 'plan_' | append: i | append: '_text'
+            assign badge_key = 'plan_' | append: i | append: '_badge'
+            assign label_key = 'plan_' | append: i | append: '_button_label'
+            assign url_key   = 'plan_' | append: i | append: '_url'
+
+            assign p_img   = section.settings[img_key]
+            assign p_title = section.settings[title_key]
+            assign p_price = section.settings[price_key]
+            assign p_sub   = section.settings[sub_key]
+            assign p_text  = section.settings[text_key]
+            assign p_badge = section.settings[badge_key]
+            assign p_label = section.settings[label_key]
+            assign p_url   = section.settings[url_key]
+          -%}
+          {%- if p_title != blank -%}
+            <article class="pg-row reveal reveal--delay-{{ idx }}{% if p_badge != blank %} pg-row--featured{% endif %}">
+
+              <div class="pg-row__media">
+                {%- if p_img != blank -%}
+                  {{ p_img | image_url: width: 600 | image_tag:
+                      loading: 'lazy',
+                      sizes: '(max-width: 749px) 90vw, 220px',
+                      widths: '220, 320, 440, 600',
+                      class: 'pg-row__img',
+                      alt: p_title }}
+                {%- else -%}
+                  <img class="pg-row__img"
+                       src="{{ fallback_imgs[idx] | asset_url }}"
+                       alt="{{ p_title | escape }}"
+                       loading="lazy">
+                {%- endif -%}
+              </div>
+
+              <div class="pg-row__body">
+                <p class="pg-row__name">
+                  {{ p_title }}
+                  {%- if p_badge != blank -%}<span class="pg-row__badge">· {{ p_badge }}</span>{%- endif -%}
+                </p>
+                <span class="pg-row__rule" aria-hidden="true"></span>
+                {%- if p_text != blank -%}<p class="pg-row__desc">{{ p_text }}</p>{%- endif -%}
+
+                <div class="pg-row__price-line">
+                  <span class="pg-row__price">{{ p_price }}</span>
+                  {%- if p_sub != blank -%}<span class="pg-row__subprice">{{ p_sub }}</span>{%- endif -%}
+                </div>
+
+                {%- if p_url != blank -%}
+                  <a class="pg-row__cta link-arrow" href="{{ p_url }}">
+                    {{ p_label }} <span aria-hidden="true">→</span>
+                  </a>
+                {%- endif -%}
+              </div>
+
+              <span class="pg-row__num" aria-hidden="true">{{ num }}</span>
+
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <aside class="pg__rail" aria-hidden="true">
+        <span class="pg__rail-text">{{ vertical }}</span>
+      </aside>
+
+    </div>
+
+    <p class="pg__reassurance reveal">{{ reassurance }}</p>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .pg { padding-block: clamp(72px, 9vw, 140px); }
+
+  /* --- Header --- */
+  .pg__head {
+    max-width: 720px;
+    margin-bottom: clamp(40px, 5vw, 72px);
+  }
+  .pg__eyebrow { color: var(--gold); margin-bottom: 22px; }
+  .pg__title {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4vw + 1rem, 3.8rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: var(--marine);
+  }
+  .pg__title em { font-style: italic; }
+  .pg__subtitle {
+    margin-top: 20px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 0.4vw + 0.9rem, 1.18rem);
+    line-height: 1.6;
+    color: var(--marine);
+    opacity: 0.78;
+  }
+
+  /* --- Layout : rows + vertical rail --- */
+  .pg__layout {
+    display: grid;
+    grid-template-columns: 1fr clamp(120px, 14vw, 200px);
+    border: 1px solid var(--border);
+  }
+
+  /* --- Rows --- */
+  .pg__rows { display: flex; flex-direction: column; }
+
+  .pg-row {
+    display: grid;
+    grid-template-columns: clamp(160px, 18vw, 240px) 1fr auto;
+    align-items: center;
+    gap: clamp(24px, 3vw, 56px);
+    padding: clamp(28px, 3vw, 44px) clamp(28px, 3vw, 48px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.4s var(--ease-out);
+  }
+  .pg-row:last-child { border-bottom: 0; }
+  .pg-row--featured { background: var(--cream-warm); }
+
+  .pg-row__media { overflow: hidden; }
+  .pg-row__img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.02);
+    transition: filter 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+  .pg-row:hover .pg-row__img {
+    filter: grayscale(0%);
+    transform: scale(1.03);
+  }
+
+  .pg-row__body { min-width: 0; }
+
+  .pg-row__name {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--marine);
+  }
+  .pg-row__badge {
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+  }
+
+  .pg-row__rule {
+    display: block;
+    width: 120px;
+    max-width: 60%;
+    margin: 14px 0;
+    border-top: 1px dashed rgba(184, 150, 90, 0.6);
+  }
+
+  .pg-row__desc {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--marine);
+    opacity: 0.72;
+    max-width: 42ch;
+  }
+
+  .pg-row__price-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 16px;
+    margin-top: 18px;
+  }
+  .pg-row__price {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: clamp(1.2rem, 1vw + 0.9rem, 1.5rem);
+    letter-spacing: 0.01em;
+    color: var(--marine);
+    font-variant-numeric: tabular-nums;
+  }
+  .pg-row__subprice {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .pg-row__cta { margin-top: 22px; font-size: 11px; }
+  .pg-row__cta span { transition: transform 0.3s var(--ease-out); }
+  .pg-row__cta:hover span { transform: translateX(4px); }
+
+  .pg-row__num {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0.55;
+    justify-self: end;
+  }
+
+  /* --- Vertical rail --- */
+  .pg__rail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid var(--border);
+  }
+  .pg__rail-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4vw, 4rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--marine);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* --- Reassurance --- */
+  .pg__reassurance {
+    margin-top: clamp(28px, 3vw, 44px);
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--marine);
+    opacity: 0.66;
+  }
+
+  /* --- Tablet --- */
+  @media (max-width: 980px) {
+    .pg-row__num { font-size: clamp(2.4rem, 6vw, 3.4rem); }
+  }
+
+  /* --- Mobile --- */
+  @media (max-width: 749px) {
+    .pg__layout {
+      grid-template-columns: 1fr;
+    }
+    .pg__rail {
+      order: -1;
+      border-left: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 22px;
+    }
+    .pg__rail-text {
+      writing-mode: horizontal-tb;
+      font-size: clamp(1.8rem, 9vw, 2.6rem);
+    }
+    .pg-row {
+      grid-template-columns: 96px 1fr;
+      grid-template-areas:
+        "media body"
+        "num   body";
+      align-items: start;
+      gap: 18px 22px;
+      padding: 24px 20px;
+    }
+    .pg-row__media { grid-area: media; }
+    .pg-row__body  { grid-area: body; }
+    .pg-row__num {
+      grid-area: num;
+      justify-self: start;
+      font-size: 2.4rem;
+    }
+    .pg-row__img { aspect-ratio: 1 / 1; }
+    .pg-row__desc { max-width: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pg-row__img,
+    .pg-row:hover .pg-row__img,
+    .pg-row__cta:hover span { transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Abonnement — Pricing",
+  "settings": [
+    { "type": "header", "content": "Texte d’en-tête" },
+    { "type": "text", "id": "eyebrow", "label": "Label au-dessus", "default": "PREMIÈRE ÉDITION · BRETAGNE · JUILLET 2026" },
+    { "type": "text", "id": "heading", "label": "Titre (« voyage » mis en italique)", "default": "Choisir son premier voyage" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-texte", "default": "La première édition commence en Bretagne. Vous pouvez l’ouvrir une fois, ou laisser la France revenir chaque mois." },
+    { "type": "text", "id": "vertical_label", "label": "Titre vertical (rail)", "default": "Premier Voyage" },
+    { "type": "text", "id": "reassurance_text", "label": "Réassurance sous les cartes", "default": "Livraison incluse en Roumanie · Annulation libre-service · Première édition : Bretagne" },
+
+    { "type": "header", "content": "Formule 1 — Découverte" },
+    { "type": "image_picker", "id": "plan_1_image", "label": "Image" },
+    { "type": "text", "id": "plan_1_title", "label": "Titre", "default": "Découverte" },
+    { "type": "text", "id": "plan_1_price", "label": "Prix", "default": "389 RON / mois" },
+    { "type": "text", "id": "plan_1_subprice", "label": "Sous-prix" },
+    { "type": "textarea", "id": "plan_1_text", "label": "Texte", "default": "Sans engagement. Pour commencer avec la première édition." },
+    { "type": "text", "id": "plan_1_button_label", "label": "Libellé bouton", "default": "Commencer avec Bretagne" },
+    { "type": "url", "id": "plan_1_url", "label": "Lien / variant (URL produit, ?variant=ID ou /cart/add)" },
+
+    { "type": "header", "content": "Formule 2 — Escapade (mise en avant)" },
+    { "type": "image_picker", "id": "plan_2_image", "label": "Image" },
+    { "type": "text", "id": "plan_2_title", "label": "Titre", "default": "Escapade" },
+    { "type": "text", "id": "plan_2_price", "label": "Prix", "default": "1 047 RON" },
+    { "type": "text", "id": "plan_2_subprice", "label": "Sous-prix", "default": "3 mois prépayés · 349 RON / mois" },
+    { "type": "textarea", "id": "plan_2_text", "label": "Texte", "default": "Pour suivre les premières régions." },
+    { "type": "text", "id": "plan_2_badge", "label": "Badge discret (vide = pas de mise en avant)", "default": "Le choix naturel" },
+    { "type": "text", "id": "plan_2_button_label", "label": "Libellé bouton", "default": "Choisir 3 mois" },
+    { "type": "url", "id": "plan_2_url", "label": "Lien / variant" },
+
+    { "type": "header", "content": "Formule 3 — Grand Voyage" },
+    { "type": "image_picker", "id": "plan_3_image", "label": "Image" },
+    { "type": "text", "id": "plan_3_title", "label": "Titre", "default": "Grand Voyage" },
+    { "type": "text", "id": "plan_3_price", "label": "Prix", "default": "3 588 RON" },
+    { "type": "text", "id": "plan_3_subprice", "label": "Sous-prix", "default": "12 mois prépayés · 299 RON / mois" },
+    { "type": "textarea", "id": "plan_3_text", "label": "Texte", "default": "Pour recevoir une année de France." },
+    { "type": "text", "id": "plan_3_button_label", "label": "Libellé bouton", "default": "Choisir l’année" },
+    { "type": "url", "id": "plan_3_url", "label": "Lien / variant" }
+  ],
+  "presets": [{ "name": "Abonnement — Pricing" }]
+}
+{% endschema %}

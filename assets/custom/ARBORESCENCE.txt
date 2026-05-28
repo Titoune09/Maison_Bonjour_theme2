@@ -1,0 +1,56 @@
+MAISON BONJOUR — ASSETS CUSTOM
+================================
+
+Univers de marque
+-----------------
+Maison Bonjour = box mensuelle d'épicerie fine française livrée à Cluj-Napoca (Roumanie).
+Ton éditorial, artisanal, patrimonial. Fondateurs : Pierre & Tiffany.
+Palette suggérée : crème ivoire (#F4ECD8), bleu nuit (#1B2A41), terracotta (#B8543A),
+encre (#1A1A1A). Typo sérif éditoriale (Canela / Tiempos), grain de papier, lumière douce
+naturelle. Aucun rendu CGI ni esthétique IA générique. Photo argentique / film 35mm
+préféré (Portra 400 look).
+
+Arborescence
+------------
+assets/custom/
+├── ARBORESCENCE.txt                  (ce fichier)
+├── 01-favicon.txt                    → favicon.png (32x32) + apple-touch (180x180)
+├── 02-social-share.txt               → og-image.jpg (1200x630)
+├── 03-hero.txt                       → hero.jpg (2400x1600, format paysage)
+├── 04-story-portrait.txt             → story-portrait.jpg (1600x2000, portrait)
+├── 05-artisan.txt                    → artisan.jpg (1400x1750, portrait)
+├── 06-current-box.txt                → current-box.jpg (1600x1600, carré)
+├── 07-logo.txt                       → logo.svg + logo-mark.svg (optionnel)
+└── 08-404-illustration.txt           → 404.jpg/svg (optionnel)
+
+Spécifications techniques
+-------------------------
+| Fichier             | Format | Dimensions     | Poids cible | Slot Shopify              |
+|---------------------|--------|----------------|-------------|---------------------------|
+| favicon.png         | PNG    | 32 x 32        | < 5 KB      | Réglages thème > favicon  |
+| apple-touch.png     | PNG    | 180 x 180      | < 15 KB     | layout/theme.liquid       |
+| og-image.jpg        | JPG    | 1200 x 630     | < 250 KB    | meta og:image fallback    |
+| hero.jpg            | JPG    | 2400 x 1600    | < 600 KB    | section hero              |
+| story-portrait.jpg  | JPG    | 1600 x 2000    | < 500 KB    | section story             |
+| artisan.jpg         | JPG    | 1400 x 1750    | < 450 KB    | section artisan           |
+| current-box.jpg     | JPG    | 1600 x 1600    | < 500 KB    | section current-box       |
+| logo.svg            | SVG    | viewBox 240x48 | < 8 KB      | header (remplace texte)   |
+| logo-mark.svg       | SVG    | viewBox 48x48  | < 4 KB      | favicon vectoriel / app   |
+| 404.jpg             | JPG    | 1600 x 1200    | < 300 KB    | templates/404.liquid      |
+
+Livrables graphiste
+-------------------
+- Chaque asset en version @1x et @2x (Retina) sauf SVG.
+- Master non-compressé (.psd / .tiff / .ai) archivé à part.
+- Export final WebP recommandé en plus du JPG/PNG (Shopify gère la conversion auto,
+  mais fournir source haute qualité).
+- Nommage en kebab-case, sans espace ni accent.
+- Couleurs en sRGB, profil embarqué.
+
+Prompts IA
+----------
+Voir fichiers 01- à 08-. Chaque fichier contient :
+1. Brief résumé
+2. Prompt IA (Midjourney v6 / Flux / DALL·E 3) en anglais
+3. Negative prompt
+4. Variations à tester

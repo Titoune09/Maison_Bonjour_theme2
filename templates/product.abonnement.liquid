@@ -1,0 +1,274 @@
+{%- liquid
+  assign variants = product.variants
+  assign first_variant = product.selected_or_first_available_variant
+-%}
+
+<article class="sub" itemscope itemtype="https://schema.org/Product">
+  <meta itemprop="name" content="{{ product.title | escape }}">
+  <meta itemprop="description" content="{{ product.description | strip_html | escape }}">
+
+  <header class="sub__hero">
+    <div class="container">
+      <span class="label">L’abonnement</span>
+      <h1 class="sub__title">{{ product.title }}</h1>
+      <p class="sub__lede">
+        Chaque mois, une parenthèse française&nbsp;: cinq objets choisis chez des artisans, livrés à Cluj-Napoca le 15.
+      </p>
+      <hr class="sep sep--center">
+    </div>
+  </header>
+
+  <section class="sub__formulas">
+    <div class="container">
+      <div class="sub__grid">
+        {%- if variants.size > 0 -%}
+          {%- for variant in variants -%}
+            <form
+              action="{{ routes.cart_add_url }}"
+              method="post"
+              enctype="multipart/form-data"
+              class="formula{% if variant.metafields.formula.featured.value %} formula--featured{% endif %}">
+              <input type="hidden" name="id" value="{{ variant.id }}">
+              <input type="hidden" name="quantity" value="1">
+              {%- if variant.selling_plan_allocations.size > 0 -%}
+                <input type="hidden" name="selling_plan" value="{{ variant.selling_plan_allocations.first.selling_plan.id }}">
+              {%- endif -%}
+
+              {%- if variant.metafields.formula.featured.value -%}
+                <span class="formula__flag">Le plus choisi</span>
+              {%- endif -%}
+
+              <h2 class="formula__name">{{ variant.title }}</h2>
+
+              <p class="formula__price">
+                <span class="formula__amount">{{ variant.price | money_without_trailing_zeros }}</span>
+                <span class="formula__period">{{ variant.metafields.formula.period.value | default: '/ mois' }}</span>
+              </p>
+
+              {%- if variant.metafields.formula.description.value != blank -%}
+                <p class="formula__desc">{{ variant.metafields.formula.description.value }}</p>
+              {%- endif -%}
+
+              {%- if variant.metafields.formula.features.value != blank -%}
+                <ul class="formula__features">
+                  {%- for f in variant.metafields.formula.features.value -%}
+                    <li>{{ f }}</li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+
+              <button
+                type="submit"
+                class="btn btn--primary formula__btn"
+                {% unless variant.available %}disabled{% endunless %}>
+                {% if variant.available %}S’abonner{% else %}Indisponible{% endif %}
+              </button>
+            </form>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} Fallback statique tant que les variantes ne sont pas créées. {%- endcomment -%}
+          <article class="formula">
+            <h2 class="formula__name">Découverte</h2>
+            <p class="formula__price"><span class="formula__amount">74 €</span><span class="formula__period">/ mois</span></p>
+            <p class="formula__desc">Un mois, une région. Sans engagement.</p>
+            <ul class="formula__features">
+              <li>Livraison à Cluj-Napoca incluse</li>
+              <li>Pause à tout moment</li>
+              <li>Première box livrée le 15</li>
+            </ul>
+            <button type="button" class="btn btn--primary formula__btn" disabled>Bientôt disponible</button>
+          </article>
+          <article class="formula formula--featured">
+            <span class="formula__flag">Le plus choisi</span>
+            <h2 class="formula__name">Escapade</h2>
+            <p class="formula__price"><span class="formula__amount">69 €</span><span class="formula__period">/ mois (3 mois)</span></p>
+            <p class="formula__desc">Trois régions, trois voyages. L’habitude s’installe.</p>
+            <ul class="formula__features">
+              <li>Livraison à Cluj-Napoca incluse</li>
+              <li>Pause à tout moment</li>
+              <li>Économisez 15 € sur le trimestre</li>
+            </ul>
+            <button type="button" class="btn btn--primary formula__btn" disabled>Bientôt disponible</button>
+          </article>
+          <article class="formula">
+            <h2 class="formula__name">Grand Voyage</h2>
+            <p class="formula__price"><span class="formula__amount">64 €</span><span class="formula__period">/ mois (6 mois)</span></p>
+            <p class="formula__desc">Six régions, six mois de France. Le voyage complet.</p>
+            <ul class="formula__features">
+              <li>Livraison à Cluj-Napoca incluse</li>
+              <li>Pause à tout moment</li>
+              <li>Économisez 60 € sur le semestre</li>
+            </ul>
+            <button type="button" class="btn btn--primary formula__btn" disabled>Bientôt disponible</button>
+          </article>
+        {%- endif -%}
+      </div>
+
+      <p class="sub__notes">
+        Pause à tout moment, en un clic — sans frais, sans question. Livraison incluse à Cluj-Napoca. Première box livrée le 15 du mois suivant votre commande.
+      </p>
+    </div>
+  </section>
+
+  {%- if product.description != blank -%}
+    <section class="sub__desc">
+      <div class="editorial">
+        {{ product.description }}
+      </div>
+    </section>
+  {%- endif -%}
+</article>
+
+<style>
+  .sub__hero {
+    padding-block: 100px 60px;
+    text-align: center;
+  }
+  .sub__title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 4vw + 1rem, 4.5rem);
+    line-height: 1.05;
+    color: var(--marine);
+    margin-top: 16px;
+  }
+  .sub__lede {
+    margin: 24px auto 0;
+    max-width: 560px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .sub__formulas { padding-bottom: 100px; }
+
+  .sub__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .formula {
+    position: relative;
+    background: var(--cream-warm);
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .formula--featured {
+    background: var(--cream);
+    border-color: var(--gold);
+  }
+
+  .formula__flag {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background: var(--gold);
+    color: var(--marine);
+    padding: 6px 14px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .formula__name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 32px;
+    color: var(--marine);
+  }
+
+  .formula__price {
+    margin: 16px 0 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .formula__amount {
+    font-family: var(--font-serif);
+    font-style: normal;
+    font-size: 44px;
+    color: var(--marine);
+    line-height: 1;
+  }
+  .formula__period {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .formula__desc {
+    margin: 24px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .formula__features {
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .formula__features li {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--text);
+    padding-left: 18px;
+    position: relative;
+  }
+  .formula__features li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  .formula__btn {
+    margin-top: 40px;
+    align-self: stretch;
+  }
+  .formula__btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .sub__notes {
+    margin: 56px auto 0;
+    max-width: 640px;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .sub__desc { padding-bottom: 100px; }
+
+  @media (min-width: 1024px) {
+    .sub__grid { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  }
+  @media (max-width: 767px) {
+    .sub__hero { padding-block: 56px 40px; }
+    .sub__formulas { padding-bottom: 64px; }
+    .formula { padding: 32px 24px; }
+  }
+</style>

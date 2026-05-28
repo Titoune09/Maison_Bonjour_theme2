@@ -1,0 +1,470 @@
+{%- liquid
+  assign marker             = section.settings.marker             | default: '08 — LE FONCTIONNEMENT'
+  assign title              = section.settings.title              | default: 'Comment ça se passe.'
+  assign intro              = section.settings.intro              | default: 'Trois gestes simples. Choisir la formule, attendre l’édition du mois, ouvrir une parenthèse française chez soi.'
+  assign reassurance_label  = section.settings.reassurance_label  | default: 'À SAVOIR'
+  assign reassurance_text   = section.settings.reassurance_text   | default: 'La livraison est incluse en Roumanie. L’abonnement peut être annulé à tout moment depuis l’espace abonnée.'
+  assign account_link_label = section.settings.account_link_label | default: 'Gérer mon abonnement'
+  assign account_link_url   = section.settings.account_link_url   | default: '/account'
+  assign cta_label          = section.settings.cta_label          | default: 'Découvrir les formules'
+  assign cta_url            = section.settings.cta_url            | default: '/products/abonnement-maison-bonjour'
+-%}
+
+<section class="mb-functioning" aria-label="Le fonctionnement de l’abonnement">
+  <div class="mb-functioning__container">
+
+    <header class="mb-functioning__head reveal">
+      {%- if marker != blank -%}
+        <p class="mb-functioning__marker">{{ marker }}</p>
+      {%- endif -%}
+      {%- if title != blank -%}
+        <h2 class="mb-functioning__title">{{ title }}</h2>
+      {%- endif -%}
+      {%- if intro != blank -%}
+        <p class="mb-functioning__intro">{{ intro }}</p>
+      {%- endif -%}
+      <span class="mb-functioning__rule" aria-hidden="true"></span>
+    </header>
+
+    {%- liquid
+      # Statically-included sections do not receive preset blocks,
+      # so fall back to the 3 default steps when no blocks are configured.
+      if section.blocks.size > 0
+        assign step_count = section.blocks.size
+      else
+        assign step_count = 3
+      endif
+    -%}
+
+    {%- if step_count > 0 -%}
+      <ol class="mb-functioning__grid">
+        {%- for i in (1..step_count) -%}
+          {%- liquid
+            assign use_block = false
+            if section.blocks.size > 0
+              assign use_block = true
+            endif
+
+            if use_block
+              assign block      = section.blocks[forloop.index0]
+              assign s_number   = block.settings.number
+              assign s_label    = block.settings.label
+              assign s_title    = block.settings.title
+              assign s_text     = block.settings.text
+              assign s_icon     = block.settings.icon_type
+              assign s_attrs    = block.shopify_attributes
+            else
+              assign s_attrs = ''
+              case forloop.index
+                when 1
+                  assign s_number = '01'
+                  assign s_label  = 'CHOISIR'
+                  assign s_title  = 'La formule qui te ressemble.'
+                  assign s_text   = 'Mensuelle, trois mois ou grand voyage. Tu choisis ton rythme, sans pression inutile.'
+                  assign s_icon   = 'envelope'
+                when 2
+                  assign s_number = '02'
+                  assign s_label  = 'ATTENDRE'
+                  assign s_title  = 'Une édition préparée chaque mois.'
+                  assign s_text   = 'Pierre sélectionne les maisons, Tiffany compose l’expérience. Chaque box suit une région française.'
+                  assign s_icon   = 'calendar'
+                when 3
+                  assign s_number = '03'
+                  assign s_label  = 'RECEVOIR'
+                  assign s_title  = 'Une parenthèse française à la maison.'
+                  assign s_text   = 'La box arrive chez toi en Roumanie, avec ses objets, ses goûts et son livret éditorial.'
+                  assign s_icon   = 'hand'
+              endcase
+            endif
+          -%}
+          {%- if use_block == false or block.type == 'step' -%}
+            <li class="mb-functioning__step reveal reveal--delay-{{ forloop.index }}" {{ s_attrs }}>
+              {%- if s_number != blank -%}
+                <span class="mb-functioning__number" aria-hidden="true">{{ s_number }}</span>
+              {%- endif -%}
+
+              <span class="mb-functioning__icon" aria-hidden="true">
+                {%- case s_icon -%}
+                  {%- when 'envelope' -%}
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                      <rect x="6" y="11" width="36" height="26" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <path d="M6 13l18 13L42 13" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <circle cx="24" cy="26" r="5" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                    </svg>
+                  {%- when 'calendar' -%}
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                      <rect x="8" y="11" width="32" height="29" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <path d="M8 19h32" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <path d="M16 8v6M32 8v6" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <circle cx="24" cy="29" r="4" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                    </svg>
+                  {%- when 'hand' -%}
+                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                      <path d="M10 26v6a6 6 0 0 0 6 6h13a8 8 0 0 0 8-8v-7" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <path d="M16 26v-4M21 26v-7M26 26v-5" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <rect x="19" y="9" width="14" height="9" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                      <path d="M19 13h14" stroke="var(--gold)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+                    </svg>
+                {%- endcase -%}
+              </span>
+
+              {%- if s_label != blank -%}
+                <span class="mb-functioning__label">{{ s_label }}</span>
+              {%- endif -%}
+              {%- if s_title != blank -%}
+                <h3 class="mb-functioning__step-title">{{ s_title }}</h3>
+              {%- endif -%}
+              {%- if s_text != blank -%}
+                <p class="mb-functioning__text">{{ s_text }}</p>
+              {%- endif -%}
+            </li>
+          {%- endif -%}
+        {%- endfor -%}
+      </ol>
+    {%- endif -%}
+
+    <div class="mb-functioning__reassurance reveal">
+      <div class="mb-functioning__reassurance-text">
+        {%- if reassurance_label != blank -%}
+          <p class="mb-functioning__label mb-functioning__label--reassurance">{{ reassurance_label }}</p>
+        {%- endif -%}
+        {%- if reassurance_text != blank -%}
+          <p class="mb-functioning__reassurance-phrase">{{ reassurance_text }}</p>
+        {%- endif -%}
+      </div>
+      {%- if account_link_label != blank and account_link_url != blank -%}
+        <a class="mb-functioning__account-link" href="{{ account_link_url }}">
+          {{ account_link_label }} <span aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if cta_label != blank and cta_url != blank -%}
+      <div class="mb-functioning__cta-wrap reveal">
+        <a class="mb-functioning__cta" href="{{ cta_url }}">{{ cta_label }}</a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-functioning {
+    background: var(--cream-warm);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding-block: var(--section-py-immersive-mobile);
+    overflow: hidden;
+  }
+
+  .mb-functioning__container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+
+  /* ---- Header ---- */
+  .mb-functioning__head {
+    text-align: center;
+  }
+
+  .mb-functioning__marker {
+    margin: 0 0 24px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.75;
+  }
+
+  .mb-functioning__title {
+    margin: 0 0 28px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--marine);
+  }
+
+  .mb-functioning__intro {
+    max-width: 560px;
+    margin: 0 auto;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .mb-functioning__rule {
+    display: block;
+    width: 72px;
+    height: 1px;
+    margin: 56px auto 80px;
+    background: var(--gold);
+    opacity: 0.65;
+  }
+
+  /* ---- Steps grid ---- */
+  .mb-functioning__grid {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .mb-functioning__step {
+    position: relative;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .mb-functioning__number {
+    display: block;
+    margin-bottom: 28px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 56px;
+    line-height: 0.9;
+    color: var(--gold);
+  }
+
+  .mb-functioning__icon {
+    display: block;
+    margin-bottom: 32px;
+  }
+  .mb-functioning__icon svg {
+    display: block;
+  }
+
+  .mb-functioning__label {
+    display: block;
+    margin-bottom: 18px;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  .mb-functioning__step-title {
+    margin: 0 0 18px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.05;
+    color: var(--marine);
+  }
+
+  .mb-functioning__text {
+    max-width: 100%;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* ---- Reassurance block ---- */
+  .mb-functioning__reassurance {
+    margin-top: 96px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .mb-functioning__label--reassurance {
+    margin-bottom: 14px;
+  }
+
+  .mb-functioning__reassurance-phrase {
+    max-width: 560px;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .mb-functioning__account-link {
+    flex-shrink: 0;
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    color: var(--marine);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 6px;
+    transition: color 0.3s ease;
+  }
+  .mb-functioning__account-link:hover {
+    color: var(--gold);
+  }
+  .mb-functioning__account-link:focus-visible {
+    outline: 2px solid var(--marine);
+    outline-offset: 4px;
+  }
+
+  /* ---- Discreet CTA ---- */
+  .mb-functioning__cta-wrap {
+    margin-top: 48px;
+  }
+
+  .mb-functioning__cta {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--marine);
+    border-radius: 0;
+    background: transparent;
+    color: var(--marine);
+    padding: 16px 26px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .mb-functioning__cta:hover {
+    background: var(--marine);
+    color: var(--text-cream);
+  }
+  .mb-functioning__cta:focus-visible {
+    outline: 2px solid var(--marine);
+    outline-offset: 4px;
+  }
+
+  /* ---- Desktop ---- */
+  @media (min-width: 768px) {
+    .mb-functioning {
+      padding-block: var(--section-py-immersive);
+    }
+    .mb-functioning__container {
+      padding-inline: 24px;
+    }
+    .mb-functioning__title {
+      font-size: 48px;
+    }
+    .mb-functioning__intro {
+      font-size: 17px;
+    }
+    .mb-functioning__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 64px;
+    }
+    .mb-functioning__number {
+      font-size: 80px;
+    }
+    .mb-functioning__step-title {
+      font-size: 30px;
+    }
+    .mb-functioning__text {
+      max-width: 300px;
+    }
+    .mb-functioning__reassurance {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 40px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "08 — Fonctionnement",
+  "tag": "section",
+  "settings": [
+    { "type": "text",     "id": "marker",             "label": "Marqueur",                "default": "08 — LE FONCTIONNEMENT" },
+    { "type": "text",     "id": "title",              "label": "Titre",                   "default": "Comment ça se passe." },
+    { "type": "textarea", "id": "intro",              "label": "Phrase d’introduction",   "default": "Trois gestes simples. Choisir la formule, attendre l’édition du mois, ouvrir une parenthèse française chez soi." },
+    { "type": "text",     "id": "reassurance_label",  "label": "Label rassurance",        "default": "À SAVOIR" },
+    { "type": "textarea", "id": "reassurance_text",   "label": "Texte rassurance",        "default": "La livraison est incluse en Roumanie. L’abonnement peut être annulé à tout moment depuis l’espace abonnée." },
+    { "type": "text",     "id": "account_link_label", "label": "Libellé lien compte",     "default": "Gérer mon abonnement" },
+    { "type": "url",      "id": "account_link_url",   "label": "URL lien compte" },
+    { "type": "text",     "id": "cta_label",          "label": "Libellé CTA",             "default": "Découvrir les formules" },
+    { "type": "url",      "id": "cta_url",            "label": "URL CTA" }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Étape",
+      "limit": 3,
+      "settings": [
+        { "type": "text",     "id": "number", "label": "Numéro", "default": "01" },
+        { "type": "text",     "id": "label",  "label": "Label (majuscules)" },
+        { "type": "text",     "id": "title",  "label": "Titre court" },
+        { "type": "textarea", "id": "text",   "label": "Texte explicatif" },
+        {
+          "type": "select",
+          "id": "icon_type",
+          "label": "Illustration",
+          "options": [
+            { "value": "envelope", "label": "Enveloppe" },
+            { "value": "calendar", "label": "Calendrier" },
+            { "value": "hand",     "label": "Main / coffret" }
+          ],
+          "default": "envelope"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "08 — Fonctionnement",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "number": "01",
+            "label": "CHOISIR",
+            "title": "La formule qui te ressemble.",
+            "text": "Mensuelle, trois mois ou grand voyage. Tu choisis ton rythme, sans pression inutile.",
+            "icon_type": "envelope"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "number": "02",
+            "label": "ATTENDRE",
+            "title": "Une édition préparée chaque mois.",
+            "text": "Pierre sélectionne les maisons, Tiffany compose l’expérience. Chaque box suit une région française.",
+            "icon_type": "calendar"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "number": "03",
+            "label": "RECEVOIR",
+            "title": "Une parenthèse française à la maison.",
+            "text": "La box arrive chez toi en Roumanie, avec ses objets, ses goûts et son livret éditorial.",
+            "icon_type": "hand"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

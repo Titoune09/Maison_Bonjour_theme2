@@ -1,0 +1,35 @@
+SOCIAL SHARE / OG-IMAGE — Maison Bonjour
+========================================
+
+Livrables
+---------
+- og-image.jpg       1200 x 630   (Open Graph, Twitter, LinkedIn)
+- og-image-sq.jpg    1080 x 1080  (Instagram fallback, optionnel)
+
+Brief
+-----
+Carte d'invitation au voyage. Évoque le départ France → Cluj-Napoca.
+Composition centrée laissant respirer le titre superposable en post-prod.
+Aucun texte intégré à l'image (texte ajouté en HTML/CSS).
+
+Prompt IA
+---------
+Editorial flat-lay still life on cream linen tablecloth, vintage French
+postcard from Paris, brass compass, sprig of dried lavender, a folded
+map of Europe with subtle route line from Paris to Cluj-Napoca,
+unwrapped wax-sealed envelope, soft northern window light, Kodak Portra
+400 film grain, muted ivory and navy palette with single terracotta
+accent, top-down 90 degree angle, generous negative space on right
+third for text overlay, magazine photography, Kinfolk aesthetic
+--ar 1200:630 --style raw --v 6
+
+Negative prompt
+---------------
+text, letters, watermark, logo, oversaturated, harsh shadow, modern
+tech objects, plastic, neon, CGI render, AI-perfect symmetry.
+
+Variations
+----------
+A) Flat-lay carte postale + objets voyage
+B) Box ouverte sur table bois ancien, lumière fenêtre
+C) Main posant sceau de cire sur lettre

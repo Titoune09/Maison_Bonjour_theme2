@@ -1,0 +1,602 @@
+{%- liquid
+  assign section_title    = section.settings.section_title    | default: 'Écrire à _Maison Bonjour_'
+  assign section_subtitle = section.settings.section_subtitle  | default: 'Une question sur l’abonnement, une édition cadeau, ou simplement l’envie de recevoir la lettre de juillet.'
+  assign eyebrow          = section.settings.eyebrow          | default: 'Contact · La Lettre'
+
+  assign image_alt        = section.settings.image_alt        | default: 'Téléphone à cadran posé sur une table en bois, lettres manuscrites et lavande séchée — atmosphère d’un appartement français.'
+  assign form_title       = section.settings.form_title       | default: 'Un mot, et nous répondons.'
+  assign form_subtitle    = section.settings.form_subtitle     | default: 'Chaque message est lu par une vraie personne, à Cluj-Napoca.'
+  assign button_label     = section.settings.button_label     | default: 'Écrire à Maison Bonjour'
+  assign success_message  = section.settings.success_message  | default: 'Merci. Maison Bonjour te répondra avec soin.'
+
+  assign newsletter_title = section.settings.newsletter_title  | default: 'La Lettre Maison Bonjour'
+  assign newsletter_text  = section.settings.newsletter_text  | default: 'Une lettre par mois : les coulisses de l’édition, les artisans, et la date de départ de la prochaine box. Sans bruit.'
+  assign newsletter_button = section.settings.newsletter_button | default: 'Recevoir la lettre de juillet'
+  assign newsletter_success = section.settings.newsletter_success | default: 'C’est noté. La prochaine lettre vous attend.'
+
+  comment
+    Le titre accepte une emphase via _underscores_ : « Écrire à _Maison Bonjour_ »
+    devient italique. On découpe sur '_' et on alterne droit / italique.
+  endcomment
+  assign title_parts = section_title | split: '_'
+
+  assign reverse_class = ''
+  if section.settings.image_position == 'right'
+    assign reverse_class = ' contact-nl--media-right'
+  endif
+-%}
+
+<section class="contact-nl section--warm" aria-labelledby="contact-nl-title-{{ section.id }}">
+  <div class="container">
+
+    <header class="contact-nl__intro reveal">
+      <p class="section-marker contact-nl__marker">{{ eyebrow }}</p>
+      <h2 class="contact-nl__title" id="contact-nl-title-{{ section.id }}">
+        {%- for part in title_parts -%}
+          {%- assign clean = part | strip -%}
+          {%- if clean != blank -%}
+            {%- assign parity = forloop.index | modulo: 2 -%}
+            {%- if parity == 0 -%}<em>{{ clean }}</em>{%- else -%}{{ clean }} {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </h2>
+      <p class="contact-nl__subtitle">{{ section_subtitle }}</p>
+    </header>
+
+    <div class="contact-nl__grid{{ reverse_class }}">
+
+      {%- comment -%} ── Colonne visuelle ── {%- endcomment -%}
+      <figure class="contact-nl__media reveal">
+        {%- if section.settings.image != blank -%}
+          <picture>
+            {%- if section.settings.mobile_image != blank -%}
+              <source media="(max-width: 749px)"
+                      srcset="{{ section.settings.mobile_image | image_url: width: 900 }}">
+            {%- endif -%}
+            <img class="contact-nl__img"
+                 src="{{ section.settings.image | image_url: width: 1200 }}"
+                 srcset="{{ section.settings.image | image_url: width: 700 }} 700w,
+                         {{ section.settings.image | image_url: width: 1200 }} 1200w,
+                         {{ section.settings.image | image_url: width: 1600 }} 1600w"
+                 sizes="(max-width: 749px) 92vw, 46vw"
+                 alt="{{ image_alt | escape }}"
+                 width="{{ section.settings.image.width }}"
+                 height="{{ section.settings.image.height }}"
+                 loading="lazy"
+                 decoding="async">
+          </picture>
+        {%- else -%}
+          {%- comment -%} Image par défaut : phone_contact.png (assets) {%- endcomment -%}
+          <img class="contact-nl__img"
+               src="{{ 'phone_contact.png' | asset_url }}"
+               alt="{{ image_alt | escape }}"
+               width="1200" height="1500"
+               loading="lazy" decoding="async">
+        {%- endif -%}
+      </figure>
+
+      {%- comment -%} ── Colonne formulaire ── {%- endcomment -%}
+      <div class="contact-nl__panel reveal">
+
+        {%- comment -%} ─── Formulaire de contact ─── {%- endcomment -%}
+        <div class="contact-nl__card reveal reveal--delay-1">
+          {%- if form_title != blank -%}
+            <h3 class="contact-nl__card-title">{{ form_title }}</h3>
+          {%- endif -%}
+          {%- if form_subtitle != blank -%}
+            <p class="contact-nl__card-sub">{{ form_subtitle }}</p>
+          {%- endif -%}
+
+          {%- form 'contact', id: 'contact-nl-form' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="contact-nl__success" role="status" tabindex="-1">{{ success_message }}</p>
+            {%- else -%}
+              {%- if form.errors -%}
+                <div class="contact-nl__errors" role="alert">
+                  <p>{{ form.errors | default_errors }}</p>
+                </div>
+              {%- endif -%}
+
+              <div class="contact-nl__row contact-nl__row--split">
+                <p class="contact-nl__field">
+                  <label class="contact-nl__label" for="contact-nl-name">Prénom</label>
+                  <input class="contact-nl__input" type="text"
+                         id="contact-nl-name" name="contact[name]"
+                         value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.first_name }}{% endif %}"
+                         autocomplete="given-name">
+                </p>
+                <p class="contact-nl__field">
+                  <label class="contact-nl__label" for="contact-nl-email">Email <span aria-hidden="true">*</span></label>
+                  <input class="contact-nl__input" type="email"
+                         id="contact-nl-email" name="contact[email]"
+                         value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                         autocomplete="email" required aria-required="true"
+                         spellcheck="false" autocapitalize="off">
+                </p>
+              </div>
+
+              <p class="contact-nl__field">
+                <label class="contact-nl__label" for="contact-nl-subject">Sujet</label>
+                <span class="contact-nl__select-wrap">
+                  <select class="contact-nl__select" id="contact-nl-subject" name="contact[Sujet]">
+                    <option value="Question sur l’abonnement">Question sur l’abonnement</option>
+                    <option value="La Lettre Maison Bonjour">La Lettre Maison Bonjour</option>
+                    <option value="Cadeau">Cadeau</option>
+                    <option value="Corporate">Corporate</option>
+                    <option value="Autre">Autre</option>
+                  </select>
+                  <span class="contact-nl__select-chevron" aria-hidden="true"></span>
+                </span>
+              </p>
+
+              <p class="contact-nl__field">
+                <label class="contact-nl__label" for="contact-nl-body">Message</label>
+                <textarea class="contact-nl__input contact-nl__textarea"
+                          id="contact-nl-body" name="contact[body]" rows="4">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+              </p>
+
+              <p class="contact-nl__check">
+                <input class="contact-nl__check-input" type="checkbox"
+                       id="contact-nl-news" name="contact[Souhaite la Lettre]" value="Oui">
+                <label class="contact-nl__check-label" for="contact-nl-news">Je souhaite recevoir La Lettre Maison Bonjour.</label>
+              </p>
+
+              <button class="contact-nl__submit" type="submit">{{ button_label }}</button>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+
+        {%- comment -%} ─── Newsletter simple ─── {%- endcomment -%}
+        <div class="contact-nl__news">
+          <div class="contact-nl__news-text">
+            {%- if newsletter_title != blank -%}
+              <h3 class="contact-nl__news-title">{{ newsletter_title }}</h3>
+            {%- endif -%}
+            {%- if newsletter_text != blank -%}
+              <p class="contact-nl__news-copy">{{ newsletter_text }}</p>
+            {%- endif -%}
+          </div>
+
+          {%- form 'customer', id: 'contact-nl-newsletter' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="contact-nl__success contact-nl__success--inline" role="status" tabindex="-1">{{ newsletter_success }}</p>
+            {%- else -%}
+              <div class="contact-nl__news-form">
+                <label class="visually-hidden" for="contact-nl-news-email">Votre email pour recevoir La Lettre</label>
+                <input class="contact-nl__input contact-nl__news-email" type="email"
+                       id="contact-nl-news-email" name="contact[email]"
+                       placeholder="votre@email.fr"
+                       autocomplete="email" required aria-required="true"
+                       spellcheck="false" autocapitalize="off">
+                <button class="contact-nl__submit contact-nl__submit--news" type="submit">{{ newsletter_button }}</button>
+              </div>
+              {%- if form.errors -%}
+                <p class="contact-nl__errors contact-nl__errors--inline" role="alert">{{ form.errors | default_errors }}</p>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .contact-nl {
+    /* Crèmes demandées au brief, scopées à la section. */
+    --cnl-cream:        #F5F0E8;
+    --cnl-cream-second: #EDE5D4;
+    --cnl-marine:       var(--marine, #1C2B4A);
+    --cnl-champagne:    var(--gold, #B8965A);
+    --cnl-line:         rgba(28, 43, 74, 0.16);
+
+    padding-block: clamp(72px, 9vw, 132px);
+    background: var(--cnl-cream);
+    color: var(--cnl-marine);
+  }
+
+  /* ── Intro éditoriale ── */
+  .contact-nl__intro {
+    max-width: 720px;
+    margin: 0 0 clamp(40px, 5vw, 72px);
+  }
+  .contact-nl__marker {
+    display: block;
+    margin: 0 0 18px;
+    color: var(--cnl-champagne);
+    opacity: 0.85;
+  }
+  .contact-nl__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.1rem, 3.4vw + 0.8rem, 3.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.012em;
+    color: var(--cnl-marine);
+  }
+  .contact-nl__title em { font-style: italic; }
+  .contact-nl__subtitle {
+    margin: clamp(16px, 1.8vw, 22px) 0 0;
+    max-width: 52ch;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.05rem, 0.5vw + 0.95rem, 1.3rem);
+    line-height: 1.55;
+    color: rgba(28, 43, 74, 0.74);
+  }
+
+  /* ── Grille split-screen ── */
+  .contact-nl__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: clamp(32px, 4vw, 72px);
+    align-items: stretch;
+  }
+  .contact-nl--media-right .contact-nl__media { order: 2; }
+
+  /* ── Visuel ── */
+  .contact-nl__media {
+    margin: 0;
+    position: relative;
+    align-self: stretch;
+  }
+  .contact-nl__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Placeholder propre — panneau crème + trait d’or */
+  .contact-nl__placeholder {
+    position: relative;
+    height: 100%;
+    min-height: clamp(340px, 42vw, 560px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    background:
+      radial-gradient(ellipse at 30% 22%, rgba(184, 150, 90, 0.12), transparent 60%),
+      var(--cnl-cream-second);
+    border: 1px solid var(--cnl-line);
+    color: var(--cnl-champagne);
+  }
+  .contact-nl__placeholder-art {
+    width: clamp(120px, 16vw, 184px);
+    height: auto;
+    opacity: 0.85;
+  }
+  .contact-nl__placeholder-cap {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--text-muted, #6B5444);
+  }
+  .contact-nl__placeholder-bracket {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--cnl-champagne);
+    opacity: 0.6;
+  }
+  .contact-nl__placeholder-bracket--tl { top: 14px; left: 14px; border-right: 0; border-bottom: 0; }
+  .contact-nl__placeholder-bracket--br { bottom: 14px; right: 14px; border-left: 0; border-top: 0; }
+
+  /* ── Panneau formulaire ── */
+  .contact-nl__panel {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 2.6vw, 36px);
+  }
+  .contact-nl__card {
+    padding: clamp(26px, 3vw, 44px);
+    background: var(--cnl-cream-second);
+    border: 1px solid var(--cnl-line);
+    border-radius: 0;
+  }
+  .contact-nl__card-title {
+    margin: 0 0 8px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.4rem, 1vw + 1.1rem, 1.9rem);
+    line-height: 1.12;
+    color: var(--cnl-marine);
+  }
+  .contact-nl__card-sub {
+    margin: 0 0 clamp(22px, 2.4vw, 30px);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(28, 43, 74, 0.66);
+  }
+
+  /* ── Champs ── */
+  .contact-nl__row--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(16px, 2vw, 24px);
+  }
+  .contact-nl__field {
+    margin: 0 0 clamp(18px, 2vw, 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .contact-nl__label {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cnl-marine);
+  }
+  .contact-nl__label span { color: var(--cnl-champagne); }
+
+  .contact-nl__input,
+  .contact-nl__select {
+    width: 100%;
+    padding: 12px 2px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--cnl-marine);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(28, 43, 74, 0.32);
+    border-radius: 0;
+    transition: border-color 0.3s var(--ease-out, ease);
+    -webkit-appearance: none;
+            appearance: none;
+  }
+  .contact-nl__input::placeholder { color: rgba(28, 43, 74, 0.4); }
+  .contact-nl__input:focus,
+  .contact-nl__select:focus,
+  .contact-nl__check-input:focus-visible {
+    outline: none;
+    border-color: var(--cnl-champagne);
+    box-shadow: 0 1px 0 0 var(--cnl-champagne);
+  }
+  .contact-nl__textarea {
+    border: 1px solid rgba(28, 43, 74, 0.32);
+    padding: 14px;
+    resize: vertical;
+    min-height: 104px;
+    line-height: 1.55;
+  }
+  .contact-nl__textarea:focus { box-shadow: none; }
+
+  /* Select custom chevron */
+  .contact-nl__select-wrap { position: relative; display: block; }
+  .contact-nl__select { padding-right: 28px; cursor: pointer; }
+  .contact-nl__select-chevron {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-right: 1px solid var(--cnl-marine);
+    border-bottom: 1px solid var(--cnl-marine);
+    transform: translateY(-65%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  /* Checkbox */
+  .contact-nl__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 4px 0 clamp(24px, 2.6vw, 32px);
+  }
+  .contact-nl__check-input {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: var(--cnl-champagne);
+    cursor: pointer;
+  }
+  .contact-nl__check-label {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.45;
+    color: rgba(28, 43, 74, 0.78);
+    cursor: pointer;
+  }
+
+  /* Bouton — marine plein, coins droits */
+  .contact-nl__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 17px 40px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--cnl-cream);
+    background: var(--cnl-marine);
+    border: 1px solid var(--cnl-marine);
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s var(--ease-out, ease);
+  }
+  .contact-nl__submit:hover {
+    background: transparent;
+    color: var(--cnl-marine);
+    transform: translateY(-1px);
+  }
+  .contact-nl__submit:focus-visible {
+    outline: 2px solid var(--cnl-champagne);
+    outline-offset: 3px;
+  }
+
+  /* États */
+  .contact-nl__success {
+    margin: 0;
+    padding: 18px 20px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.4;
+    color: var(--cnl-marine);
+    border-left: 2px solid var(--cnl-champagne);
+    background: rgba(184, 150, 90, 0.08);
+  }
+  .contact-nl__success--inline { font-size: 1rem; padding: 14px 16px; }
+  .contact-nl__errors {
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--terracotta, #9F5D3E);
+    border-left: 2px solid var(--terracotta, #9F5D3E);
+    background: rgba(159, 93, 62, 0.07);
+  }
+  .contact-nl__errors--inline { margin: 12px 0 0; }
+  .contact-nl__errors ul { margin: 0; padding-left: 18px; }
+
+  /* ── Newsletter simple ── */
+  .contact-nl__news {
+    padding: clamp(24px, 2.8vw, 36px);
+    border: 1px solid var(--cnl-line);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.4), transparent 55%),
+      var(--cnl-cream);
+  }
+  .contact-nl__news-title {
+    margin: 0 0 8px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.25rem, 0.8vw + 1rem, 1.6rem);
+    color: var(--cnl-marine);
+  }
+  .contact-nl__news-copy {
+    margin: 0 0 20px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(28, 43, 74, 0.66);
+    max-width: 46ch;
+  }
+  .contact-nl__news-form {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .contact-nl__news-email {
+    flex: 1 1 200px;
+    border-bottom: 1px solid rgba(28, 43, 74, 0.32);
+    padding: 12px 2px;
+  }
+  .contact-nl__submit--news {
+    width: auto;
+    flex: 0 0 auto;
+    padding-inline: 28px;
+  }
+
+  /* ── Responsive (mobile-first stack) ── */
+  @media (max-width: 899px) {
+    .contact-nl__grid {
+      grid-template-columns: 1fr;
+      gap: clamp(28px, 6vw, 44px);
+    }
+    /* Ordre mobile : titre (déjà au-dessus) → image → formulaire */
+    .contact-nl--media-right .contact-nl__media { order: 0; }
+    .contact-nl__media { order: 0; }
+    .contact-nl__panel { order: 1; }
+    .contact-nl__row--split { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .contact-nl__news-form { flex-direction: column; }
+    .contact-nl__submit--news { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact-nl__submit:hover { transform: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact & Lettre",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Intro"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Surtitre", "default": "Contact · La Lettre" },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titre",
+      "info": "Mettre une partie en italique avec des _underscores_ : Écrire à _Maison Bonjour_",
+      "default": "Écrire à _Maison Bonjour_"
+    },
+    {
+      "type": "textarea",
+      "id": "section_subtitle",
+      "label": "Sous-titre",
+      "default": "Une question sur l’abonnement, une édition cadeau, ou simplement l’envie de recevoir la lettre de juillet."
+    },
+    {
+      "type": "header",
+      "content": "Visuel"
+    },
+    { "type": "image_picker", "id": "image", "label": "Image (desktop)" },
+    { "type": "image_picker", "id": "mobile_image", "label": "Image (mobile)" },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Texte alternatif (accessibilité)",
+      "default": "Téléphone à cadran posé sur une table en bois, lettres manuscrites et lavande séchée."
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Position du visuel (desktop)",
+      "options": [
+        { "value": "left", "label": "Gauche" },
+        { "value": "right", "label": "Droite" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Formulaire de contact"
+    },
+    { "type": "text", "id": "form_title", "label": "Titre du formulaire", "default": "Un mot, et nous répondons." },
+    { "type": "text", "id": "form_subtitle", "label": "Sous-titre du formulaire", "default": "Chaque message est lu par une vraie personne, à Cluj-Napoca." },
+    { "type": "text", "id": "button_label", "label": "Libellé du bouton", "default": "Écrire à Maison Bonjour" },
+    { "type": "textarea", "id": "success_message", "label": "Message de succès", "default": "Merci. Maison Bonjour te répondra avec soin." },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    { "type": "text", "id": "newsletter_title", "label": "Titre newsletter", "default": "La Lettre Maison Bonjour" },
+    { "type": "textarea", "id": "newsletter_text", "label": "Texte newsletter", "default": "Une lettre par mois : les coulisses de l’édition, les artisans, et la date de départ de la prochaine box. Sans bruit." },
+    { "type": "text", "id": "newsletter_button", "label": "Libellé bouton newsletter", "default": "Recevoir la lettre de juillet" },
+    { "type": "text", "id": "newsletter_success", "label": "Message de succès newsletter", "default": "C’est noté. La prochaine lettre vous attend." }
+  ],
+  "presets": [
+    { "name": "Contact & Lettre" }
+  ]
+}
+{% endschema %}

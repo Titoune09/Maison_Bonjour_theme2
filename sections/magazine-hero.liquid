@@ -1,0 +1,289 @@
+{%- liquid
+  assign t_before = section.settings.title_before | default: 'Le journal d’une '
+  assign t_emph   = section.settings.title_emphasis | default: 'France'
+  assign t_after  = section.settings.title_after | default: ' qui se savoure.'
+  assign intro    = section.settings.intro | default: 'Régions, maisons artisanales, rituels du matin, objets de table et parfums de saison. Le Magazine prolonge chaque box comme une promenade française.'
+  assign link_label = section.settings.link_label | default: 'Lire les derniers articles'
+  assign link_url   = section.settings.link_url | default: '#mb-magazine-latest'
+  assign masthead   = section.settings.masthead | default: 'La Revue'
+  assign issue      = section.settings.issue | default: 'Nº 01 · Bretagne · Juillet 2026'
+  assign caption    = section.settings.caption | default: 'Bretagne — lever du jour sur le littoral'
+  assign hero_alt   = section.settings.image.alt | default: t_emph
+-%}
+
+<section class="mb-rev-hero band--ink" aria-label="Le Magazine — introduction">
+  <div class="wrap">
+    <div class="mb-rev-hero__masthead reveal">
+      <span class="mb-rev-hero__mast-name">{{ masthead }}</span>
+      <span class="mb-rev-hero__mast-issue">{{ issue }}</span>
+    </div>
+    <hr class="mb-magazine__rule mb-magazine__rule--cream mb-rev-hero__hr reveal reveal--delay-1">
+
+    <div class="mb-rev-hero__grid">
+      <div class="mb-rev-hero__main">
+        <span class="mb-magazine__folio reveal reveal--delay-1">[ 01 ]</span>
+        <span class="label label--marker reveal reveal--delay-2">Le Magazine</span>
+        <h1 class="mb-rev-hero__title reveal reveal--delay-2">{{ t_before }}<em>{{ t_emph }}</em>{{ t_after }}</h1>
+      </div>
+      <div class="mb-rev-hero__aside">
+        {%- assign index_items = section.settings.index_items | default: 'Régions
+Maisons & artisans
+Arts de la table
+Rituels & parfums' | newline_to_br | split: '<br />' -%}
+        {%- if index_items.size > 0 -%}
+          <div class="mb-rev-hero__index">
+            <span class="mb-rev-hero__index-label reveal reveal--delay-2">{{ section.settings.index_label | default: 'Dans ce numéro' }}</span>
+            <ul class="mb-rev-hero__index-list" role="list">
+              {%- for item in index_items -%}
+                {%- assign item = item | strip -%}
+                {%- if item != blank -%}
+                  {%- assign d = forloop.index | plus: 2 | at_most: 6 -%}
+                  <li class="mb-rev-hero__index-item"><span class="mb-rev-hero__index-row reveal reveal--delay-{{ d }}"><span class="mb-rev-hero__index-num">{{ forloop.index | prepend: '0' }}</span>{{ item }}</span></li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        <div class="mb-rev-hero__lede reveal reveal--delay-5">
+          <p class="mb-rev-hero__intro">{{ intro }}</p>
+          {%- if link_label != blank -%}
+            <a href="{{ link_url }}" class="mb-magazine__readlink">{{ link_label }} <span aria-hidden="true">&rarr;</span></a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <figure class="mb-rev-hero__media img-reveal">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          widths: '900, 1400, 1900, 2400',
+          class: 'mb-rev-hero__img',
+          alt: hero_alt }}
+    {%- else -%}
+      <img src="{{ 'paysage-region-bretagne-01.jpeg' | asset_url }}"
+           alt="Paysage de Bretagne au lever du jour"
+           class="mb-rev-hero__img" width="2400" height="1200" loading="eager">
+    {%- endif -%}
+    {%- if caption != blank -%}
+      <figcaption class="mb-rev-hero__caption">{{ caption }}</figcaption>
+    {%- endif -%}
+  </figure>
+</section>
+
+{% stylesheet %}
+  /* Clean marine band — a very subtle COOL vertical depth only (no warm glow,
+     which read as a Provence-sunset bleeding through the navy). */
+  .mb-magazine .mb-rev-hero.band--ink {
+    position: relative;
+    padding-top: clamp(32px, 5vw, 64px);
+    background: linear-gradient(180deg, #16243f 0%, var(--marine-deep) 60%);
+  }
+
+  /* Masthead line */
+  .mb-rev-hero__masthead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .mb-rev-hero__mast-name {
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-size: clamp(1.1rem, 1.4vw, 1.5rem);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-cream);
+  }
+  .mb-rev-hero__mast-issue {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+  .mb-rev-hero__hr { margin-top: 18px; }
+
+  /* Title block */
+  .mb-rev-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding: clamp(40px, 6vw, 84px) 0 clamp(44px, 6vw, 80px);
+  }
+  .mb-rev-hero__main .label--marker {
+    margin-top: 18px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+  .mb-rev-hero__title {
+    margin: 24px 0 0;
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-weight: 400;
+    /* Tamed: TAN Pearl is a tall, high-contrast display — oversize + tight
+       leading made the J/Q descenders collide. Smaller with airy leading. */
+    font-size: clamp(2.5rem, 4.6vw + 0.5rem, 5.25rem);
+    line-height: 1.08;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--text-cream);
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .mb-rev-hero__title em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    /* gold accent word sits slightly larger for an editorial flourish */
+    font-size: 1.05em;
+    color: var(--gold-soft);
+  }
+  .mb-rev-hero__intro {
+    position: relative;
+    margin: 0 0 24px;
+    padding-top: 22px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.78;
+    color: var(--text-cream);
+    opacity: 0.86;
+    max-width: 42ch;
+  }
+  /* short gold tick above the intro — a small editorial detail */
+  .mb-rev-hero__intro::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 42px; height: 1px;
+    background: var(--gold);
+  }
+
+  /* Right column furniture — fills the column so the composition reads as a
+     complete editorial spread rather than a floating paragraph. */
+  .mb-rev-hero__aside { display: flex; flex-direction: column; gap: 40px; }
+
+  .mb-rev-hero__index-label {
+    display: block;
+    margin-bottom: 18px;
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-soft);
+  }
+  .mb-rev-hero__index-list {
+    list-style: none; margin: 0; padding: 0;
+    border-top: 1px solid rgba(201, 172, 118, 0.28);
+  }
+  .mb-rev-hero__index-item {
+    border-bottom: 1px solid rgba(201, 172, 118, 0.28);
+    color: var(--text-cream);
+    /* whileHover-style micro-interaction — li owns transform/colour so it
+       never fights the .reveal transform on the inner row. */
+    transition: color 0.3s var(--mag-ease, ease),
+                transform 0.35s var(--mag-ease, ease);
+  }
+  .mb-rev-hero__index-item:hover {
+    color: var(--gold-soft);
+    transform: translateX(8px);
+  }
+  .mb-rev-hero__index-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 13px 4px 13px 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 19px;
+    color: inherit;
+  }
+  .mb-rev-hero__index-num {
+    font-family: var(--font-sans);
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--gold);
+  }
+
+  /* Full-bleed immersive image (breaks out of .wrap) */
+  .mb-rev-hero__media { position: relative; margin: 0; }
+  .mb-rev-hero__img {
+    display: block;
+    width: 100%;
+    height: clamp(340px, 52vw, 720px);
+    object-fit: cover;
+  }
+  /* gradient scrim so the caption stays legible over any photo */
+  .mb-rev-hero__media::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 38%;
+    background: linear-gradient(to top, rgba(15, 26, 46, 0.55), transparent);
+    pointer-events: none;
+  }
+  .mb-rev-hero__caption {
+    z-index: 1;
+    position: absolute;
+    left: clamp(20px, 5vw, 76px);
+    bottom: 22px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-cream);
+    text-shadow: 0 1px 14px rgba(15, 26, 46, 0.65);
+  }
+
+  @media (min-width: 900px) {
+    /* The landing band fills the viewport: masthead at top, title + sommaire
+       centred in the remaining space, immersive image pushed below the fold. */
+    .mb-rev-hero > .wrap {
+      min-height: calc(100svh - 132px);
+      display: flex;
+      flex-direction: column;
+    }
+    .mb-rev-hero__grid {
+      margin: auto 0;
+      grid-template-columns: 1.5fr 1fr;
+      align-items: stretch;
+      gap: 64px;
+      padding-block: clamp(40px, 5vw, 80px);
+    }
+    /* index pinned to the top, lede to the bottom — column reads top-to-bottom */
+    .mb-rev-hero__aside { justify-content: space-between; padding: 4px 0; }
+    .mb-rev-hero__lede { margin-top: auto; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Magazine — 01 Hero",
+  "settings": [
+    { "type": "text", "id": "masthead", "label": "Cartouche (masthead)", "default": "La Revue" },
+    { "type": "text", "id": "issue", "label": "Numéro / édition", "default": "Nº 01 · Bretagne · Juillet 2026" },
+    { "type": "text", "id": "title_before", "label": "Titre — avant le mot accentué", "default": "Le journal d’une " },
+    { "type": "text", "id": "title_emphasis", "label": "Titre — mot en italique", "default": "France" },
+    { "type": "text", "id": "title_after", "label": "Titre — après le mot accentué", "default": " qui se savoure." },
+    { "type": "textarea", "id": "intro", "label": "Texte d’introduction", "default": "Régions, maisons artisanales, rituels du matin, objets de table et parfums de saison. Le Magazine prolonge chaque box comme une promenade française." },
+    { "type": "text", "id": "link_label", "label": "Libellé du lien", "default": "Lire les derniers articles" },
+    { "type": "url", "id": "link_url", "label": "URL du lien" },
+    { "type": "text", "id": "index_label", "label": "Sommaire — titre", "default": "Dans ce numéro" },
+    { "type": "textarea", "id": "index_items", "label": "Sommaire — entrées (une par ligne)", "default": "Régions\nMaisons & artisans\nArts de la table\nRituels & parfums" },
+    { "type": "image_picker", "id": "image", "label": "Image immersive (paysage français)" },
+    { "type": "text", "id": "caption", "label": "Légende image", "default": "Bretagne — lever du jour sur le littoral" }
+  ],
+  "presets": [{ "name": "Magazine — 01 Hero" }]
+}
+{% endschema %}

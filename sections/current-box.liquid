@@ -1,0 +1,395 @@
+{%- liquid
+  assign featured = section.settings.featured_product
+
+  assign label      = section.settings.label      | default: 'Première édition · Juillet 2026'
+  assign region     = section.settings.region     | default: 'Bretagne'
+  assign subtitle   = section.settings.subtitle   | default: 'Une première escale entre mer, granit, gestes anciens et traditions de table.'
+  assign intro      = section.settings.intro
+  assign img        = section.settings.image
+  assign seal       = section.settings.seal       | default: 'Chaque boîte est préparée avec soin, puis scellée à la main par un sceau Maison Bonjour.'
+  assign passport   = section.settings.passport   | default: 'Et avec chaque box, votre passeport — un livret pour collectionner les régions.'
+  assign tease      = section.settings.tease      | default: '« La box du mois prochain ? Sortez votre passeport. C’est une surprise. »'
+
+  if featured
+    if featured.metafields.box.label.value    != blank
+      assign label = featured.metafields.box.label.value
+    endif
+    if featured.metafields.box.region.value   != blank
+      assign region = featured.metafields.box.region.value
+    endif
+    if featured.metafields.box.subtitle.value != blank
+      assign subtitle = featured.metafields.box.subtitle.value
+    endif
+    if featured.metafields.box.image.value    != blank
+      assign img = featured.metafields.box.image.value
+    endif
+    if featured.metafields.box.passport.value != blank
+      assign passport = featured.metafields.box.passport.value
+    endif
+    if featured.metafields.box.tease.value    != blank
+      assign tease = featured.metafields.box.tease.value
+    endif
+  endif
+-%}
+
+<section id="la-box" class="box section--warm" aria-label="La Box du mois">
+  <div class="container">
+    <div class="box__grid">
+      {%- comment -%}
+        Pas de classe `.reveal` ici : elle masquait le conteneur (opacity:0)
+        en attente d'un is-visible qui pouvait ne jamais arriver à cause de la
+        cascade avec `.img-reveal` à l'intérieur. L'image possède déjà son
+        propre cinematic reveal via `.img-reveal`.
+      {%- endcomment -%}
+      <div class="box__media reveal">
+        {%- if img != blank -%}
+          {{ img | image_url: width: 1600 | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 1024px) 55vw, 100vw',
+              widths: '600, 900, 1200, 1600, 2000',
+              class: 'box__img',
+              alt: img.alt
+          }}
+        {%- else -%}
+          <img class="box__img"
+               src="{{ 'current-box.jpg' | asset_url }}"
+               srcset="{{ 'current-box.jpg' | asset_url }} 1x, {{ 'current-box@2x.jpg' | asset_url }} 2x"
+               alt="La box Maison Bonjour du mois"
+               width="1600"
+               height="1600"
+               loading="lazy">
+        {%- endif -%}
+      </div>
+
+      <div class="box__text reveal reveal--delay-1">
+        <p class="box__eyebrow label">{{ label }}</p>
+        <h2 class="box__title" data-split-words>{{ region }}</h2>
+        <p class="box__subtitle">{{ subtitle }}</p>
+        <hr class="sep">
+
+        <div class="box__intro editorial">
+          {%- if intro != blank -%}
+            {{ intro }}
+          {%- else -%}
+            <p>Pour sa première édition, Maison Bonjour prend la direction de la Bretagne, dans le cadre de la Semaine de la France à Cluj-Napoca, avec l’Institut français et le CFAC.</p>
+            <p>Le contenu exact restera secret jusqu’à l’ouverture. Chaque élément est choisi pour raconter une région, pas simplement pour remplir une boîte.</p>
+          {%- endif -%}
+        </div>
+
+        <ul class="box__list" role="list">
+          {%- if featured.metafields.box.products.value != blank -%}
+            {%- for item in featured.metafields.box.products.value -%}
+              <li class="box__item reveal-spring">{{ item }}</li>
+            {%- endfor -%}
+          {%- elsif section.blocks.size > 0 -%}
+            {%- for block in section.blocks -%}
+              {%- if block.type == 'product' -%}
+                <li class="box__item reveal-spring" {{ block.shopify_attributes }}>
+                  {{ block.settings.name }}
+                  {%- if block.settings.origin != blank %} — {{ block.settings.origin }}{% endif -%}
+                </li>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            <li class="box__item reveal-spring">Une création à conserver</li>
+            <li class="box__item reveal-spring">Une saveur de région</li>
+            <li class="box__item reveal-spring">Un geste de table</li>
+            <li class="box__item reveal-spring">Une matière à toucher</li>
+            <li class="box__item reveal-spring">Une surprise à découvrir à l’ouverture</li>
+          {%- endif -%}
+        </ul>
+
+        {%- if seal != blank -%}
+          <p class="box__seal">{{ seal }}</p>
+        {%- endif -%}
+
+        <p class="box__tease">{{ tease }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .box { padding-block: 100px; }
+
+  .box__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  .box__media {
+    position: relative;
+    /* Ombre douce et diffuse qui suit la forme plumée de l'image
+       (drop-shadow respecte l'alpha du mask, contrairement à box-shadow). */
+    filter: drop-shadow(0 26px 50px rgba(43, 32, 24, 0.13));
+  }
+
+  .box__img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 10px;
+    /* Bords plumés : l'image se dissout dans le fond cream au lieu d'un
+       bord rectangulaire net. Intersection de deux dégradés = feather sur
+       les 4 côtés. */
+    -webkit-mask-image:
+      linear-gradient(to right,  transparent 0, #000 6%, #000 94%, transparent 100%),
+      linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right,  transparent 0, #000 6%, #000 94%, transparent 100%),
+      linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+    mask-composite: intersect;
+  }
+  .box__img--placeholder { background: var(--cream); aspect-ratio: 4/5; }
+
+  .box__title {
+    margin-top: 16px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3rem, 4.4vw + 1rem, 5rem); /* 48 → 80 */
+    line-height: 1.05;
+    color: var(--marine);
+  }
+
+  .box__subtitle {
+    margin-top: 12px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--text-muted);
+    max-width: 440px;
+  }
+
+  .box__eyebrow {
+    margin-bottom: 12px;
+    color: var(--gold);
+  }
+
+  .box__intro {
+    margin-top: 4px;
+    margin-bottom: 8px;
+    max-width: 480px;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .box__intro p { margin: 0 0 14px; }
+  .box__intro p:last-child { margin-bottom: 0; }
+
+  .box__seal {
+    margin-top: 22px;
+    max-width: 480px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .box__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .box__item {
+    position: relative;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 2;
+    color: var(--text);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    transition: padding-left 0.35s var(--ease-out), color 0.35s ease;
+  }
+  .box__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.35s var(--ease-out);
+  }
+  .box__item:hover {
+    padding-left: 22px;
+    color: var(--marine);
+  }
+  .box__item:hover::before { width: 12px; }
+  .box__item:last-child { border-bottom: 0; }
+
+  .box__passport {
+    margin-top: 24px;
+    font-size: 10px;
+    color: var(--text-muted);
+    max-width: 460px;
+  }
+
+  .box__passport-card {
+    position: absolute;
+    left: -28px;
+    bottom: -34px;
+    width: min(240px, 48%);
+    padding: 18px;
+    color: var(--gold);
+    transform: rotate(-4deg);
+  }
+
+  .box__passport-card svg {
+    width: 100%;
+    margin: 8px 0;
+    overflow: visible;
+  }
+
+  .box__passport-card span {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .box__passport-label {
+    color: var(--marine);
+  }
+
+  .box__hotspot--one { top: 28%; left: 22%; }
+  .box__hotspot--two { right: 18%; bottom: 26%; animation-delay: 0.8s; }
+
+  .box__tease {
+    margin-top: 24px;
+    padding-top: 24px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.4;
+    color: var(--marine);
+    max-width: 480px;
+  }
+
+  @media (min-width: 1024px) {
+    .box__grid {
+      grid-template-columns: 55fr 45fr;
+      column-gap: 80px;
+    }
+    .box__img { aspect-ratio: 4 / 3; }
+  }
+
+  @media (max-width: 767px) {
+    .box { padding-block: 60px; }
+
+    /* Garde-fou : .reveal et .reveal-spring sur le texte/items dépendent
+       d'un IntersectionObserver qui peut échouer (image lazy + threshold).
+       On force la visibilité sur mobile pour ne jamais bloquer l'affichage. */
+    .box__text,
+    .box__text.reveal,
+    .box__item,
+    .box__item.reveal-spring {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* Layout serré et explicite pour éviter tout débordement horizontal. */
+    .box__grid {
+      gap: 32px;
+      min-width: 0;
+    }
+    .box__media,
+    .box__text {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .box__img {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+    }
+
+    /* Typo allégée pour respirer dans 320–390px de viewport. */
+    .box__title {
+      font-size: clamp(2.2rem, 11vw, 3rem);
+      line-height: 1.05;
+      margin-top: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .box__subtitle {
+      font-size: 17px;
+      max-width: 100%;
+    }
+    .box__list { padding: 0; margin: 0; list-style: none; }
+    .box__item {
+      font-size: 14.5px;
+      line-height: 1.6;
+      padding: 14px 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+    .box__tease {
+      font-size: 16px;
+      max-width: 100%;
+    }
+
+    .box__passport-card {
+      left: 16px;
+      bottom: 16px;
+      width: 180px;
+    }
+    .box__hotspot { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "03 — La Box",
+  "settings": [
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Produit lié à la box du mois",
+      "info": "Si renseigné, ses metafields (box.*) priment sur les champs ci-dessous."
+    },
+    { "type": "text",     "id": "label",    "label": "Label", "default": "Première édition · Juillet 2026" },
+    { "type": "text",     "id": "region",   "label": "Région / Titre", "default": "Bretagne" },
+    { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Une première escale entre mer, granit, gestes anciens et traditions de table." },
+    { "type": "richtext", "id": "intro",    "label": "Texte d’introduction", "info": "Laisser vide pour utiliser le texte Bretagne par défaut." },
+    { "type": "image_picker", "id": "image", "label": "Image de la box" },
+    { "type": "textarea", "id": "seal",     "label": "Phrase du sceau", "default": "Chaque boîte est préparée avec soin, puis scellée à la main par un sceau Maison Bonjour." },
+    { "type": "textarea", "id": "passport", "label": "Texte passeport" },
+    { "type": "textarea", "id": "tease",    "label": "Teaser dernière ligne" }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Indice de la box",
+      "limit": 12,
+      "settings": [
+        { "type": "text", "id": "name",   "label": "Indice (ligne affichée)" },
+        { "type": "text", "id": "origin", "label": "Précision (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "03 — La Box",
+      "blocks": [
+        { "type": "product", "settings": { "name": "Une création à conserver" } },
+        { "type": "product", "settings": { "name": "Une saveur de région" } },
+        { "type": "product", "settings": { "name": "Un geste de table" } },
+        { "type": "product", "settings": { "name": "Une matière à toucher" } },
+        { "type": "product", "settings": { "name": "Une surprise à découvrir à l’ouverture" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

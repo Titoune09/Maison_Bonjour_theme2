@@ -1,0 +1,45 @@
+LOGO — Maison Bonjour
+======================
+
+Livrables
+---------
+- logo.svg            viewBox 240 x 48   (logo horizontal wordmark)
+- logo-mark.svg       viewBox 48 x 48    (monogramme seul)
+- logo-light.svg      version sur fond sombre (couleur ivoire)
+- logo-dark.svg       version sur fond clair (couleur encre)
+- logo.png @1x @2x @3x (fallback raster)
+
+Brief
+-----
+Wordmark "Maison Bonjour" en sérif éditoriale haut de gamme. Lettrage personnalisé,
+ligature possible sur "ai" et "on". Petit ornement décoratif au-dessus ou en-dessous
+(filet, étoile, fleur de lys stylisée). Inspiration : étiquette vin grand cru,
+en-tête papeterie hôtel parisien années 30, logo Hermès.
+
+Prompt IA (génération SVG via Recraft / Adobe Firefly)
+------------------------------------------------------
+Elegant French luxury wordmark logo "Maison Bonjour", custom serif
+typography inspired by 1930s Parisian hotel stationery and grand cru
+wine labels, two-line stacked layout with thin horizontal rule
+separating "Maison" and "Bonjour", small five-pointed star ornament
+centered above, deep navy ink color on transparent background, flat
+vector, perfectly balanced kerning, no gradient, no effects, timeless
+heraldic feel, Hermès meets Veuve Clicquot --style raw --v 6
+
+Negative prompt
+---------------
+sans-serif, modern tech logo, gradient, 3D, glow, photo realistic,
+busy ornament, italic script handwriting, AI-default font.
+
+Variations
+----------
+A) Wordmark 2 lignes + étoile
+B) Wordmark 1 ligne avec filet sous le texte
+C) Cartouche ovale entourant le wordmark
+D) Monogramme MB seul dans cercle perlé
+
+Note technique
+--------------
+- Tracer en courbes (outlines), aucune police embarquée.
+- Grille 8px. Hauteur x-height = 24px à viewBox 48.
+- Export SVG optimisé via SVGO (suppression métadonnées).

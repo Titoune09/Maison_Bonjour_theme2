@@ -1,0 +1,142 @@
+<section class="mb-404" aria-labelledby="mb-404-title">
+  <div class="container">
+
+    <div class="mb-404__top">
+      <span class="mb-404__code">404</span>
+      <span class="label mb-404__error">Erreur</span>
+    </div>
+
+    <div class="mb-404__mid">
+      <a class="mb-404__back" href="{{ routes.root_url }}">
+        <span>Revenir à l'accueil</span>
+      </a>
+      <div class="mb-404__media img-reveal">
+        <img class="mb-404__img"
+             src="{{ '404.jpg' | asset_url }}"
+             alt="" width="320" height="200" loading="eager">
+      </div>
+    </div>
+
+    <h1 id="mb-404-title" class="mb-404__title">Introuvable</h1>
+
+    <p class="mb-404__note">
+      Cette page s'est égarée quelque part en route — ou n'a jamais existé. Pas grave,
+      le chemin du retour est juste au-dessus.
+    </p>
+
+    <div class="mb-404__wordmark" aria-hidden="true">Maison&nbsp;Bonjour</div>
+
+  </div>
+</section>
+
+<style>
+  .mb-404 {
+    padding-block: clamp(48px, 7vw, 96px);
+    overflow: hidden;
+  }
+
+  /* Top row : 404 + ERREUR */
+  .mb-404__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: clamp(24px, 4vw, 48px);
+  }
+  .mb-404__code {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(5rem, 18vw, 16rem);
+    line-height: 0.82;
+    letter-spacing: -0.02em;
+    color: var(--marine);
+  }
+  .mb-404__error {
+    margin-top: 0.6em;
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    color: var(--text-muted);
+  }
+
+  /* Middle row : back link + small image */
+  .mb-404__mid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding-block: clamp(32px, 5vw, 64px);
+  }
+  .mb-404__back {
+    flex: 1;
+    max-width: 460px;
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2vw + 0.5rem, 2rem);
+    color: var(--marine);
+    text-decoration: none;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--marine);
+    transition: opacity 0.25s ease, padding-left 0.3s ease;
+  }
+  .mb-404__back:hover { opacity: 0.65; padding-left: 8px; }
+  .mb-404__media {
+    flex-shrink: 0;
+    width: clamp(160px, 26vw, 320px);
+  }
+  .mb-404__img {
+    display: block;
+    width: 100%;
+    height: clamp(120px, 18vw, 200px);
+    object-fit: cover;
+    filter: grayscale(0.15) sepia(0.06);
+  }
+
+  /* Giant INTROUVABLE */
+  .mb-404__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.75rem, 13vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: 0;
+    text-align: center;
+    color: var(--marine);
+    text-transform: uppercase;
+    padding-inline: 0.08em;
+    overflow-wrap: anywhere;
+  }
+
+  .mb-404__note {
+    margin: clamp(28px, 4vw, 48px) auto 0;
+    max-width: 480px;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.0625rem, 1vw + 0.75rem, 1.25rem);
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* Brand wordmark */
+  .mb-404__wordmark {
+    margin-top: clamp(56px, 9vw, 120px);
+    padding-top: clamp(32px, 4vw, 48px);
+    border-top: 1px solid var(--border);
+    font-family: 'TAN Pearl', var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 8vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--marine);
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    .mb-404__mid { flex-direction: column; align-items: stretch; }
+    .mb-404__media { width: 100%; align-self: flex-end; max-width: 240px; }
+  }
+</style>

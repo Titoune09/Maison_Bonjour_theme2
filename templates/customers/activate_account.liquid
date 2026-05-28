@@ -1,0 +1,38 @@
+<article class="account">
+  <div class="account__shell">
+    <header class="account__header">
+      <span class="label">Activation</span>
+      <h1 class="account__title">Activer mon compte</h1>
+      <hr class="sep sep--center">
+      <p class="account__hint" style="text-align:center;">
+        Créez un mot de passe pour activer votre compte Maison Bonjour.
+      </p>
+    </header>
+
+    {% form 'activate_customer_password' %}
+      {%- if form.errors -%}
+        <p class="account__error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+
+      <div class="account__field">
+        <label for="Password">Mot de passe</label>
+        <input type="password" id="Password" name="customer[password]" autocomplete="new-password" required>
+      </div>
+
+      <div class="account__field">
+        <label for="PasswordConfirm">Confirmer</label>
+        <input type="password" id="PasswordConfirm" name="customer[password_confirmation]" autocomplete="new-password" required>
+      </div>
+
+      <button type="submit" class="btn btn--primary account__submit">Activer</button>
+
+      <p class="account__links">
+        <button type="submit" name="decline" style="background:none; border:0; padding:0; cursor:pointer; color:var(--text-muted); font-family:var(--font-sans); font-size:11px; font-weight:500; letter-spacing:0.25em; text-transform:uppercase;">
+          Décliner l’invitation
+        </button>
+      </p>
+    {% endform %}
+  </div>
+</article>
+
+{% render 'account-styles' %}

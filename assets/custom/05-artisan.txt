@@ -1,0 +1,37 @@
+ARTISAN — Atelier / Portrait
+=============================
+
+Livrables
+---------
+- artisan.jpg        1400 x 1750  (format portrait)
+- artisan@2x.jpg     2800 x 3500
+
+Brief
+-----
+Met en scène un producteur partenaire (fromager, boulanger, vigneron, confiturier).
+Mains au travail privilégiées (anonymat possible). Texture, matière, geste artisanal.
+Lumière naturelle. Aucune mise en scène publicitaire.
+
+Prompt IA
+---------
+Close-up documentary photograph of an elderly French artisan's hands
+kneading rustic sourdough dough on a flour-dusted wooden table inside
+a stone-walled village bakery, deep wrinkles and flour on weathered
+skin, soft directional light from a small window casting long shadows,
+linen apron and rolled-up navy sleeve visible, terracotta tiled floor
+out of focus, single warm tungsten bulb glowing in background, Kodak
+Portra 400 film grain, ivory cream and earth tone palette, Sebastiao
+Salgado meets editorial food photography, dignified and quiet
+--ar 4:5 --style raw --v 6
+
+Negative prompt
+---------------
+young hands, gloves, factory, stainless steel, plastic, logo, text,
+hyperreal, CGI, smiling face, posed, oversharp, HDR.
+
+Variations
+----------
+A) Mains pétrissant pâte boulanger
+B) Fromager découpant meule à la lyre, cave d'affinage
+C) Vigneron taillant vigne en hiver, brume
+D) Confiturière remuant cuivre à la louche bois

@@ -1,0 +1,228 @@
+{%- liquid
+  assign img       = section.settings.image
+  assign title     = section.settings.title     | default: 'Nous avons quitté Paris pour Cluj.'
+  assign year      = section.settings.year      | default: '2025'
+  assign signature = section.settings.signature | default: 'Pierre & Tiffany'
+-%}
+
+<section class="story" aria-label="L'Histoire">
+  <div class="container story__container">
+
+    <div class="story__meta reveal">
+      <span>{{ year }}</span>
+    </div>
+
+    <h2 class="story__title reveal reveal--delay-1" data-fm="lines">{{ title }}</h2>
+
+    <div class="story__rule reveal reveal--delay-2" aria-hidden="true"></div>
+
+    <div class="story__grid">
+
+      <figure class="story__media reveal reveal--delay-2">
+        {%- if img != blank -%}
+          {{ img | image_url: width: 1400 | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 1024px) 42vw, 100vw',
+              widths: '500, 800, 1200, 1600',
+              class: 'story__img',
+              alt: img.alt
+          }}
+        {%- else -%}
+          <img class="story__img"
+               src="{{ 'intro.png' | asset_url }}"
+               alt="Pierre &amp; Tiffany — fondateurs de Maison Bonjour, à Cluj-Napoca"
+               width="1086"
+               height="1448"
+               loading="lazy"
+               decoding="async">
+        {%- endif -%}
+        <figcaption class="story__caption">
+          <span class="story__caption-rule" aria-hidden="true"></span>
+          Pierre &amp; Tiffany · Cluj-Napoca
+        </figcaption>
+      </figure>
+
+      <div class="story__prose reveal reveal--delay-3">
+        {%- if section.settings.body != blank -%}
+          {{ section.settings.body }}
+        {%- else -%}
+          <p>Pierre est né à Senlis. Tiffany en Provence. Nous nous sommes rencontrés à Paris.</p>
+          <p>En {{ year }}, nous avons quitté Paris pour Cluj-Napoca. Très vite, ce qui nous a manqué : le savon d&rsquo;une savonnerie qu&rsquo;on connaît, la cigale d&rsquo;un atelier transmis depuis quatre générations, le caramel d&rsquo;une maison qui le fabrique encore à la main.</p>
+          <p>Cette France-là ne traverse pas les frontières. Nous avons décidé de la traverser nous-mêmes.</p>
+        {%- endif -%}
+
+        {%- comment -%} start:end = fractions de viewport. start=1.0 → la frappe démarre dès que la signature entre par le bas (plus de délai). end=0.6 → terminée pendant que la section est encore bien visible. {%- endcomment -%}
+        <p class="story__signature" data-typewriter="1.0:0.6">{{ signature }}</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  .story {
+    background: var(--cream);
+    color: var(--marine);
+    padding-block: clamp(80px, 10vw, 140px);
+  }
+
+  .story__container {
+    position: relative;
+  }
+
+  .story__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--marine);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--marine);
+  }
+
+  .story__title {
+    margin: clamp(40px, 6vw, 80px) 0 0;
+    font-family: "Kalnia", "Instrument Serif", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+    font-variation-settings: "wdth" 100;
+    font-size: clamp(2.2rem, 6.5vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: var(--marine);
+    max-width: 16ch;
+  }
+
+  .story__rule {
+    margin-top: clamp(56px, 8vw, 120px);
+    height: 1px;
+    background: var(--marine);
+    width: 100%;
+  }
+
+  .story__grid {
+    margin-top: clamp(56px, 7vw, 96px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .story__media {
+    position: relative;
+    margin: 0;
+  }
+  .story__img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    background: var(--cream-warm, #eee);
+    box-shadow:
+      0 24px 60px -18px rgba(15, 26, 46, 0.28),
+      0 6px 14px rgba(15, 26, 46, 0.08);
+  }
+  .story__img--placeholder { background: var(--cream-warm, #ede4d0); }
+
+  .story__caption {
+    position: absolute;
+    left: 14px;
+    bottom: -28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--text-muted, rgba(28, 43, 74, 0.62));
+    background: transparent;
+    pointer-events: none;
+  }
+  .story__caption-rule {
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: var(--gold, #B8965A);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 767px) {
+    .story__caption {
+      left: 4px;
+      bottom: -22px;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      gap: 10px;
+    }
+    .story__caption-rule { width: 22px; }
+  }
+
+  .story__prose p {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--marine);
+    max-width: 52ch;
+  }
+  .story__prose p + p { margin-top: 1.5em; }
+
+  .story__signature {
+    margin-top: 2.4em !important;
+    font-family: var(--font-serif) !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+    font-size: clamp(1.5rem, 1.6vw + 0.8rem, 2.1rem) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.005em;
+    color: var(--marine) !important;
+  }
+
+  .story__signature::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    margin-right: 14px;
+    vertical-align: middle;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  @media (min-width: 1024px) {
+    .story__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: clamp(64px, 6vw, 120px);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .story__title { font-size: clamp(1.9rem, 9vw, 2.8rem); max-width: 100%; }
+    .story__prose p { font-size: 16px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "L'Histoire",
+  "settings": [
+    { "type": "image_picker", "id": "image",     "label": "Portrait Pierre & Tiffany" },
+    { "type": "text",         "id": "title",     "label": "Titre",     "default": "Nous avons quitté Paris pour Cluj." },
+    { "type": "text",         "id": "year",      "label": "Année",     "default": "2025" },
+    { "type": "richtext",     "id": "body",      "label": "Récit (optionnel)" },
+    { "type": "text",         "id": "signature", "label": "Signature", "default": "Pierre & Tiffany" }
+  ],
+  "presets": [{ "name": "L'Histoire" }]
+}
+{% endschema %}

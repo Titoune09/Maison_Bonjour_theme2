@@ -1,0 +1,168 @@
+{%- liquid
+  assign label      = section.settings.label | default: 'À la une'
+  assign meta       = section.settings.meta | default: 'BRETAGNE · JUILLET 2026'
+  assign title      = section.settings.title | default: 'Ce que le granit dit du temps.'
+  assign text       = section.settings.text | default: 'Avant d’être une côte, la Bretagne est une lumière. Un granit poli par le vent, du linge qui sèche face au large, une façon franche de regarder la mer.'
+  assign link_label = section.settings.link_label | default: 'Lire l’article'
+  assign link_url   = section.settings.link_url
+  if link_url == blank
+    assign mag_blog = blogs['magazine']
+    if mag_blog == blank or mag_blog.articles_count == 0
+      assign mag_blog = blogs['news']
+    endif
+    if mag_blog == blank or mag_blog.articles_count == 0
+      for b in blogs
+        if b.articles_count > 0
+          assign mag_blog = b
+          break
+        endif
+      endfor
+    endif
+    if mag_blog != blank and mag_blog.articles_count > 0
+      assign link_url = mag_blog.articles.first.url
+    else
+      assign link_url = '#mb-magazine-latest'
+    endif
+  endif
+  assign alt_left   = section.settings.image_left.alt | default: title
+  assign alt_right  = section.settings.image_right.alt | default: title
+-%}
+
+<section class="mb-rev-feat band--paper" aria-label="Article à la une">
+  <div class="wrap">
+    <div class="mb-rev-feat__head reveal">
+      <span class="mb-magazine__folio">02</span>
+      <span class="label label--marker">{{ label }}</span>
+      <span class="mb-rev-feat__meta">{{ meta }}</span>
+    </div>
+    <hr class="mb-magazine__rule mb-magazine__rule--gold">
+
+    <div class="mb-rev-feat__grid">
+      <figure class="mb-rev-feat__media mb-rev-feat__media--left img-reveal">
+        {%- if section.settings.image_left != blank -%}
+          {{ section.settings.image_left | image_url: width: 900 | image_tag:
+              loading: 'lazy', sizes: '(min-width: 980px) 26vw, 50vw',
+              widths: '300, 500, 800, 900', class: 'mb-rev-feat__img',
+              alt: alt_left }}
+        {%- else -%}
+          <img src="{{ 'paysage-region-bretagne-01.jpeg' | asset_url }}" alt="Côte de Bretagne"
+               class="mb-rev-feat__img" width="500" height="700" loading="lazy">
+        {%- endif -%}
+      </figure>
+
+      <div class="mb-rev-feat__body reveal reveal--delay-1">
+        <h2 class="mb-rev-feat__title">{{ title }}</h2>
+        <p class="mb-rev-feat__text mb-rev-feat__text--lead">{{ text }}</p>
+        {%- if link_label != blank -%}
+          <a href="{{ link_url }}" class="mb-magazine__readlink">{{ link_label }} <span aria-hidden="true">&rarr;</span></a>
+        {%- endif -%}
+      </div>
+
+      <figure class="mb-rev-feat__media mb-rev-feat__media--right img-reveal">
+        {%- if section.settings.image_right != blank -%}
+          {{ section.settings.image_right | image_url: width: 1000 | image_tag:
+              loading: 'lazy', sizes: '(min-width: 980px) 30vw, 100vw',
+              widths: '400, 700, 1000', class: 'mb-rev-feat__img',
+              alt: alt_right }}
+        {%- else -%}
+          <img src="{{ 'paysage-region-bretagne-01.jpeg' | asset_url }}" alt="Lumière bretonne sur le littoral"
+               class="mb-rev-feat__img" width="700" height="933" loading="lazy">
+        {%- endif -%}
+      </figure>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .mb-rev-feat { padding-block: clamp(64px, 8vw, 120px); }
+
+  .mb-rev-feat__head {
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .mb-rev-feat__head .label--marker {
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--marine);
+  }
+  .mb-rev-feat__meta {
+    margin-left: auto;
+    font-family: var(--font-sans);
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .mb-magazine__rule + .mb-rev-feat__grid { margin-top: clamp(36px, 5vw, 64px); }
+
+  .mb-rev-feat__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .mb-rev-feat__img { width: 100%; object-fit: cover; display: block; }
+  .mb-rev-feat__media--left  .mb-rev-feat__img { aspect-ratio: 4 / 5; }
+  .mb-rev-feat__media--right .mb-rev-feat__img { aspect-ratio: 3 / 4; }
+  .mb-rev-feat__media { margin: 0; }
+
+  .mb-rev-feat__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 4.5vw, 4.25rem);
+    line-height: 1.04;
+    color: var(--marine);
+  }
+  .mb-rev-feat__text {
+    margin: 26px 0 28px;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.78;
+    color: var(--text-muted);
+  }
+  /* Drop cap — print gazette lead paragraph */
+  .mb-rev-feat__text--lead::first-letter {
+    float: left;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 4.6em;
+    line-height: 0.74;
+    padding: 8px 14px 0 0;
+    color: var(--gold);
+  }
+
+  @media (min-width: 980px) {
+    .mb-rev-feat__grid {
+      grid-template-columns: 0.85fr 1.3fr 1fr;
+      gap: 0;
+      align-items: center;
+    }
+    .mb-rev-feat__body {
+      padding-inline: clamp(32px, 4vw, 64px);
+      border-inline: 1px solid var(--border);
+    }
+    .mb-rev-feat__media--right { align-self: stretch; display: flex; }
+    .mb-rev-feat__media--right .mb-rev-feat__img { height: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Magazine — 02 À la une",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label de section", "default": "À la une" },
+    { "type": "text", "id": "meta", "label": "Méta article (région · date)", "default": "BRETAGNE · JUILLET 2026" },
+    { "type": "text", "id": "title", "label": "Titre de l’article", "default": "Ce que le granit dit du temps." },
+    { "type": "textarea", "id": "text", "label": "Extrait", "default": "Avant d’être une côte, la Bretagne est une lumière. Un granit poli par le vent, du linge qui sèche face au large, une façon franche de regarder la mer." },
+    { "type": "text", "id": "link_label", "label": "Libellé du lien", "default": "Lire l’article" },
+    { "type": "url", "id": "link_url", "label": "URL de l’article" },
+    { "type": "image_picker", "id": "image_left", "label": "Image gauche (portrait 4/5)" },
+    { "type": "image_picker", "id": "image_right", "label": "Image droite (portrait 3/4)" }
+  ],
+  "presets": [{ "name": "Magazine — 02 À la une" }]
+}
+{% endschema %}
