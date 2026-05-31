@@ -1,0 +1,19 @@
+{%- comment -%}
+  Rend une date en français : « 27 mai 2026 ».
+
+  Pourquoi ce snippet : le filtre Liquid `| date: '%B'` localise le nom du mois
+  selon la locale PLATEFORME de la boutique. Si celle-ci n'est pas réglée sur le
+  français, il renvoie l'anglais (« 27 May 2026 ») — ce qui a été constaté sur la
+  page article. Ce mapping force le français côté thème, indépendamment du réglage
+  de la boutique. Le site Maison Bonjour est monolingue FR (locales/fr.default.json).
+
+  Usage : {% render 'date-fr', date: article.published_at %}
+{%- endcomment -%}
+{%- liquid
+  assign _d = date | date: '%-d'
+  assign _m = date | date: '%-m' | plus: 0
+  assign _y = date | date: '%Y'
+  assign _months = ',janvier,février,mars,avril,mai,juin,juillet,août,septembre,octobre,novembre,décembre' | split: ','
+  assign _month = _months[_m]
+-%}
+{{- _d }} {{ _month }} {{ _y -}}

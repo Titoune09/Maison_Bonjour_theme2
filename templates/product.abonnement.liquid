@@ -61,7 +61,7 @@
                 type="submit"
                 class="btn btn--primary formula__btn"
                 {% unless variant.available %}disabled{% endunless %}>
-                {% if variant.available %}S’abonner{% else %}Indisponible{% endif %}
+                {% if variant.available %}Choisir cette formule{% else %}Indisponible{% endif %}
               </button>
             </form>
           {%- endfor -%}
@@ -85,19 +85,21 @@
             <p class="formula__desc">Trois régions, trois voyages. L’habitude s’installe.</p>
             <ul class="formula__features">
               <li>Livraison à Cluj-Napoca incluse</li>
-              <li>Pause à tout moment</li>
-              <li>Économisez 15 € sur le trimestre</li>
+              <li>Gestion simple depuis votre espace abonné</li>
+              <li>Trois régions, trois éditions</li>
             </ul>
             <button type="button" class="btn btn--primary formula__btn" disabled>Bientôt disponible</button>
           </article>
           <article class="formula">
-            <h2 class="formula__name">Grand Voyage</h2>
+            {%- comment -%} Nom de la formule annuelle : « Le Grand Tour Français » (ex-« Grand Voyage »).
+                Alternatives validées si besoin : « Tour de France », « Tour de France des savoir-faire ». {%- endcomment -%}
+            <h2 class="formula__name">Le Grand Tour Français</h2>
             <p class="formula__price"><span class="formula__amount">64 €</span><span class="formula__period">/ mois (6 mois)</span></p>
             <p class="formula__desc">Six régions, six mois de France. Le voyage complet.</p>
             <ul class="formula__features">
               <li>Livraison à Cluj-Napoca incluse</li>
-              <li>Pause à tout moment</li>
-              <li>Économisez 60 € sur le semestre</li>
+              <li>Gestion simple depuis votre espace abonné</li>
+              <li>Six régions, six éditions</li>
             </ul>
             <button type="button" class="btn btn--primary formula__btn" disabled>Bientôt disponible</button>
           </article>
@@ -105,7 +107,7 @@
       </div>
 
       <p class="sub__notes">
-        Pause à tout moment, en un clic — sans frais, sans question. Livraison incluse à Cluj-Napoca. Première box livrée le 15 du mois suivant votre commande.
+        Gestion simple et autonome depuis votre espace abonné, selon la formule choisie. Livraison incluse à Cluj-Napoca. Première box livrée le 15 du mois suivant votre commande.
       </p>
     </div>
   </section>

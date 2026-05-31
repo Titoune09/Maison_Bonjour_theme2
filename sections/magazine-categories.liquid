@@ -89,6 +89,10 @@
                 assign cat_link = '#mb-magazine-latest'
               endif
               assign cat_cta = block.settings.link_label | default: 'Explorer les articles'
+              # Repli varié pour les catégories sans image (au lieu d'un seul visuel répété).
+              assign cat_fb_pool = 'magazine-cat-regions.jpg,magazine-cat-artisans.jpg,magazine-cat-table.jpg,magazine-cat-beaute.jpg,paysage-region-val-de-loire-01.jpeg,paysage-region-cote-d-azur-01.jpeg' | split: ','
+              assign cat_fb_i = forloop.index0 | modulo: 6
+              assign cat_fallback = cat_fb_pool[cat_fb_i]
             -%}
             <div class="mb-rev-cats__panel"
                  role="tabpanel"
@@ -104,7 +108,7 @@
                       widths: '500, 700, 1000', class: 'mb-rev-cats__img',
                       alt: cat_alt }}
                 {%- else -%}
-                  <img src="{{ 'paysage-region-provence-04.jpeg' | asset_url }}"
+                  <img src="{{ cat_fallback | asset_url }}"
                        alt="{{ block.settings.title }}" class="mb-rev-cats__img"
                        width="700" height="900" loading="lazy">
                 {%- endif -%}

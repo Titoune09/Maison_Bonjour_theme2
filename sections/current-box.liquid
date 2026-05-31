@@ -4,6 +4,18 @@
   assign label      = section.settings.label      | default: 'Première édition · Juillet 2026'
   assign region     = section.settings.region     | default: 'Bretagne'
   assign subtitle   = section.settings.subtitle   | default: 'Une première escale entre mer, granit, gestes anciens et traditions de table.'
+  assign clarify    = section.settings.clarify    | default: 'La Box se reçoit. Le Magazine se lit.'
+  assign cta_label  = section.settings.cta_label   | default: 'Choisir ma formule'
+  assign cta_note   = section.settings.cta_note    | default: 'L’abonnement concerne la box mensuelle Maison Bonjour.'
+  assign cta_url    = section.settings.cta_url
+  if cta_url == blank
+    assign cta_url = '/#abonnement'
+  endif
+  assign passport_label = section.settings.passport_link_label | default: 'Découvrir le Passeport'
+  assign passport_url   = section.settings.passport_link_url
+  if passport_url == blank
+    assign passport_url = '/#passeport'
+  endif
   assign intro      = section.settings.intro
   assign img        = section.settings.image
   assign seal       = section.settings.seal       | default: 'Chaque boîte est préparée avec soin, puis scellée à la main par un sceau Maison Bonjour.'
@@ -52,9 +64,8 @@
           }}
         {%- else -%}
           <img class="box__img"
-               src="{{ 'current-box.jpg' | asset_url }}"
-               srcset="{{ 'current-box.jpg' | asset_url }} 1x, {{ 'current-box@2x.jpg' | asset_url }} 2x"
-               alt="La box Maison Bonjour du mois"
+               src="{{ 'ImageboxProvence.png' | asset_url }}"
+               alt="La box Maison Bonjour — édition Provence"
                width="1600"
                height="1600"
                loading="lazy">
@@ -65,6 +76,9 @@
         <p class="box__eyebrow label">{{ label }}</p>
         <h2 class="box__title" data-split-words>{{ region }}</h2>
         <p class="box__subtitle">{{ subtitle }}</p>
+        {%- if clarify != blank -%}
+          <p class="box__clarify">{{ clarify }}</p>
+        {%- endif -%}
         <hr class="sep">
 
         <div class="box__intro editorial">
@@ -104,13 +118,36 @@
         {%- endif -%}
 
         <p class="box__tease">{{ tease }}</p>
+
+        {%- comment -%} Pont narratif vers la section Passeport : la box est une escale qui laisse une trace. {%- endcomment -%}
+        {%- if passport_label != blank -%}
+          <a class="box__passport-link" href="{{ passport_url }}">
+            {{ passport_label }} <span class="box__passport-arrow" aria-hidden="true">→</span>
+          </a>
+        {%- endif -%}
+
+        {%- if cta_url != blank and cta_label != blank -%}
+          <div class="box__cta-wrap">
+            <a class="box__cta" href="{{ cta_url }}">
+              <span>{{ cta_label }}</span>
+              <span class="box__cta-arrow" aria-hidden="true">→</span>
+            </a>
+            {%- if cta_note != blank -%}
+              <p class="box__cta-note">{{ cta_note }}</p>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
       </div>
     </div>
   </div>
 </section>
 
 {% stylesheet %}
-  .box { padding-block: 100px; }
+  .box {
+    padding-block: 100px;
+    /* Ancre "La Box" (#la-box) : offset pour ne pas coller au header fixe. */
+    scroll-margin-top: clamp(72px, 9vw, 120px);
+  }
 
   .box__grid {
     display: grid;
@@ -264,6 +301,20 @@
   .box__hotspot--one { top: 28%; left: 22%; }
   .box__hotspot--two { right: 18%; bottom: 26%; animation-delay: 0.8s; }
 
+  /* Distinction box / magazine — discrète, juste sous le sous-titre.
+     Clarifie d'emblée que cette page parle de la box mensuelle, pas du Magazine. */
+  .box__clarify {
+    margin-top: 16px;
+    max-width: 440px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    color: var(--gold);
+  }
+
   .box__tease {
     margin-top: 24px;
     padding-top: 24px;
@@ -274,6 +325,64 @@
     color: var(--marine);
     max-width: 480px;
   }
+
+  /* CTA contextuel vers les formules — un seul lien sobre, même grammaire
+     visuelle que le CTA du hero (lien souligné or + flèche), pas un gros bouton
+     commercial : la page reste éditoriale. */
+  .box__cta-wrap { margin-top: 28px; }
+
+  .box__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 4px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184, 150, 90, 0.4);
+    transition: color 0.3s ease, border-color 0.3s ease, gap 0.3s ease;
+  }
+  .box__cta:hover {
+    color: var(--gold-soft);
+    border-color: var(--gold-soft);
+    gap: 14px;
+  }
+  .box__cta-arrow { transition: transform 0.3s ease; }
+  .box__cta:hover .box__cta-arrow { transform: translateX(2px); }
+
+  .box__cta-note {
+    margin-top: 14px;
+    max-width: 420px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* Lien vers le Passeport — discret, marine, pour ne pas concurrencer le CTA
+     formule (doré). Pont narratif : « la box est une escale qui laisse une trace ». */
+  .box__passport-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--marine);
+    text-decoration: none;
+    opacity: 0.78;
+    transition: opacity 0.3s ease, gap 0.3s ease, color 0.3s ease;
+  }
+  .box__passport-link:hover { opacity: 1; color: var(--gold); gap: 12px; }
+  .box__passport-arrow { transition: transform 0.3s ease; }
+  .box__passport-link:hover .box__passport-arrow { transform: translateX(3px); }
 
   @media (min-width: 1024px) {
     .box__grid {
@@ -362,11 +471,19 @@
     { "type": "text",     "id": "label",    "label": "Label", "default": "Première édition · Juillet 2026" },
     { "type": "text",     "id": "region",   "label": "Région / Titre", "default": "Bretagne" },
     { "type": "textarea", "id": "subtitle", "label": "Sous-titre", "default": "Une première escale entre mer, granit, gestes anciens et traditions de table." },
+    { "type": "text",     "id": "clarify",  "label": "Phrase box / magazine", "default": "La Box se reçoit. Le Magazine se lit.", "info": "Clarifie que cette page concerne la box mensuelle, pas le Magazine. Laisser vide pour masquer." },
     { "type": "richtext", "id": "intro",    "label": "Texte d’introduction", "info": "Laisser vide pour utiliser le texte Bretagne par défaut." },
     { "type": "image_picker", "id": "image", "label": "Image de la box" },
     { "type": "textarea", "id": "seal",     "label": "Phrase du sceau", "default": "Chaque boîte est préparée avec soin, puis scellée à la main par un sceau Maison Bonjour." },
     { "type": "textarea", "id": "passport", "label": "Texte passeport" },
-    { "type": "textarea", "id": "tease",    "label": "Teaser dernière ligne" }
+    { "type": "textarea", "id": "tease",    "label": "Teaser dernière ligne" },
+    { "type": "header",   "content": "Appel à l’action (formules)" },
+    { "type": "text",     "id": "cta_label", "label": "Libellé du bouton", "default": "Choisir ma formule", "info": "Laisser vide pour masquer le CTA." },
+    { "type": "url",      "id": "cta_url",   "label": "Lien du bouton", "info": "Par défaut : ancre /#abonnement (section des formules)." },
+    { "type": "textarea", "id": "cta_note",  "label": "Note sous le bouton", "default": "L’abonnement concerne la box mensuelle Maison Bonjour.", "info": "Précise ce à quoi on s’abonne. Laisser vide pour masquer." },
+    { "type": "header",   "content": "Lien vers le Passeport" },
+    { "type": "text",     "id": "passport_link_label", "label": "Libellé du lien", "default": "Découvrir le Passeport", "info": "Laisser vide pour masquer le lien." },
+    { "type": "url",      "id": "passport_link_url",   "label": "Lien", "info": "Par défaut : ancre /#passeport (section Passeport)." }
   ],
   "blocks": [
     {

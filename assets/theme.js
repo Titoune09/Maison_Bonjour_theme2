@@ -1307,6 +1307,82 @@
   }
 
   // ---------------------------------------------------------------------
+  // 26. Smooth scroll des ancres internes (Notre histoire, La Box, abonnement…)
+  //     Lenis n'intercepte pas les clics sur <a href="#...">, et
+  //     scroll-behavior est `auto` (cf. base.css) → sans ce module, un clic sur
+  //     une ancre interne ferait un saut brutal. On lisse, avec un offset pour
+  //     ne pas masquer le titre sous le header fixe.
+  // ---------------------------------------------------------------------
+  function initAnchorScroll() {
+    function headerOffset() {
+      const header = document.querySelector('[data-mb-header]');
+      return (header ? header.offsetHeight : 64) + 16;
+    }
+
+    function resolveTarget(href) {
+      const hashIndex = href.indexOf('#');
+      if (hashIndex === -1) return null;
+      const path = href.slice(0, hashIndex);
+      const id   = href.slice(hashIndex + 1);
+      if (!id) return null;
+      // Uniquement les liens vers la page courante : ancre nue, ou pathname identique.
+      // Un "/#ancre" depuis une autre page doit naviguer vers l'accueil (pas d'interception).
+      const here = window.location.pathname;
+      const samePage = path === '' || path === here || (path === '/' && here === '/');
+      if (!samePage) return null;
+      // Le region-explorer gère lui-même ses deep-links #voyage-* : ne pas s'en mêler.
+      if (/^voyage-/i.test(id)) return null;
+      try { return document.getElementById(decodeURIComponent(id)); }
+      catch (e) { return document.getElementById(id); }
+    }
+
+    function scrollToEl(el) {
+      const y = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset - headerOffset());
+      const lenis = window.__mbLenis;
+      // Signale aux modules de "scroll-jacking" (galerie « Le Voyage ») de ne pas
+      // s'engager ni figer le scroll pendant cette navigation par ancre — sinon
+      // un clic vers une ancre située de l'autre côté de la galerie se fait
+      // happer à mi-course et le défilement casse.
+      window.__mbAnchorNav = true;
+      clearTimeout(window.__mbAnchorNavTimer);
+      const done = function () { window.__mbAnchorNav = false; };
+      if (lenis && typeof lenis.scrollTo === 'function') {
+        if (lenis.start) lenis.start();                 // au cas où une section l'aurait figé
+        lenis.scrollTo(y, { lock: true, onComplete: done });
+        window.__mbAnchorNavTimer = setTimeout(done, 1500); // filet si onComplete ne se déclenche pas
+      } else {
+        window.scrollTo({ top: y, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+        window.__mbAnchorNavTimer = setTimeout(done, prefersReducedMotion ? 60 : 1000);
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (!href || href.indexOf('#') === -1) return;
+      const el = resolveTarget(href);
+      if (!el) return;
+
+      e.preventDefault();
+      // URL partageable, sans le saut natif.
+      if (history.replaceState) {
+        history.replaceState(null, '', '#' + href.slice(href.indexOf('#') + 1));
+      }
+
+      // Clic depuis le menu mobile : laisser closeMenu déverrouiller le scroll
+      // (retrait de body.no-scroll) avant de défiler.
+      if (document.body.classList.contains('no-scroll')) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { scrollToEl(el); });
+        });
+      } else {
+        scrollToEl(el);
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------------
   // Init
   // ---------------------------------------------------------------------
   function init() {
@@ -1335,6 +1411,7 @@
     initFramerMotion();
     initTitleCinema();
     initRegionExplorer();
+    initAnchorScroll();
   }
 
   if (document.readyState === 'loading') {

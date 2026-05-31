@@ -64,7 +64,7 @@
                   {%- endif -%}
                   <div class="mag-card__body">
                     <time class="mag-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
-                      {{ article.published_at | date: '%d %B %Y' }}
+                      {% render 'date-fr', date: article.published_at %}
                     </time>
                     <h2 class="mag-card__title">{{ article.title }}</h2>
                     {%- if article.excerpt_or_content != blank -%}

@@ -1,0 +1,456 @@
+{%- liquid
+  # =====================================================================
+  # LE PASSEPORT MAISON BONJOUR
+  # ---------------------------------------------------------------------
+  # Section signature : chaque box = une escale, chaque région laisse une
+  # trace dans le Passeport. Conçue pour être mise à jour CHAQUE MOIS sans
+  # toucher au code — tout passe par les réglages du customizer ci-dessous
+  # (region, mois, texte, couleurs d'accent, image saisonnière).
+  #
+  # Édition courante (defaults) : Bretagne · Juillet 2026 — Première escale.
+  # On n'affiche QUE le tampon actif. Aucune roadmap, aucune région future
+  # présentée comme acquise (cf. brief client).
+  #
+  # Deux rendus du visuel :
+  #   • Option A — une image premium est fournie (passport_image, défaut
+  #     `passeport_bretagne.png`) : flatlay passeport ouvert + carte de
+  #     France (Bretagne activée en filigrane) + tampon encreur. C'est le
+  #     point visuel fort. → rendu image + légende d'édition dynamique.
+  #   • Option B — aucune image : on compose en HTML/CSS un passeport papier
+  #     crème avec un tampon encreur dynamique (region/mois). Sert de relais
+  #     élégant tant qu'un nouveau flatlay régional n'est pas prêt.
+  #
+  # Assets idéaux à fournir au fil des mois (placeholders faciles à
+  # remplacer) : passport-open-<region>.png, stamp-<region>-<mois>.svg,
+  # texture-paper-cream.png, france-map-regions.svg, maison-bonjour-seal.svg.
+  # La carte de France vit aujourd'hui DANS l'image passeport ; aucun SVG de
+  # carte n'est présent dans le thème, donc pas de carte interactive séparée.
+  # =====================================================================
+
+  assign s_label   = section.settings.section_label | default: 'LE PASSEPORT MAISON BONJOUR'
+  assign s_title   = section.settings.title         | default: 'Chaque région laisse une trace.'
+  assign s_body    = section.settings.body
+  assign s_body2   = section.settings.body_secondary | default: 'Ce Passeport numérique accompagne les premières éditions avant de devenir, plus tard, un objet à conserver.'
+  assign edition   = section.settings.edition_label | default: 'Première escale'
+  assign region    = section.settings.region        | default: 'Bretagne'
+  assign month     = section.settings.month          | default: 'Juillet 2026'
+  assign stamp_txt = section.settings.stamp_text     | default: 'Bretagne · Juillet 2026'
+  assign img       = section.settings.passport_image
+  assign img_alt   = section.settings.image_alt      | default: 'Passeport Maison Bonjour ouvert — carte de France avec la Bretagne activée et tampon Bretagne · Juillet 2026'
+  assign texture   = section.settings.texture_image
+  assign accent    = section.settings.accent_color   | default: '#1C2B4A'
+  assign accent2   = section.settings.secondary_accent | default: '#B8965A'
+  assign show_cap  = section.settings.show_caption
+  assign use_css   = section.settings.use_css_passport
+
+  assign region_up = region | upcase
+  assign month_up  = month  | upcase
+-%}
+
+<section
+  id="passeport"
+  class="passport section--cream"
+  aria-label="Le Passeport Maison Bonjour"
+  style="--pp-accent: {{ accent }}; --pp-accent-2: {{ accent2 }};{% if texture != blank %} --pp-texture: url('{{ texture | image_url: width: 900 }}');{% endif %}">
+  <div class="container passport__container">
+
+    {%- comment -%} Colonne éditoriale {%- endcomment -%}
+    <div class="passport__text reveal">
+      <p class="label passport__label">{{ s_label }}</p>
+      <h2 class="passport__title">{{ s_title }}</h2>
+      <span class="passport__rule" aria-hidden="true"></span>
+
+      <div class="passport__body">
+        {%- if s_body != blank -%}
+          {{ s_body }}
+        {%- else -%}
+          <p>Chaque box ajoute une escale à ton Passeport Maison Bonjour. Pour cette première édition, une seule trace apparaît&nbsp;: {{ region }}, {{ month | downcase }}. Les prochaines régions se révéleront au fil du voyage, au rythme des sélections Maison Bonjour.</p>
+        {%- endif -%}
+      </div>
+
+      {%- if s_body2 != blank -%}
+        <p class="passport__body-secondary">{{ s_body2 }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Colonne visuelle {%- endcomment -%}
+    <figure class="passport__visual reveal reveal--delay-2">
+      {%- if img != blank -%}
+        {%- comment -%} Option A — visuel premium fourni dans le customizer. {%- endcomment -%}
+        <div class="passport__frame">
+          {{ img | image_url: width: 1400 | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 1024px) 48vw, 92vw',
+              widths: '600, 900, 1200, 1400',
+              class: 'passport__img',
+              alt: img_alt }}
+        </div>
+      {%- elsif use_css -%}
+        {%- comment -%}
+          Option B — passeport composé en CSS (case « Composer en CSS » cochée,
+          ou flatlay régional pas encore prêt). Papier crème, fin filet or/marine,
+          angles droits (cohérent DA), tampon encreur dynamique (region/mois).
+          Remplaçable plus tard par un mockup `passport-open-<region>.png`.
+        {%- endcomment -%}
+        <div class="passport__card" role="img"
+             aria-label="Passeport Maison Bonjour — {{ edition }} : {{ region }}, {{ month }}">
+          <p class="passport__card-brand">Passeport<br><span>Maison Bonjour</span></p>
+          <p class="passport__card-sub">Passeport de nos escapades françaises</p>
+
+          <div class="passport__stamp" aria-hidden="true">
+            <span class="passport__stamp-star">✦</span>
+            <span class="passport__stamp-region">{{ region_up }}</span>
+            <span class="passport__stamp-line"></span>
+            <span class="passport__stamp-month">{{ month_up }}</span>
+          </div>
+
+          <p class="passport__card-edition">{{ edition }}</p>
+        </div>
+      {%- else -%}
+        {%- comment -%}
+          Défaut — asset passeport premium bundlé (`passeport_bretagne.png`,
+          1536×1024). À remplacer par le flatlay du mois, ou bascule possible
+          vers le passeport CSS via la case « Composer en CSS ».
+        {%- endcomment -%}
+        <div class="passport__frame">
+          <img class="passport__img"
+               src="{{ 'passeport_bretagne.png' | asset_url }}"
+               alt="{{ img_alt | escape }}"
+               width="1536" height="1024"
+               loading="lazy" decoding="async">
+        </div>
+      {%- endif -%}
+
+      {%- if show_cap -%}
+        <figcaption class="passport__caption">
+          <span class="passport__caption-edition">{{ edition }}</span>
+          <span class="passport__caption-rule" aria-hidden="true"></span>
+          <span class="passport__caption-stamp">{{ stamp_txt }}</span>
+        </figcaption>
+      {%- endif -%}
+    </figure>
+
+  </div>
+</section>
+
+{% stylesheet %}
+  /* =========================================================
+     PASSEPORT — premium, éditorial, patrimonial. Angles droits,
+     papier crème, accents pilotés par --pp-accent / --pp-accent-2
+     (réglés inline → variation saisonnière sans refonte).
+     ========================================================= */
+  .passport {
+    padding-block: clamp(72px, 9vw, 130px);
+    /* Ancre #passeport : offset sous le header fixe (cohérent #la-box / #notre-histoire). */
+    scroll-margin-top: clamp(72px, 9vw, 120px);
+    position: relative;
+  }
+  /* Texture papier optionnelle, très discrète. */
+  .passport::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--pp-texture, none);
+    background-size: cover;
+    background-position: center;
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .passport__container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(40px, 5vw, 72px);
+    align-items: center;
+  }
+
+  /* --- Colonne texte --- */
+  .passport__label { color: var(--pp-accent-2); margin-bottom: 20px; }
+
+  .passport__title {
+    margin: 0;
+    font-family: "Kalnia", "Instrument Serif", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(2.1rem, 3.6vw + 1rem, 3.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--pp-accent);
+    max-width: 16ch;
+  }
+
+  .passport__rule {
+    display: block;
+    width: 64px;
+    height: 1px;
+    margin: clamp(22px, 3vw, 32px) 0;
+    background: var(--pp-accent-2);
+    opacity: 0.7;
+  }
+
+  .passport__body p {
+    margin: 0 0 1.1em;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: clamp(1rem, 0.3vw + 0.95rem, 1.12rem);
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 52ch;
+  }
+  .passport__body p:last-child { margin-bottom: 0; }
+
+  .passport__body-secondary {
+    margin: 22px 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(0.95rem, 0.3vw + 0.9rem, 1.08rem);
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 46ch;
+  }
+
+  /* --- Colonne visuelle --- */
+  .passport__visual {
+    margin: 0;
+    position: relative;
+  }
+
+  /* Cadre de l'image : matelas crème + double filet (marine fin + or),
+     angles droits, ombre papier. Effet "tirage encadré". */
+  .passport__frame {
+    position: relative;
+    padding: clamp(10px, 1.4vw, 18px);
+    background: var(--cream);
+    border: 1px solid var(--pp-accent);
+    box-shadow: var(--paper-shadow);
+  }
+  .passport__frame::after {
+    content: "";
+    position: absolute;
+    inset: clamp(4px, 0.6vw, 7px);
+    border: 1px solid var(--pp-accent-2);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .passport__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Légende d'édition (sous le visuel) — sobre, façon cartel de musée.
+     C'est l'élément dynamique mensuel quand l'image est utilisée. */
+  .passport__caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: clamp(20px, 2.4vw, 28px);
+    text-align: center;
+  }
+  .passport__caption-edition {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--pp-accent);
+  }
+  .passport__caption-rule {
+    width: 30px;
+    height: 1px;
+    background: var(--pp-accent-2);
+    opacity: 0.8;
+  }
+  .passport__caption-stamp {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--pp-accent-2);
+  }
+
+  /* --- Option B : passeport composé en CSS (fallback sans image) --- */
+  .passport__card {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    max-width: 360px;
+    margin-inline: auto;
+    padding: clamp(28px, 4vw, 44px) clamp(24px, 3vw, 36px);
+    background:
+      linear-gradient(135deg, rgba(255,255,255,0.5), transparent 40%),
+      var(--cream-warm);
+    border: 1px solid var(--pp-accent);
+    box-shadow: var(--paper-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .passport__card::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 1px solid var(--pp-accent-2);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .passport__card-brand {
+    margin: 4px 0 0;
+    font-family: "Kalnia", "Instrument Serif", serif;
+    font-weight: 400;
+    font-size: clamp(1.3rem, 2vw + 0.6rem, 1.7rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--pp-accent);
+  }
+  .passport__card-brand span { color: var(--pp-accent); }
+  .passport__card-sub {
+    margin: 10px 0 0;
+    font-family: var(--font-sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .passport__card-edition {
+    margin: auto 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--pp-accent);
+  }
+
+  /* --- Tampon encreur (dans le fallback CSS) --- */
+  .passport__stamp {
+    margin: auto 0;
+    width: clamp(150px, 20vw, 188px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--pp-accent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--pp-accent);
+    position: relative;
+    /* Léger angle organique, sans excès. */
+    transform: rotate(-5deg);
+  }
+  .passport__stamp::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--pp-accent);
+    opacity: 0.55;
+  }
+  .passport__stamp-star {
+    font-size: 15px;
+    line-height: 1;
+    color: var(--pp-accent-2);
+  }
+  .passport__stamp-region {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(15px, 1.4vw, 19px);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .passport__stamp-line {
+    width: 46px;
+    height: 1px;
+    background: var(--pp-accent);
+    opacity: 0.7;
+  }
+  .passport__stamp-month {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* --- Apparition douce du tampon (effet "encre") quand le visuel entre.
+     Piloté par .is-visible du système reveal global. --- */
+  .passport__stamp {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.86);
+    transition:
+      opacity 0.9s var(--ease-cinema) 0.25s,
+      transform 0.9s var(--ease-spring) 0.25s;
+  }
+  .passport__visual.is-visible .passport__stamp {
+    opacity: 1;
+    transform: rotate(-5deg) scale(1);
+  }
+
+  /* --- Desktop : deux colonnes --- */
+  @media (min-width: 1024px) {
+    .passport__container {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(56px, 6vw, 110px);
+    }
+    .passport__visual { justify-self: end; width: 100%; }
+    .passport__frame { max-width: 540px; margin-inline: auto; }
+  }
+
+  /* --- Mobile : texte d'abord, visuel ensuite, tampon grand & lisible --- */
+  @media (max-width: 767px) {
+    .passport { padding-block: 56px; }
+    .passport__container { gap: 36px; }
+    .passport__title { max-width: 100%; }
+    .passport__card { max-width: 300px; }
+    .passport__stamp { width: clamp(150px, 44vw, 180px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .passport__stamp,
+    .passport__visual.is-visible .passport__stamp {
+      opacity: 1;
+      transform: rotate(-5deg);
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Le Passeport",
+  "tag": "section",
+  "settings": [
+    { "type": "paragraph", "content": "Section signature « Passeport Maison Bonjour ». Mise à jour mensuelle : changez la région, le mois, le texte, l'image et les couleurs d'accent. On n'affiche que le tampon actif — pas de roadmap." },
+
+    { "type": "header", "content": "Textes" },
+    { "type": "text",     "id": "section_label",   "label": "Label",          "default": "LE PASSEPORT MAISON BONJOUR" },
+    { "type": "text",     "id": "title",           "label": "Titre",          "default": "Chaque région laisse une trace." },
+    { "type": "richtext", "id": "body",            "label": "Texte principal", "info": "Laisser vide pour le texte par défaut (généré avec la région et le mois)." },
+    { "type": "textarea", "id": "body_secondary",  "label": "Texte secondaire (optionnel)", "default": "Ce Passeport numérique accompagne les premières éditions avant de devenir, plus tard, un objet à conserver." },
+
+    { "type": "header", "content": "Édition active (tampon)" },
+    { "type": "text", "id": "edition_label", "label": "Label d'escale", "default": "Première escale" },
+    { "type": "text", "id": "region",       "label": "Région active",  "default": "Bretagne" },
+    { "type": "text", "id": "month",        "label": "Mois actif",     "default": "Juillet 2026" },
+    { "type": "text", "id": "stamp_text",   "label": "Texte du tampon (légende)", "default": "Bretagne · Juillet 2026" },
+
+    { "type": "header", "content": "Visuel" },
+    { "type": "paragraph", "content": "Image premium du passeport ouvert (carte + tampon). Défaut : passeport_bretagne.png. Si vide, un passeport est composé en CSS avec un tampon dynamique. La carte de France est intégrée à l'image (aucun SVG de carte séparé dans le thème)." },
+    { "type": "image_picker", "id": "passport_image", "label": "Image du passeport" },
+    { "type": "text",         "id": "image_alt",      "label": "Texte alternatif (accessibilité)" },
+    { "type": "image_picker", "id": "texture_image",  "label": "Texture papier (optionnel, très discrète)" },
+    { "type": "checkbox",     "id": "use_css_passport", "label": "Composer le passeport en CSS (si le flatlay du mois n'est pas prêt)", "default": false, "info": "Sans effet si une image est sélectionnée ci-dessus. Affiche un passeport papier + tampon dynamique (région / mois)." },
+    { "type": "checkbox",     "id": "show_caption",   "label": "Afficher la légende d'édition sous le visuel", "default": true },
+
+    { "type": "header", "content": "Couleurs d'accent (variation saisonnière)" },
+    { "type": "paragraph", "content": "Restez subtil : un accent principal foncé + un accent secondaire doré/champagne. Ex. Bretagne : #1C2B4A et #B8965A." },
+    { "type": "color", "id": "accent_color",     "label": "Accent principal",   "default": "#1C2B4A" },
+    { "type": "color", "id": "secondary_accent", "label": "Accent secondaire",  "default": "#B8965A" }
+  ],
+  "presets": [{ "name": "Le Passeport" }]
+}
+{% endschema %}

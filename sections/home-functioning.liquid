@@ -3,7 +3,7 @@
   assign title              = section.settings.title              | default: 'Comment ça se passe.'
   assign intro              = section.settings.intro              | default: 'Trois gestes simples. Choisir la formule, attendre l’édition du mois, ouvrir une parenthèse française chez soi.'
   assign reassurance_label  = section.settings.reassurance_label  | default: 'À SAVOIR'
-  assign reassurance_text   = section.settings.reassurance_text   | default: 'La livraison est incluse en Roumanie. L’abonnement peut être annulé à tout moment depuis l’espace abonnée.'
+  assign reassurance_text   = section.settings.reassurance_text   | default: 'La livraison est incluse en Roumanie. L’abonnement se gère depuis l’espace abonnée, selon la formule choisie.'
   assign account_link_label = section.settings.account_link_label | default: 'Gérer mon abonnement'
   assign account_link_url   = section.settings.account_link_url   | default: '/account'
   assign cta_label          = section.settings.cta_label          | default: 'Découvrir les formules'
@@ -60,7 +60,7 @@
                   assign s_number = '01'
                   assign s_label  = 'CHOISIR'
                   assign s_title  = 'La formule qui te ressemble.'
-                  assign s_text   = 'Mensuelle, trois mois ou grand voyage. Tu choisis ton rythme, sans pression inutile.'
+                  assign s_text   = 'Mensuelle, trois mois ou le Grand Tour Français. Tu choisis ton rythme, sans pression inutile.'
                   assign s_icon   = 'envelope'
                 when 2
                   assign s_number = '02'
@@ -398,7 +398,7 @@
     { "type": "text",     "id": "title",              "label": "Titre",                   "default": "Comment ça se passe." },
     { "type": "textarea", "id": "intro",              "label": "Phrase d’introduction",   "default": "Trois gestes simples. Choisir la formule, attendre l’édition du mois, ouvrir une parenthèse française chez soi." },
     { "type": "text",     "id": "reassurance_label",  "label": "Label rassurance",        "default": "À SAVOIR" },
-    { "type": "textarea", "id": "reassurance_text",   "label": "Texte rassurance",        "default": "La livraison est incluse en Roumanie. L’abonnement peut être annulé à tout moment depuis l’espace abonnée." },
+    { "type": "textarea", "id": "reassurance_text",   "label": "Texte rassurance",        "default": "La livraison est incluse en Roumanie. L’abonnement se gère depuis l’espace abonnée, selon la formule choisie." },
     { "type": "text",     "id": "account_link_label", "label": "Libellé lien compte",     "default": "Gérer mon abonnement" },
     { "type": "url",      "id": "account_link_url",   "label": "URL lien compte" },
     { "type": "text",     "id": "cta_label",          "label": "Libellé CTA",             "default": "Découvrir les formules" },
@@ -439,7 +439,7 @@
             "number": "01",
             "label": "CHOISIR",
             "title": "La formule qui te ressemble.",
-            "text": "Mensuelle, trois mois ou grand voyage. Tu choisis ton rythme, sans pression inutile.",
+            "text": "Mensuelle, trois mois ou le Grand Tour Français. Tu choisis ton rythme, sans pression inutile.",
             "icon_type": "envelope"
           }
         },

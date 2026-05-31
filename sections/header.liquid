@@ -14,6 +14,10 @@
   if magazine_url == blank
     assign magazine_url = '/pages/magazine'
   endif
+  assign story_url        = section.settings.story_url
+  if story_url == blank
+    assign story_url = '/#notre-histoire'
+  endif
   assign faq_url          = section.settings.faq_url
   if faq_url == blank
     assign faq_url = '/pages/faq'
@@ -30,16 +34,25 @@
     <div class="mb-header__inner">
 
       <nav class="mb-header__nav mb-header__nav--left" aria-label="Navigation principale">
+        <a class="mb-header__mark" href="{{ routes.root_url }}" aria-label="{{ logo_text }} — Accueil">
+          <img class="mb-header__mark-img mb-header__mark-img--marine"
+               src="{{ 'Cartedevizitare-removebg-preview.png' | asset_url }}"
+               alt="" width="98" height="56" loading="eager" decoding="async">
+          <img class="mb-header__mark-img mb-header__mark-img--cream"
+               src="{{ 'maison_bonjour_dark_v2-removebg-preview.png' | asset_url }}"
+               alt="" width="98" height="56" loading="eager" decoding="async">
+        </a>
         <a class="mb-header__link" href="{{ box_url }}">La Box</a>
+        <a class="mb-header__link" href="{{ story_url }}">Notre histoire</a>
         <a class="mb-header__link" href="{{ magazine_url }}">Magazine</a>
       </nav>
 
-      <a class="mb-header__logo" href="{{ routes.root_url }}" aria-label="{{ logo_text }}">
+      <a class="mb-header__logo" href="{{ routes.root_url }}" aria-label="{{ logo_text }} — Accueil">
         <span class="mb-header__logo-text">{{ logo_text }}</span>
       </a>
 
       <nav class="mb-header__nav mb-header__nav--right" aria-label="Navigation secondaire">
-        <a class="mb-header__link" href="{{ subscribe_url }}">S&rsquo;abonner</a>
+        <a class="mb-header__link" href="{{ subscribe_url }}">S&rsquo;abonner &agrave; la box</a>
 
         {%- if shop.customer_accounts_enabled -%}
           <a class="mb-header__icon" href="{{ routes.account_url }}" aria-label="Compte">
@@ -85,10 +98,20 @@
   </button>
 
   <div class="mb-mobile-nav__inner">
+    <a class="mb-mobile-nav__brand" href="{{ routes.root_url }}" aria-label="{{ logo_text }} — Accueil">
+      <img class="mb-mobile-nav__brand-img"
+           src="{{ 'maison_bonjour_dark_v2-removebg-preview.png' | asset_url }}"
+           alt="Maison Bonjour"
+           width="252"
+           height="144"
+           loading="lazy"
+           decoding="async">
+    </a>
     <nav class="mb-mobile-nav__nav" aria-label="Navigation mobile">
       <a class="mb-mobile-nav__link" href="{{ box_url }}">La Box</a>
+      <a class="mb-mobile-nav__link" href="{{ story_url }}">Notre histoire</a>
       <a class="mb-mobile-nav__link" href="{{ magazine_url }}">Magazine</a>
-      <a class="mb-mobile-nav__link" href="{{ subscribe_url }}">S&rsquo;abonner</a>
+      <a class="mb-mobile-nav__link" href="{{ subscribe_url }}">S&rsquo;abonner &agrave; la box</a>
     </nav>
     <div class="mb-mobile-nav__sub">
       <a href="{{ faq_url }}">FAQ</a>
@@ -127,6 +150,9 @@
   }
 
   .mb-header__inner {
+    /* Pas de position:relative ici : on veut que .mb-header__mark (absolute)
+       s'ancre au .mb-header (fixed = viewport), pas à ce conteneur max-width centré.
+       Le mobile media query rétablit position:relative pour le wordmark centré mobile. */
     max-width: var(--container);
     margin-inline: auto;
     padding: 18px clamp(20px, 4vw, 56px);
@@ -157,6 +183,7 @@
     text-transform: uppercase;
     color: currentColor;
     text-decoration: none;
+    white-space: nowrap;
     transition: color 0.3s ease, opacity 0.3s ease;
     opacity: 0.85;
   }
@@ -175,7 +202,53 @@
   .mb-header__link:hover { opacity: 1; color: var(--gold); }
   .mb-header__link:hover::after { transform: scaleX(1); }
 
-  /* --- Center logo : Kalnia, rien autour --- */
+  /* Logo PNG transparent — position absolute par rapport au .mb-header (fixed) donc
+     ancré au bord gauche du viewport. Ne décale aucun élément du flux normal de la navbar.
+     Deux variantes (marine / cream) superposées, swap par CSS selon le contexte
+     header (sur hero sombre, scrolled cream, drawer ouvert). */
+  .mb-header__mark {
+    position: absolute;
+    top: 50%;
+    left: clamp(12px, 1.6vw, 24px);
+    transform: translateY(-50%);
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+  .mb-header__mark:hover { opacity: 0.75; }
+  /* Les deux versions sont superposées : marine en relative (définit la taille
+     du conteneur), cream en absolute par-dessus. On crossfade via opacity pour
+     un swap doux comme les textes qui changent de couleur au scroll. */
+  .mb-header__mark-img {
+    display: block;
+    width: auto;
+    height: 64px;
+    transition: opacity 0.3s ease;
+  }
+  .mb-header__mark-img--marine { position: relative; opacity: 1; }
+  .mb-header__mark-img--cream  { position: absolute; top: 0; left: 0; opacity: 0; }
+  /* Home en haut du hero sombre → fade vers cream. */
+  .template-index .mb-header:not(.is-scrolled) .mb-header__mark-img--marine { opacity: 0; }
+  .template-index .mb-header:not(.is-scrolled) .mb-header__mark-img--cream  { opacity: 1; }
+  /* Drawer mobile ouvert — forte spécificité pour battre TOUTES les autres règles,
+     y compris le cas home-scrolled-puis-burger-ouvert où la cascade peut conflicter. */
+  body.no-scroll .mb-header .mb-header__mark .mb-header__mark-img--marine { opacity: 0; }
+  body.no-scroll .mb-header .mb-header__mark .mb-header__mark-img--cream  { opacity: 1; }
+  /* Même chose pour le fond du header : forcer transparent quand le drawer est ouvert
+     (sinon sur home scrolled, le fond cream solide reste visible et masque le drawer dark). */
+  body.no-scroll .mb-header .mb-header__main,
+  body.no-scroll.template-index .mb-header .mb-header__main {
+    background: transparent !important;
+    border-color: transparent !important;
+    -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  /* --- Center logo : wordmark texte centré (inchangé) --- */
 
   .mb-header__logo {
     justify-self: center;
@@ -189,14 +262,15 @@
   .mb-header__logo:hover { opacity: 0.75; }
 
   .mb-header__logo-text {
-    font-family: "Kalnia", "Instrument Serif", serif;
+    font-family: "TAN Pearl", "Kalnia", "Instrument Serif", serif;
     font-optical-sizing: auto;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     font-variation-settings: "wdth" 100;
-    font-size: clamp(19px, 2vw, 24px);
-    letter-spacing: 0.015em;
+    font-size: clamp(20px, 2.2vw, 27px);
+    letter-spacing: 0.025em;
     line-height: 1;
+    text-transform: uppercase;
   }
 
   /* --- Icons : compte + panier --- */
@@ -305,14 +379,17 @@
      =========================================================== */
 
   @media (max-width: 1024px) {
-    .mb-header__inner { gap: 16px; min-height: 60px; padding: 16px clamp(20px, 4vw, 40px); }
-    .mb-header__nav { gap: 24px; }
-    .mb-header__link { font-size: 10px; letter-spacing: 0.22em; }
+    .mb-header__inner { gap: 14px; min-height: 60px; padding: 16px clamp(18px, 4vw, 40px); }
+    /* 3 liens à gauche (La Box · Notre histoire · Magazine) + "S'abonner à la box"
+       à droite : on resserre le gap et la tracking pour tout faire tenir sur une
+       seule ligne jusqu'au breakpoint mobile (≤767px) où les liens passent au drawer. */
+    .mb-header__nav { gap: clamp(14px, 2vw, 22px); }
+    .mb-header__link { font-size: 10px; letter-spacing: 0.18em; }
   }
 
   @media (max-width: 767px) {
-    /* Sur mobile on bascule en flex pour une nav prévisible : nav gauche cachée,
-       logo absolu centré sur le bar, nav droite (icônes + burger) à droite. */
+    /* Sur mobile on bascule en flex : nav gauche cachée, logo wordmark centré,
+       nav droite (icônes + burger) à droite. Le mark top-left reste position:absolute. */
     .mb-header__inner {
       position: relative;
       display: flex;
@@ -324,7 +401,10 @@
       min-height: 54px;
     }
 
-    .mb-header__nav--left { display: none; }
+    /* On garde le conteneur nav-left visible pour que le mark dedans reste affiché ;
+       on cache seulement les liens textuels (La Box, Magazine), qui passent dans le drawer. */
+    .mb-header__nav--left { display: flex; margin-right: auto; gap: 0; }
+    .mb-header__nav--left .mb-header__link { display: none; }
 
     .mb-header__nav--right {
       display: flex;
@@ -340,7 +420,7 @@
       justify-self: unset;
     }
 
-    /* Logo centré géométriquement, indépendant du flux flex */
+    /* Logo wordmark centré géométriquement, indépendant du flux flex */
     .mb-header__logo {
       position: absolute;
       left: 50%;
@@ -350,7 +430,13 @@
       pointer-events: auto;
     }
 
-    .mb-header__logo-text { font-size: 18px; }
+    .mb-header__logo-text { font-size: 20px; }
+
+    /* Mobile : logo image tout à gauche (collé au bord viewport), wordmark texte centré reste.
+       Le mark garde le même position:absolute que desktop ; sur mobile l'inner a
+       position:relative + spanne le viewport → l'ancrage donne bien gauche viewport. */
+    .mb-header__mark { left: 10px; }
+    .mb-header__mark-img { height: 40px; }
   }
 
   /* ===========================================================
@@ -409,6 +495,20 @@
     text-align: center;
   }
 
+  /* Logo image dans le drawer mobile — version cream sur fond marine-deep. */
+  .mb-mobile-nav__brand {
+    display: inline-block;
+    line-height: 0;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.18, 1, 0.22, 1);
+  }
+  .mb-mobile-nav__brand-img {
+    display: block;
+    width: auto;
+    height: clamp(96px, 22vw, 140px);
+  }
+
   .mb-mobile-nav__nav {
     display: flex;
     flex-direction: column;
@@ -459,6 +559,7 @@
   .mb-mobile-nav__sub a:hover { color: var(--gold); }
 
   /* Reveal échelonné quand le drawer s'ouvre — les liens montent en cascade */
+  .mb-mobile-nav.is-open .mb-mobile-nav__brand,
   .mb-mobile-nav.is-open .mb-mobile-nav__link,
   .mb-mobile-nav.is-open .mb-mobile-nav__sub a {
     opacity: 1;
@@ -467,22 +568,27 @@
   .mb-mobile-nav.is-open .mb-mobile-nav__link { opacity: 0.92; }
   .mb-mobile-nav.is-open .mb-mobile-nav__link:hover { opacity: 1; }
 
-  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(1) { transition-delay: 0.12s; }
-  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(2) { transition-delay: 0.19s; }
-  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(3) { transition-delay: 0.26s; }
-  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(1) { transition-delay: 0.34s; }
-  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(2) { transition-delay: 0.39s; }
-  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(3) { transition-delay: 0.44s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__brand          { transition-delay: 0.06s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(1) { transition-delay: 0.16s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(2) { transition-delay: 0.23s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(3) { transition-delay: 0.30s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__link:nth-child(4) { transition-delay: 0.37s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(1) { transition-delay: 0.45s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(2) { transition-delay: 0.50s; }
+  .mb-mobile-nav.is-open .mb-mobile-nav__sub a:nth-child(3) { transition-delay: 0.55s; }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .mb-header { animation: none; transform: none; }
     .mb-header__link::after,
+    .mb-mobile-nav__brand,
     .mb-mobile-nav__link,
     .mb-mobile-nav__sub a { transition: color 0.3s ease; }
     /* Pas de translation : visibles immédiatement, sans cascade */
+    .mb-mobile-nav__brand,
     .mb-mobile-nav__link,
-    .mb-mobile-nav__sub a { transform: none; }
+    .mb-mobile-nav__sub a { transform: none; opacity: 1; }
+    .mb-mobile-nav.is-open .mb-mobile-nav__brand,
     .mb-mobile-nav.is-open .mb-mobile-nav__link,
     .mb-mobile-nav.is-open .mb-mobile-nav__sub a { transition-delay: 0s; }
     .mb-header__burger span { transition: none; }
@@ -497,8 +603,9 @@
     { "type": "text", "id": "edition_label",   "label": "Ticker — édition (legacy)",          "default": "Édition 01 · Bretagne" },
     { "type": "text", "id": "delivery_label",  "label": "Ticker — livraison (legacy)",        "default": "Livraison le 15 du mois" },
     { "type": "url",  "id": "box_url",         "label": "Lien — La Box" },
+    { "type": "url",  "id": "story_url",       "label": "Lien — Notre histoire", "info": "Par défaut : ancre /#notre-histoire (section fondateurs)." },
     { "type": "url",  "id": "magazine_url",    "label": "Lien — Magazine" },
-    { "type": "url",  "id": "subscribe_url",   "label": "Lien — S'abonner" },
+    { "type": "url",  "id": "subscribe_url",   "label": "Lien — S'abonner à la box" },
     { "type": "url",  "id": "faq_url",         "label": "Lien — FAQ (menu mobile)" },
     { "type": "url",  "id": "contact_url",     "label": "Lien — Contact (menu mobile)" }
   ]

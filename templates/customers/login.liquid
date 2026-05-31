@@ -43,7 +43,15 @@
     <div class="mb-login__panel mb-login__panel--form">
       <div class="mb-login__form-inner">
 
-        <span class="mb-login__logo">Maison Bonjour</span>
+        <a class="mb-login__logo" href="{{ routes.root_url }}" aria-label="Maison Bonjour — Accueil">
+          <img class="mb-login__logo-img"
+               src="{{ 'Cartedevizitare-removebg-preview.png' | asset_url }}"
+               alt="Maison Bonjour"
+               width="252"
+               height="144"
+               loading="eager"
+               decoding="async">
+        </a>
 
         {%- comment -%} ---------- Connexion ---------- {%- endcomment -%}
         <div id="login" class="mb-login__view mb-login__view--main">
@@ -181,13 +189,17 @@
 
   .mb-login__logo {
     display: block;
-    margin-bottom: clamp(32px, 6vh, 56px);
-    font-family: var(--ui);
-    font-weight: 500;
-    font-size: 11px;
-    letter-spacing: 0.34em;
-    text-transform: uppercase;
-    color: var(--c-gold);
+    margin-bottom: clamp(28px, 5vh, 48px);
+    line-height: 0;
+    transition: opacity 0.25s ease;
+  }
+  .mb-login__logo:hover { opacity: 0.85; }
+  .mb-login__logo-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 110px;
+    max-width: 100%;
   }
 
   /* Bascule connexion / récupération sans JS.

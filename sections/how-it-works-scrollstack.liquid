@@ -1,7 +1,7 @@
 {%- liquid
-  assign title        = section.settings.title        | default: 'Comment commence le'
+  assign title        = section.settings.title        | default: 'Comment se passe le'
   assign title_accent = section.settings.title_accent  | default: 'voyage'
-  assign subtitle     = section.settings.subtitle      | default: 'Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer librement.'
+  assign subtitle     = section.settings.subtitle      | default: 'Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer simplement.'
 
   assign c1_title = section.settings.card_1_title | default: 'Choisir'
   assign c1_text  = section.settings.card_1_text  | default: 'Sélectionne ton rythme : une première édition, trois mois ou une année de voyage français.'
@@ -541,9 +541,9 @@
   "tag": "section",
   "settings": [
     { "type": "header", "content": "En-tête" },
-    { "type": "text",     "id": "title",        "label": "Titre",                    "default": "Comment commence le" },
+    { "type": "text",     "id": "title",        "label": "Titre",                    "default": "Comment se passe le" },
     { "type": "text",     "id": "title_accent", "label": "Mot en italique (accent)", "default": "voyage" },
-    { "type": "textarea", "id": "subtitle",     "label": "Sous-texte",               "default": "Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer librement." },
+    { "type": "textarea", "id": "subtitle",     "label": "Sous-texte",               "default": "Une région par mois, une sélection gardée en partie secrète, un abonnement que tu peux choisir, recevoir et gérer simplement." },
 
     { "type": "header", "content": "Carte 01 — Choisir" },
     { "type": "text",     "id": "card_1_label", "label": "Label",       "default": "LE RYTHME" },

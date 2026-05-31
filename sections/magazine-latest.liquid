@@ -34,7 +34,11 @@
           {%- liquid
             assign article_alt = article.image.alt | default: article.title
             assign cat_key = article.tags.first | downcase
-            assign fallback_img = 'paysage-region-bretagne-01.jpeg'
+            # Repli varié : si plusieurs articles n'ont ni image ni catégorie, on
+            # alterne les visuels au lieu de répéter le même (impression placeholder).
+            assign fb_pool = 'magazine-cat-regions.jpg,magazine-cat-artisans.jpg,magazine-cat-table.jpg,magazine-cat-beaute.jpg,paysage-region-bretagne-01.jpeg,paysage-region-val-de-loire-01.jpeg' | split: ','
+            assign fb_i = forloop.index0 | modulo: 6
+            assign fallback_img = fb_pool[fb_i]
             if cat_key contains 'region'
               assign fallback_img = 'magazine-cat-regions.jpg'
             elsif cat_key contains 'artisan'
@@ -77,6 +81,10 @@
             if ph_link == blank
               assign ph_link = '#'
             endif
+            # Repli varié pour les placeholders sans image (évite la répétition).
+            assign fb_pool = 'magazine-cat-regions.jpg,magazine-cat-artisans.jpg,magazine-cat-table.jpg,magazine-cat-beaute.jpg,paysage-region-bretagne-01.jpeg,paysage-region-val-de-loire-01.jpeg' | split: ','
+            assign fb_i = forloop.index0 | modulo: 6
+            assign ph_fallback = fb_pool[fb_i]
           -%}
           <li class="mb-rev-latest__post reveal reveal--delay-{{ forloop.index }}" {{ block.shopify_attributes }}>
             <a href="{{ ph_link }}" class="mb-rev-latest__link">
@@ -88,7 +96,7 @@
                       widths: '400, 600, 800', class: 'mb-rev-latest__img',
                       alt: ph_alt }}
                 {%- else -%}
-                  <img src="{{ 'paysage-region-bretagne-01.jpeg' | asset_url }}" alt="{{ block.settings.title }}" class="mb-rev-latest__img" width="600" height="750" loading="lazy">
+                  <img src="{{ ph_fallback | asset_url }}" alt="{{ block.settings.title }}" class="mb-rev-latest__img" width="600" height="750" loading="lazy">
                 {%- endif -%}
               </figure>
               {%- if block.settings.category != blank -%}
@@ -103,7 +111,7 @@
           </li>
         {%- endfor -%}
       {%- else -%}
-        {%- assign d_imgs = 'paysage-region-bretagne-01.jpeg,paysage-region-provence-02.jpeg,paysage-region-provence-04.jpeg' | split: ',' -%}
+        {%- assign d_imgs = 'paysage-region-bretagne-01.jpeg,magazine-cat-artisans.jpg,paysage-region-provence-04.jpeg' | split: ',' -%}
         {%- for i in (1..3) -%}
           {%- liquid
             case forloop.index
@@ -112,9 +120,9 @@
                 assign p_title = 'Bretagne : ce que l’on rapporte d’une côte'
                 assign p_text  = 'Une promenade lente entre granit, embruns et lumière du large.'
               when 2
-                assign p_cat   = 'Artisans'
-                assign p_title = 'La cigale de Louis Sicard, ou l’art de garder l’été'
-                assign p_text  = 'Histoire d’un objet devenu emblème, fabriqué à la main depuis 1895.'
+                assign p_cat   = 'Maisons & artisans'
+                assign p_title = 'Maisons & artisans : la main qui fabrique'
+                assign p_text  = 'Portraits d’ateliers et de savoir-faire français, à paraître au fil des éditions.'
               when 3
                 assign p_cat   = 'Carnets'
                 assign p_title = 'Pourquoi les marchés français racontent mieux que les vitrines'
@@ -252,7 +260,7 @@
       "name": "Magazine — 05 Derniers",
       "blocks": [
         { "type": "placeholder", "settings": { "category": "Bretagne", "title": "Bretagne : ce que l’on rapporte d’une côte", "excerpt": "Une promenade lente entre granit, embruns et lumière du large." } },
-        { "type": "placeholder", "settings": { "category": "Artisans", "title": "La cigale de Louis Sicard, ou l’art de garder l’été", "excerpt": "Histoire d’un objet devenu emblème, fabriqué à la main depuis 1895." } },
+        { "type": "placeholder", "settings": { "category": "Maisons & artisans", "title": "Maisons & artisans : la main qui fabrique", "excerpt": "Portraits d’ateliers et de savoir-faire français, à paraître au fil des éditions." } },
         { "type": "placeholder", "settings": { "category": "Carnets", "title": "Pourquoi les marchés français racontent mieux que les vitrines", "excerpt": "Ce que l’on apprend d’une région en s’arrêtant à son marché." } }
       ]
     }

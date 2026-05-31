@@ -501,6 +501,7 @@
 
     function handleDir(dir, e) {
       if (!pinned() || !covers()) return;
+      if (window.__mbAnchorNav) return; // navigation par ancre en cours : laisser passer
       if (released) return; // déjà relâché à une extrémité : laisser scroller
 
       // Première interaction : on s'engage en glissant doucement en place.
@@ -527,6 +528,7 @@
 
     window.addEventListener('wheel', function (e) {
       if (!pinned()) return;
+      if (window.__mbAnchorNav) return; // ne pas capter la molette pendant une navigation par ancre
       if (Math.abs(e.deltaY) < 2) return;
       handleDir(e.deltaY > 0 ? 1 : -1, e);
     }, { passive: false });
@@ -541,9 +543,40 @@
       }
     });
 
-    // Réarmer quand la section quitte le centre (permet de la ré-engager).
+    // Réarmer quand la section quitte le centre + filet de sécurité pour les
+    // scrolls rapides : entre deux events `wheel`, la roue peut « sauter »
+    // par-dessus la zone d'engagement et la section défile sans s'épingler.
+    // Ici on rattrape depuis la position : dès que la section couvre le
+    // viewport après un saut de scroll, on l'épingle quand même.
+    var lastScrollY = window.pageYOffset;
+    var scrollTick = false;
     window.addEventListener('scroll', function () {
-      if (released && !covers()) { released = false; locked = false; }
+      if (scrollTick) return;
+      scrollTick = true;
+      window.requestAnimationFrame(function () {
+        scrollTick = false;
+        var y = window.pageYOffset;
+        var dy = y - lastScrollY;
+        lastScrollY = y;
+
+        // Navigation par ancre en cours (clic nav / CTA qui traverse la galerie) :
+        // ne pas s'engager, et libérer tout verrou éventuel + relancer Lenis pour
+        // ne jamais "happer" le défilement programmatique ni le casser.
+        if (window.__mbAnchorNav) {
+          if (locked || released || animating) {
+            locked = false; released = false; animating = false; unfreeze();
+          }
+          return;
+        }
+
+        if (released && !covers()) { released = false; locked = false; }
+
+        if (!pinned() || locked || released || animating) return;
+        if (Math.abs(dy) < 4) return;
+        if (!covers()) return;
+
+        engage(dy > 0 ? 1 : -1);
+      });
     }, { passive: true });
 
     // Indicateur mobile depuis le scroll horizontal natif + masquage du hint.

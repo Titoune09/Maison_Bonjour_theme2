@@ -4,7 +4,7 @@
   assign citation_line_1 = section.settings.citation_line_1 | default: 'Il y a une certaine France'
   assign citation_line_2 = section.settings.citation_line_2 | default: 'qui ne s’exporte jamais.'
   assign subtext         = section.settings.subtext         | default: 'Maison Bonjour la livre chaque mois à Cluj-Napoca.'
-  assign cta_label       = section.settings.cta_label       | default: 'S’abonner'
+  assign cta_label       = section.settings.cta_label       | default: 'S’abonner à la box'
   assign wordmark        = section.settings.wordmark        | default: 'MAISON BONJOUR'
 -%}
 
@@ -237,6 +237,10 @@
     margin: 0;
     padding: 0 clamp(16px, 3vw, 40px);
     text-align: center;
+    /* TAN Pearl est la police signature de la marque (cf. wordmark du logo officiel
+       Cartedevizitare.svg/.png) — c'est ELLE qui doit porter le grand lettrage du hero,
+       PAS Kalnia. Kalnia reste pour les titres éditoriaux courants ; TAN Pearl est
+       réservée au wordmark Maison Bonjour. */
     font-family: "TAN Pearl", "Kalnia", "Instrument Serif", serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -428,7 +432,7 @@
       "type": "text",
       "id": "cta_label",
       "label": "Libellé CTA",
-      "default": "S’abonner"
+      "default": "S’abonner à la box"
     },
     {
       "type": "text",

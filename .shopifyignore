@@ -1,0 +1,33 @@
+# Sauvegardes atomiques des éditeurs (VS Code, etc.) — sinon Shopify reject "illegal characters"
+*.tmp
+*.~tmp
+*.tmp.*
+.~*
+*~
+
+# Métadonnées OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Éditeurs / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dossiers locaux non syncables (Shopify assets/ doit être plat — pas de sous-dossiers)
+assets/paysages-regions/
+assets/custom/
+assets/magazine/
+
+# Docs internes / notes
+assets/RENAME-MAP.md
+assets/*.txt
+
+# CSV / data dumps non destinés au thème
+*.csv
+
+# Git
+.git/
+.gitignore

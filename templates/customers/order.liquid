@@ -5,7 +5,7 @@
       <h1 class="account__title">{{ order.name }}</h1>
       <hr class="sep sep--center">
       <p class="account__hint" style="text-align:center;">
-        Passée le {{ order.created_at | date: '%d %B %Y' }}
+        Passée le {% render 'date-fr', date: order.created_at %}
       </p>
       <p class="account__links" style="justify-content:center;">
         <a href="{{ routes.account_url }}">&larr; Retour au compte</a>

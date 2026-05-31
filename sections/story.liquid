@@ -1,11 +1,14 @@
 {%- liquid
-  assign img       = section.settings.image
+  # founders_image : photo Pierre & Tiffany.
+  # Fallback = fondateurs.jpg (vraie photo client, validée 31/05/2026).
+  # Une photo uploadée dans Customizer → L'Histoire → Photo prime sur le fallback.
+  assign founders_image = section.settings.image
   assign title     = section.settings.title     | default: 'Nous avons quitté Paris pour Cluj.'
   assign year      = section.settings.year      | default: '2025'
   assign signature = section.settings.signature | default: 'Pierre & Tiffany'
 -%}
 
-<section class="story" aria-label="L'Histoire">
+<section id="notre-histoire" class="story" aria-label="L'Histoire">
   <div class="container story__container">
 
     <div class="story__meta reveal">
@@ -19,20 +22,20 @@
     <div class="story__grid">
 
       <figure class="story__media reveal reveal--delay-2">
-        {%- if img != blank -%}
-          {{ img | image_url: width: 1400 | image_tag:
+        {%- if founders_image != blank -%}
+          {{ founders_image | image_url: width: 1400 | image_tag:
               loading: 'lazy',
               sizes: '(min-width: 1024px) 42vw, 100vw',
               widths: '500, 800, 1200, 1600',
               class: 'story__img',
-              alt: img.alt
+              alt: founders_image.alt | default: 'Pierre & Tiffany — fondateurs de Maison Bonjour, à Cluj-Napoca'
           }}
         {%- else -%}
           <img class="story__img"
-               src="{{ 'intro.png' | asset_url }}"
+               src="{{ 'fondateurs.jpg' | asset_url }}"
                alt="Pierre &amp; Tiffany — fondateurs de Maison Bonjour, à Cluj-Napoca"
-               width="1086"
-               height="1448"
+               width="1200"
+               height="1600"
                loading="lazy"
                decoding="async">
         {%- endif -%}
@@ -46,9 +49,14 @@
         {%- if section.settings.body != blank -%}
           {{ section.settings.body }}
         {%- else -%}
-          <p>Pierre est né à Senlis. Tiffany en Provence. Nous nous sommes rencontrés à Paris.</p>
-          <p>En {{ year }}, nous avons quitté Paris pour Cluj-Napoca. Très vite, ce qui nous a manqué : le savon d&rsquo;une savonnerie qu&rsquo;on connaît, la cigale d&rsquo;un atelier transmis depuis quatre générations, le caramel d&rsquo;une maison qui le fabrique encore à la main.</p>
-          <p>Cette France-là ne traverse pas les frontières. Nous avons décidé de la traverser nous-mêmes.</p>
+          {%- comment -%}
+            Texte fondateur — version poétique courte (validée brief client).
+            Si tu modifies le récit via Customizer → L'Histoire → Récit,
+            ta version remplacera ce fallback.
+          {%- endcomment -%}
+          <p>Pierre est né à Senlis. Tiffany en Provence. Ils se sont rencontrés à Paris, puis ont pris la route vers la Roumanie avec cette intuition difficile à expliquer&nbsp;: parfois, un lieu vous choisit autant que vous le choisissez.</p>
+          <p>À Cluj, ils ont retrouvé quelque chose qu&rsquo;ils voulaient faire vivre autrement&nbsp;: le goût des choses bien faites, les gestes transmis, les produits qui ont une adresse, une main, une histoire.</p>
+          <p>Maison Bonjour est née de là. Non pas pour exporter la France comme une image, mais pour en partager chaque mois une présence&nbsp;: un rituel, une région, une manière de recevoir.</p>
         {%- endif -%}
 
         {%- comment -%} start:end = fractions de viewport. start=1.0 → la frappe démarre dès que la signature entre par le bas (plus de délai). end=0.6 → terminée pendant que la section est encore bien visible. {%- endcomment -%}
@@ -65,6 +73,8 @@
     background: var(--cream);
     color: var(--marine);
     padding-block: clamp(80px, 10vw, 140px);
+    /* Ancre "Notre histoire" : marge pour ne pas coller au header sticky lors du scroll. */
+    scroll-margin-top: clamp(72px, 9vw, 120px);
   }
 
   .story__container {
@@ -97,6 +107,16 @@
     letter-spacing: -0.02em;
     color: var(--marine);
     max-width: 16ch;
+    /* Fix "Cluj" : le descendant du j est rogné par .fm-line-wrap { overflow:hidden }
+       combiné à line-height:0.98. On ajoute un padding-bottom à hauteur du descendant
+       (~0.22em) pour donner de l'air, sans toucher au line-height (qui dicte le rythme). */
+    padding-bottom: 0.06em;
+  }
+  .story__title .fm-line-wrap {
+    padding-bottom: 0.22em;
+  }
+  .story__title .fm-line {
+    line-height: 1;
   }
 
   .story__rule {
@@ -217,10 +237,13 @@
 {
   "name": "L'Histoire",
   "settings": [
-    { "type": "image_picker", "id": "image",     "label": "Portrait Pierre & Tiffany" },
+    { "type": "header",       "content": "Photo des fondateurs" },
+    { "type": "paragraph",    "content": "Par défaut, la photo « fondateurs.jpg » s'affiche. Pour la remplacer (ex. nouvelle photo éditoriale), upload une image ici — elle prendra le dessus sur le fallback." },
+    { "type": "image_picker", "id": "image",     "label": "Photo Pierre & Tiffany (remplace le fallback)" },
+    { "type": "header",       "content": "Texte" },
     { "type": "text",         "id": "title",     "label": "Titre",     "default": "Nous avons quitté Paris pour Cluj." },
     { "type": "text",         "id": "year",      "label": "Année",     "default": "2025" },
-    { "type": "richtext",     "id": "body",      "label": "Récit (optionnel)" },
+    { "type": "richtext",     "id": "body",      "label": "Récit (optionnel)", "info": "Laisser vide pour afficher le récit fondateur par défaut." },
     { "type": "text",         "id": "signature", "label": "Signature", "default": "Pierre & Tiffany" }
   ],
   "presets": [{ "name": "L'Histoire" }]

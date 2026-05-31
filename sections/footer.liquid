@@ -1,8 +1,8 @@
 {%- liquid
   assign b2b_url        = section.settings.b2b_url
   assign subscribe_url  = section.settings.subscribe_url
-  assign faq_url        = section.settings.faq_url
-  assign contact_url    = section.settings.contact_url
+  assign faq_url        = section.settings.faq_url | default: '/pages/faq'
+  assign contact_url    = section.settings.contact_url | default: '/pages/contact'
   assign cgv_url        = section.settings.cgv_url | default: '/pages/cgv'
   assign privacy_url    = section.settings.privacy_url | default: '/pages/confidentialite'
   assign magazine_url   = section.settings.magazine_url
@@ -16,6 +16,14 @@
 
 <aside class="mb-b2b" aria-label="Cadeaux et commandes entreprise">
   <div class="mb-b2b__inner">
+    <img class="mb-b2b__mark"
+         src="{{ 'Cartedevizitare-removebg-preview.png' | asset_url }}"
+         alt=""
+         width="252"
+         height="144"
+         loading="lazy"
+         decoding="async"
+         aria-hidden="true">
     <p>
       Vous souhaitez offrir Maison Bonjour&nbsp;? Ou commander pour votre entreprise&nbsp;?
       <a href="{{ b2b_url }}">Nous &eacute;crire <span aria-hidden="true">&rarr;</span></a>
@@ -28,7 +36,15 @@
     <div class="mb-footer__cols">
 
       <section class="mb-footer__col mb-footer__col--brand">
-        <p class="mb-footer__logo">Maison&nbsp;Bonjour</p>
+        <a class="mb-footer__logo-link" href="{{ routes.root_url }}" aria-label="Maison Bonjour — Accueil">
+          <img class="mb-footer__logo-img"
+               src="{{ 'maison_bonjour_dark_v2-removebg-preview.png' | asset_url }}"
+               alt="Maison Bonjour"
+               width="440"
+               height="252"
+               loading="lazy"
+               decoding="async">
+        </a>
         <p class="mb-footer__tagline">
           L&rsquo;art de vivre fran&ccedil;ais, livr&eacute; chaque mois &agrave; Cluj-Napoca.
         </p>
@@ -42,7 +58,7 @@
       <section class="mb-footer__col mb-footer__col--cta">
         <span class="mb-footer__label">Pas encore pr&ecirc;te&nbsp;?</span>
         <p class="mb-footer__cta-title">Rejoindre Maison Bonjour.</p>
-        <a class="btn btn--secondary mb-footer__btn" href="{{ subscribe_url }}">S&rsquo;abonner</a>
+        <a class="btn btn--secondary mb-footer__btn" href="{{ subscribe_url }}">S&rsquo;abonner &agrave; la box</a>
       </section>
 
       <nav class="mb-footer__col mb-footer__col--links" aria-label="Liens pratiques">
@@ -100,7 +116,7 @@
       </ul>
 
       <p class="mb-footer__copy">
-        &copy; {{ year }} Maison Bonjour &middot; Made in France &middot; Livr&eacute; &agrave; Cluj-Napoca
+        &copy; {{ year }} Maison Bonjour &middot; Made in France &middot; Livr&eacute; en Roumanie
       </p>
     </div>
   </div>
@@ -116,6 +132,16 @@
     max-width: 700px;
     margin-inline: auto;
     text-align: center;
+  }
+  /* Logo en "sceau" / en-tête de papier — petit et discret, donne un effet
+     papeterie au bandeau B2B. Version marine transparent sur le fond cream-warm. */
+  .mb-b2b__mark {
+    display: block;
+    margin: 0 auto 18px;
+    width: auto;
+    height: auto;
+    max-height: 72px;
+    opacity: 0.92;
   }
   .mb-b2b p {
     font-family: var(--font-sans);
@@ -158,15 +184,19 @@
     gap: 18px;
   }
 
-  .mb-footer__logo {
-    font-family: var(--font-serif);
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(26px, 2vw, 32px);
-    color: var(--text-cream);
-    line-height: 1;
-    letter-spacing: 0.01em;
-    margin: 0;
+  /* Logo image — colonne brand footer. Version cream sur marine pour matcher le fond.
+     Hauteur respirée (le footer a la place) ; respecte les proportions du logo. */
+  .mb-footer__logo-link {
+    display: inline-block;
+    line-height: 0;
+    transition: opacity 0.3s ease;
+  }
+  .mb-footer__logo-link:hover { opacity: 0.85; }
+  .mb-footer__logo-img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 240px;
   }
 
   .mb-footer__tagline {
@@ -299,6 +329,7 @@
      groupes de liens côte à côte (au lieu d'une longue pile verticale). */
   @media (max-width: 767px) {
     .mb-footer { padding: 48px var(--container-padding); }
+    .mb-footer__logo-img { max-width: 200px; }
     .mb-footer__cols {
       grid-template-columns: 1fr 1fr;
       gap: 36px 24px;
@@ -321,6 +352,7 @@
     }
     .mb-footer__copy { text-align: left; }
     .mb-b2b { padding: 32px var(--container-padding); }
+    .mb-b2b__mark { max-height: 56px; margin-bottom: 14px; }
     .mb-b2b p { font-size: 14px; }
   }
 {% endstylesheet %}

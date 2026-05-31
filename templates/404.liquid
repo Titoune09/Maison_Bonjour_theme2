@@ -24,7 +24,15 @@
       le chemin du retour est juste au-dessus.
     </p>
 
-    <div class="mb-404__wordmark" aria-hidden="true">Maison&nbsp;Bonjour</div>
+    <div class="mb-404__wordmark" aria-hidden="true">
+      <img class="mb-404__wordmark-img"
+           src="{{ 'Cartedevizitare-removebg-preview.png' | asset_url }}"
+           alt=""
+           width="252"
+           height="144"
+           loading="lazy"
+           decoding="async">
+    </div>
 
   </div>
 </section>
@@ -118,21 +126,19 @@
     color: var(--text-muted);
   }
 
-  /* Brand wordmark */
+  /* Brand wordmark — logo image officiel (version marine transparent). */
   .mb-404__wordmark {
     margin-top: clamp(56px, 9vw, 120px);
     padding-top: clamp(32px, 4vw, 48px);
     border-top: 1px solid var(--border);
-    font-family: 'TAN Pearl', var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.75rem, 8vw, 7.5rem);
-    line-height: 0.9;
-    letter-spacing: -0.01em;
     text-align: center;
-    text-transform: uppercase;
-    color: var(--marine);
-    white-space: nowrap;
     width: 100%;
+  }
+  .mb-404__wordmark-img {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    max-width: min(420px, 80vw);
   }
 
   @media (max-width: 640px) {

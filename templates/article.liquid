@@ -37,7 +37,7 @@
       <a class="post__back" href="{{ blog.url }}">&larr; {{ blog.title | default: 'Magazine' }}</a>
 
       <time class="post__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datePublished">
-        {{ article.published_at | date: '%d %B %Y' }}
+        {% render 'date-fr', date: article.published_at %}
       </time>
 
       <h1 class="post__title" itemprop="headline">{{ article.title }}</h1>

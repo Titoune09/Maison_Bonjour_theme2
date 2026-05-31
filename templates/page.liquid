@@ -7,9 +7,27 @@
   admin. We therefore render the magazine layout here whenever the page handle
   is "magazine" (or the magazine template suffix is set), and fall back to the
   standard legal/editorial layout for every other page.
+
+  Same situation for the CGV, FAQ and Confidentialité pages: their custom
+  templates (page.cgv / page.faq / page.confidentialite) may not be published
+  to the live theme, so the pages can stay on the Default template in the
+  admin. We route them by handle here to the shared snippets so they render
+  their full content regardless.
 {%- endcomment -%}
 
-{%- if page.handle == 'magazine' or page.template_suffix == 'magazine' -%}
+{%- if page.handle == 'cgv' or page.template_suffix == 'cgv' -%}
+
+  {% render 'page-cgv' %}
+
+{%- elsif page.handle == 'faq' or page.template_suffix == 'faq' -%}
+
+  {% render 'page-faq' %}
+
+{%- elsif page.handle == 'confidentialite' or page.template_suffix == 'confidentialite' -%}
+
+  {% render 'page-confidentialite' %}
+
+{%- elsif page.handle == 'magazine' or page.template_suffix == 'magazine' -%}
 
   {{ 'magazine.css' | asset_url | stylesheet_tag }}
 
